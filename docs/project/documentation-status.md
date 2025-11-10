@@ -70,6 +70,7 @@ Quick reference for which docs are accurate vs outdated.
 ## Key Insights
 
 **What changed from original plan:**
+
 - ❌ No Superfluid/Sablier → ✅ Custom timestamp-based payments
 - ❌ No separate Matchmaker API → ✅ Socket.io backend
 - ❌ No Relayer Bot → ✅ Backend calls contract directly
@@ -77,6 +78,7 @@ Quick reference for which docs are accurate vs outdated.
 - ❌ No POAP/credentials → ⏳ Planned for future
 
 **Why the changes:**
+
 - Simpler implementation
 - Easier to debug and maintain
 - Lower gas costs

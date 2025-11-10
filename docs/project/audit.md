@@ -72,12 +72,14 @@ This audit reviews the current state of the LangDAO project to identify what's b
 **File:** `docs/tech/architecture.md`
 
 **Documented:**
+
 - Complex flow with Matchmaker API, Heartbeat Service, Relayer Bot, Payment Controller
 - Superfluid streaming with FlowOperator permissions
 - DAO vetting for SBT credentials
 - Booking system with calendar integration
 
 **Reality:**
+
 - Simple Socket.io matching (no separate Matchmaker API)
 - No Relayer Bot (backend calls contracts directly)
 - No booking system implemented
@@ -156,72 +158,72 @@ Student → Socket.io Backend → Redis → Smart Contract → Payment
 ### Immediate Actions (This Week)
 
 1. ✅ **Update README.md** - DONE
-   - Removed Superfluid references
-   - Updated architecture section
-   - Now reflects actual implementation
+     - Removed Superfluid references
+     - Updated architecture section
+     - Now reflects actual implementation
 
 2. ✅ **Create Architecture Documentation** - DONE
-   - Created `docs/architecture/overview.md` with complete details
-   - Marked old `docs/tech/architecture.md` as outdated
-   - Added warning banner with link to new doc
+     - Created `docs/architecture/overview.md` with complete details
+     - Marked old `docs/tech/architecture.md` as outdated
+     - Added warning banner with link to new doc
 
 3. ✅ **Fix or Delete Empty Files** - DONE
-   - Deleted all empty spec and design files
-   - Cleaned up root-level test files
-   - Kept empty directories for future use
+     - Deleted all empty spec and design files
+     - Cleaned up root-level test files
+     - Kept empty directories for future use
 
 4. ⏳ **Create Socket Event Reference**
-   - Document all socket events with examples
-   - Show request/response payloads
-   - Add to `docs/tech/socket-events.md`
+     - Document all socket events with examples
+     - Show request/response payloads
+     - Add to `docs/tech/socket-events.md`
 
 5. ⏳ **Document Language Matching Fix**
-   - Move `LANGUAGE_MATCHING_FIX.md` into proper docs
-   - Implement one of the recommended fixes
-   - Update frontend/backend to use consistent language IDs
+     - Move `LANGUAGE_MATCHING_FIX.md` into proper docs
+     - Implement one of the recommended fixes
+     - Update frontend/backend to use consistent language IDs
 
 ### Short-term (Next 2 Weeks)
 
 1. **Verify Payment Implementation**
-   - Check if Superfluid/Sablier is actually integrated
-   - If not, document the actual payment mechanism
-   - Update integration docs accordingly
+     - Check if Superfluid/Sablier is actually integrated
+     - If not, document the actual payment mechanism
+     - Update integration docs accordingly
 
 2. **Add API Documentation**
-   - Document all HTTP endpoints
-   - Add request/response examples
-   - Create `docs/tech/api-reference.md`
+     - Document all HTTP endpoints
+     - Add request/response examples
+     - Create `docs/tech/api-reference.md`
 
 3. **Create Deployment Guide**
-   - Document production deployment steps
-   - Add environment variable reference
-   - Create `docs/ops/deployment.md`
+     - Document production deployment steps
+     - Add environment variable reference
+     - Create `docs/ops/deployment.md`
 
 4. **Add Testing**
-   - Write basic integration tests for socket events
-   - Add contract tests
-   - Document how to run tests
+     - Write basic integration tests for socket events
+     - Add contract tests
+     - Document how to run tests
 
 ### Medium-term (Next Month)
 
 1. **Implement or Remove POAP**
-   - Either build the POAP minting feature
-   - Or remove all references from docs
+     - Either build the POAP minting feature
+     - Or remove all references from docs
 
 2. **Standardize Language System**
-   - Implement Option 3 from `LANGUAGE_MATCHING_FIX.md`
-   - Use language IDs everywhere (frontend, backend, contract)
-   - Remove string-based matching
+     - Implement Option 3 from `LANGUAGE_MATCHING_FIX.md`
+     - Use language IDs everywhere (frontend, backend, contract)
+     - Remove string-based matching
 
 3. **Add Monitoring**
-   - Add logging for all socket events
-   - Track session metrics (duration, completion rate)
-   - Add error tracking (Sentry?)
+     - Add logging for all socket events
+     - Track session metrics (duration, completion rate)
+     - Add error tracking (Sentry?)
 
 4. **Security Audit**
-   - Review smart contract security
-   - Check backend authentication
-   - Verify rate limiting is sufficient
+     - Review smart contract security
+     - Check backend authentication
+     - Verify rate limiting is sufficient
 
 ---
 
@@ -262,30 +264,30 @@ Student → Socket.io Backend → Redis → Smart Contract → Payment
 Before updating docs, clarify these implementation details:
 
 1. ~~**Is Superfluid/Sablier actually integrated?**~~ ✅ **ANSWERED**
-   - No external streaming protocol used
-   - Custom timestamp-based payment in LangDAO.sol
-   - Payment = `(endTime - startTime) * ratePerSecond`
-   - Simpler and more reliable than Superfluid
+     - No external streaming protocol used
+     - Custom timestamp-based payment in LangDAO.sol
+     - Payment = `(endTime - startTime) * ratePerSecond`
+     - Simpler and more reliable than Superfluid
 
 2. **What's the actual session lifecycle?**
-   - Student requests → Tutor accepts → ??? → Session starts → ??? → Session ends
-   - Fill in the gaps with actual implementation
+     - Student requests → Tutor accepts → ??? → Session starts → ??? → Session ends
+     - Fill in the gaps with actual implementation
 
 3. **How does WebRTC integration work?**
-   - What events does the WebRTC server send?
-   - How does backend know when to call `endSession()`?
-   - Is heartbeat monitoring actually implemented?
+     - What events does the WebRTC server send?
+     - How does backend know when to call `endSession()`?
+     - Is heartbeat monitoring actually implemented?
 
 4. **What's the language matching logic?**
-   - Frontend sends what format?
-   - Backend stores what format?
-   - Contract expects what format?
-   - How are they mapped?
+     - Frontend sends what format?
+     - Backend stores what format?
+     - Contract expects what format?
+     - How are they mapped?
 
 5. **What's deployed vs local-only?**
-   - Is there a production deployment?
-   - What services are running where?
-   - What's the deployment architecture?
+     - Is there a production deployment?
+     - What services are running where?
+     - What's the deployment architecture?
 
 ---
 

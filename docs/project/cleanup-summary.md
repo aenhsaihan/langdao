@@ -57,40 +57,42 @@ IERC20(PYUSD_TOKEN).transfer(tutor, payment);
 **Why the change:** Faster to build MVP, easier to maintain, fewer moving parts.
 
 ### What Actually Works
-✅ Real-time student/tutor matching via Socket.io
-✅ Video sessions via custom WebRTC implementation
-✅ Timestamp-based payments via custom smart contract
-✅ Full session lifecycle from request to payment
-✅ PYUSD token integration on Sepolia
+
+- ✅ Real-time student/tutor matching via Socket.io
+- ✅ Video sessions via custom WebRTC implementation
+- ✅ Timestamp-based payments via custom smart contract
+- ✅ Full session lifecycle from request to payment
+- ✅ PYUSD token integration on Sepolia
 
 ### What's Not Implemented (Yet)
-❌ POAP/credential minting
-❌ Booking/calendar system
-❌ DAO vetting for tutors
-❌ Rating system
-❌ Reputation tracking
+
+- ❌ POAP/credential minting
+- ❌ Booking/calendar system
+- ❌ DAO vetting for tutors
+- ❌ Rating system
+- ❌ Reputation tracking
 
 ## Files Created
 
 1. **`docs/project/audit.md`** (4.5 KB)
-   - Comprehensive audit of current state
-   - What's working, what's outdated, what's missing
-   - Recommendations for next steps
+     - Comprehensive audit of current state
+     - What's working, what's outdated, what's missing
+     - Recommendations for next steps
 
 2. **`docs/architecture/overview.md`** (18 KB)
-   - Complete, accurate architecture documentation
-   - User flows, payment details, security considerations
-   - Environment variables, deployment info
-   - Known issues and workarounds
+     - Complete, accurate architecture documentation
+     - User flows, payment details, security considerations
+     - Environment variables, deployment info
+     - Known issues and workarounds
 
 3. **`docs/project/documentation-status.md`** (2 KB)
-   - Quick reference for doc accuracy
-   - Priority actions checklist
-   - What to work on next
+     - Quick reference for doc accuracy
+     - Priority actions checklist
+     - What to work on next
 
 4. **`docs/project/cleanup-summary.md`** (This file)
-   - Summary of cleanup work
-   - Key findings and changes
+     - Summary of cleanup work
+     - Key findings and changes
 
 ## Impact
 
@@ -112,46 +114,46 @@ IERC20(PYUSD_TOKEN).transfer(tutor, payment);
 
 ### High Priority
 1. **Create Socket Event Reference** (`docs/tech/socket-events.md`)
-   - Document all 15+ socket events
-   - Include request/response examples
-   - Add error cases
+     - Document all 15+ socket events
+     - Include request/response examples
+     - Add error cases
 
 2. **Fix Language Matching**
-   - Implement Option 3 from `LANGUAGE_MATCHING_FIX.md`
-   - Use language IDs everywhere (frontend, backend, contract)
-   - Remove string-based matching
+     - Implement Option 3 from `LANGUAGE_MATCHING_FIX.md`
+     - Use language IDs everywhere (frontend, backend, contract)
+     - Remove string-based matching
 
 3. **Update MVP Scope Doc** (`docs/product/scope-mvp.md`)
-   - List actual implemented features
-   - Remove references to unimplemented features
-   - Add success metrics from real usage
+     - List actual implemented features
+     - Remove references to unimplemented features
+     - Add success metrics from real usage
 
 ### Medium Priority
 1. **Create API Reference** (`docs/tech/api-reference.md`)
-   - Document HTTP endpoints
-   - Include request/response examples
-   - Add authentication details
+     - Document HTTP endpoints
+     - Include request/response examples
+     - Add authentication details
 
 2. **Add Deployment Guide** (`docs/ops/deployment.md`)
-   - Production deployment steps
-   - Environment variable reference
-   - Service configuration
+     - Production deployment steps
+     - Environment variable reference
+     - Service configuration
 
 3. **Add Testing Guide** (`docs/dev/testing.md`)
-   - How to run manual tests
-   - How to add automated tests
-   - Test scenarios and expected results
+     - How to run manual tests
+     - How to add automated tests
+     - Test scenarios and expected results
 
 ### Low Priority
 1. **Create Troubleshooting Guide** (`docs/dev/troubleshooting.md`)
-   - Common issues and solutions
-   - Debug tips
-   - FAQ
+     - Common issues and solutions
+     - Debug tips
+     - FAQ
 
 2. **Add Contributing Guide** (`docs/dev/contributing.md`)
-   - How to set up dev environment
-   - Code style guidelines
-   - PR process
+     - How to set up dev environment
+     - Code style guidelines
+     - PR process
 
 ## Metrics
 
@@ -175,12 +177,14 @@ IERC20(PYUSD_TOKEN).transfer(tutor, payment);
 The LangDAO project has a **working MVP** with core functionality implemented. The main issue was documentation being out of sync with reality. 
 
 This cleanup provides:
+
 - ✅ Clear picture of what's actually built
 - ✅ Accurate technical documentation
 - ✅ Roadmap for what's next
 - ✅ Clean, organized repo
 
 **The project is now ready for:**
+
 - Testing with real users
 - Adding new features
 - Onboarding contributors

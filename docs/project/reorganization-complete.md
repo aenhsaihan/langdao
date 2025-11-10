@@ -86,11 +86,13 @@ docs/
 ## Quick Links
 
 **Start here:**
+
 - [Documentation Guide](../index.md) - Overview of all documentation
 - [Architecture Overview](../architecture/overview.md) - How the system works
 - [Documentation Status](documentation-status.md) - What's accurate
 
 **For contributors:**
+
 - [Project Audit](audit.md) - What needs work
 - [Cleanup Summary](cleanup-summary.md) - Recent changes
 - [Reorganization Details](documentation-reorganization.md) - This reorganization
@@ -116,20 +118,20 @@ mkdocs build
 When adding new documentation:
 
 1. **Choose the right folder:**
-   - System design → `docs/architecture/`
-   - How-to guides → `docs/guides/`
-   - Product specs → `docs/product/`
-   - Technical specs → `docs/tech/`
-   - Project management → `docs/project/`
+     - System design → `docs/architecture/`
+     - How-to guides → `docs/guides/`
+     - Product specs → `docs/product/`
+     - Technical specs → `docs/tech/`
+     - Project management → `docs/project/`
 
 2. **Use clear filenames:**
-   - Use kebab-case: `my-document.md`
-   - Be descriptive: `webrtc-integration.md` not `integration.md`
+     - Use kebab-case: `my-document.md`
+     - Be descriptive: `webrtc-integration.md` not `integration.md`
 
 3. **Update navigation:**
-   - Add to `mkdocs.yml`
-   - Link from related docs
-   - Update `docs/README.md` if needed
+     - Add to `mkdocs.yml`
+     - Link from related docs
+     - Update `docs/README.md` if needed
 
 ## Summary
 

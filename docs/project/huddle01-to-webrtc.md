@@ -55,24 +55,24 @@ Video: Custom WebRTC implementation
 ## Benefits of Custom WebRTC
 
 1. **Better Integration**
-   - Tight coupling with session management
-   - Direct communication with backend
-   - Easier to trigger `endSession()` on disconnect
+     - Tight coupling with session management
+     - Direct communication with backend
+     - Easier to trigger `endSession()` on disconnect
 
 2. **More Control**
-   - Full control over session lifecycle
-   - Custom disconnect detection logic
-   - Easier to debug and troubleshoot
+     - Full control over session lifecycle
+     - Custom disconnect detection logic
+     - Easier to debug and troubleshoot
 
 3. **Simpler Architecture**
-   - No external service dependency
-   - No API rate limits or quotas
-   - Predictable behavior
+     - No external service dependency
+     - No API rate limits or quotas
+     - Predictable behavior
 
 4. **Cost Effective**
-   - No third-party service fees
-   - Self-hosted solution
-   - Scales with our infrastructure
+     - No third-party service fees
+     - Self-hosted solution
+     - Scales with our infrastructure
 
 ## Trade-offs
 
@@ -94,6 +94,7 @@ Video: Custom WebRTC implementation
 **Location:** `backend/webRTC-implementation-LangDAO/`
 
 **Key Features:**
+
 - Peer-to-peer WebRTC connections
 - Session heartbeat monitoring
 - Disconnect detection (2-minute timeout)

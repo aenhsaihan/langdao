@@ -13,11 +13,13 @@ Second pass review to identify what needs to be updated, clarified, or created b
 ### 1. `docs/product/scope-mvp.md` - Inaccurate Scope
 
 **Current Issues:**
+
 - Says "mint credential → get paid" but POAP minting is NOT implemented
 - Mentions "POAP mints" in success signals but this doesn't exist
 - Too vague about what's actually built
 
 **What Actually Works:**
+
 - ✅ Wallet connection
 - ✅ Real-time tutor/student matching via Socket.io
 - ✅ WebRTC video sessions
@@ -26,6 +28,7 @@ Second pass review to identify what needs to be updated, clarified, or created b
 - ❌ NO POAP/credential minting
 
 **Action Needed:**
+
 - Rewrite to reflect actual MVP features
 - Remove POAP references or mark as "planned"
 - Add actual success metrics (sessions completed, payments processed)
@@ -35,11 +38,13 @@ Second pass review to identify what needs to be updated, clarified, or created b
 ### 2. `docs/product/roadmap.md` - Outdated Milestones
 
 **Current Issues:**
+
 - M1 says "Hackathon" but we're past that
 - Vague about what's done vs what's planned
 - No dates or current status
 
 **Action Needed:**
+
 - Update M1 to show what was actually completed
 - Add current status (e.g., "M1 - COMPLETED")
 - Add realistic timeline for M2 and M3
@@ -90,11 +95,13 @@ Session Events:
 ### 4. `docs/product/overview.md` - Too Generic
 
 **Current Issues:**
+
 - Mentions "POAP or lightweight credential NFTs" (not implemented)
 - Says "teaching, moderating, translating, or guiding" but only teaching is implemented
 - No mention of actual tech stack
 
 **Action Needed:**
+
 - Focus on what's actually built (1-on-1 language tutoring)
 - Remove or mark as "future" features not yet implemented
 - Add brief tech stack mention
@@ -107,12 +114,13 @@ Session Events:
 Multiple `.env` files across backend, frontend, WebRTC server with no central documentation.
 
 **Action Needed:**
+
 - Create `docs/ops/environment-variables.md`
 - Document all env vars for:
-  - Backend
-  - Frontend
-  - WebRTC server
-  - Smart contracts
+    - Backend
+    - Frontend
+    - WebRTC server
+    - Smart contracts
 - Include examples and required vs optional
 
 ---
@@ -132,6 +140,7 @@ GET  /api/matching/*
 ```
 
 **Action Needed:**
+
 - Create `docs/tech/api-reference.md`
 - Document each endpoint with:
   - Method and path
@@ -147,6 +156,7 @@ GET  /api/matching/*
 ### 7. Missing: Deployment Guide
 
 **Action Needed:**
+
 - Create `docs/ops/deployment.md`
 - Document how to deploy:
   - Frontend (Vercel?)
@@ -161,6 +171,7 @@ GET  /api/matching/*
 ### 8. Missing: Testing Guide
 
 **Action Needed:**
+
 - Create `docs/dev/testing.md`
 - Document manual testing flow
 - Add instructions for automated tests (when they exist)
@@ -171,12 +182,13 @@ GET  /api/matching/*
 ### 9. Missing: Troubleshooting Guide
 
 **Action Needed:**
+
 - Create `docs/dev/troubleshooting.md`
 - Document common issues:
-  - Socket connection failures
-  - WebRTC connection issues
-  - Transaction failures
-  - Language matching bugs
+    - Socket connection failures
+    - WebRTC connection issues
+    - Transaction failures
+    - Language matching bugs
 - Add solutions and debug tips
 
 ---
@@ -184,13 +196,14 @@ GET  /api/matching/*
 ### 10. Missing: Contributing Guide
 
 **Action Needed:**
+
 - Create `docs/dev/contributing.md` or update root `CONTRIBUTING.md`
 - Document:
-  - How to set up dev environment
-  - Code style guidelines
-  - PR process
-  - How to run tests
-  - Where to ask questions
+    - How to set up dev environment
+    - Code style guidelines
+    - PR process
+    - How to run tests
+    - Where to ask questions
 
 ---
 
@@ -199,18 +212,18 @@ GET  /api/matching/*
 ### Files That Need Fact-Checking
 
 1. **`docs/architecture/overview.md`**
-   - ✅ Mostly accurate
-   - ⚠️ Need to verify: Is heartbeat monitoring actually implemented?
-   - ⚠️ Need to verify: WebRTC disconnect detection details
+     - ✅ Mostly accurate
+     - ⚠️ Need to verify: Is heartbeat monitoring actually implemented?
+     - ⚠️ Need to verify: WebRTC disconnect detection details
 
 2. **`docs/guides/language-matching-fix.md`**
-   - ✅ Accurate description of the problem
-   - ⏳ Need to implement one of the proposed solutions
+     - ✅ Accurate description of the problem
+     - ⏳ Need to implement one of the proposed solutions
 
 3. **`docs/guides/webrtc-integration.md`**
-   - ✅ Accurate
-   - ⚠️ Need to verify: Is heartbeat timeout actually 2 minutes?
-   - ⚠️ Need to verify: Is grace period actually 30 seconds?
+     - ✅ Accurate
+     - ⚠️ Need to verify: Is heartbeat timeout actually 2 minutes?
+     - ⚠️ Need to verify: Is grace period actually 30 seconds?
 
 ---
 
@@ -219,45 +232,47 @@ GET  /api/matching/*
 Before updating docs, we need to clarify:
 
 ### Backend Implementation
+
 1. **Is heartbeat monitoring actually implemented?**
-   - Check `backend/src/server.js` for heartbeat logic
-   - Check WebRTC server for heartbeat sending
+     - Check `backend/src/server.js` for heartbeat logic
+     - Check WebRTC server for heartbeat sending
 
 2. **What are the actual HTTP endpoints?**
-   - List all routes in `backend/src/routes/`
-   - Document their purpose and usage
+     - List all routes in `backend/src/routes/`
+     - Document their purpose and usage
 
 3. **How does session state management work?**
-   - What's stored in Redis?
-   - What's the lifecycle of a session?
-   - When does data get cleaned up?
+     - What's stored in Redis?
+     - What's the lifecycle of a session?
+     - When does data get cleaned up?
 
 ### Frontend Implementation
 1. **What pages actually exist?**
-   - `/` - Landing page
-   - `/find-tutor` - Student flow
-   - `/tutor` - Tutor flow
-   - `/dashboard` - User dashboard
-   - What else?
+     - `/` - Landing page
+     - `/find-tutor` - Student flow
+     - `/tutor` - Tutor flow
+     - `/dashboard` - User dashboard
+     - What else?
 
 2. **What's the actual user flow?**
-   - Step-by-step for student
-   - Step-by-step for tutor
-   - Where do they get stuck?
+     - Step-by-step for student
+     - Step-by-step for tutor
+     - Where do they get stuck?
 
 ### Smart Contract
 1. **What's the actual payment flow?**
-   - How does student deposit funds?
-   - How does payment get calculated?
-   - How does tutor receive payment?
-   - What happens if student runs out of funds mid-session?
+
+     - How does student deposit funds?
+     - How does payment get calculated?
+     - How does tutor receive payment?
+     - What happens if student runs out of funds mid-session?
 
 2. **What are the gas costs?**
-   - registerStudent
-   - registerTutor
-   - depositFunds
-   - startSession
-   - endSession
+     - registerStudent
+     - registerTutor
+     - depositFunds
+     - startSession
+     - endSession
 
 ---
 
@@ -284,6 +299,7 @@ Before updating docs, we need to clarify:
 ## 🎯 Success Criteria
 
 Documentation is complete when:
+
 - ✅ All implemented features are accurately documented
 - ✅ All unimplemented features are clearly marked as "planned"
 - ✅ New contributors can set up dev environment from docs alone
