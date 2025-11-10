@@ -16,8 +16,11 @@ nav:
       - WebRTC Integration: guides/webrtc-integration.md
   - Tech:
       - Socket Events Reference: tech/socket-events.md
+      - API Reference: tech/api-reference.md
       - Integrations: tech/integrations.md
       - DAO Vetting: tech/dao-vetting.md
+  - Operations:
+      - Environment Variables: ops/environment-variables.md
   - Project:
       - Audit: project/audit.md
       - Cleanup Summary: project/cleanup-summary.md
