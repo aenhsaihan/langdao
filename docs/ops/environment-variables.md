@@ -397,7 +397,7 @@ yarn start
 
 - [Architecture Overview](../architecture/overview.md) - System architecture
 - [Socket Events Reference](../tech/socket-events.md) - Socket.io events
-- [Deployment Guide](deployment.md) - Production deployment (coming soon)
+- [API Reference](../tech/api-reference.md) - HTTP API endpoints
 
 ---
 
