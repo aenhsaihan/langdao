@@ -121,7 +121,7 @@ This audit reviews the current state of the LangDAO project to identify what's b
 ### Missing Features (Documented but Not Built)
 
 1. **POAP/Credential Minting** - Documented extensively, not implemented
-2. **Streaming Payments** - Unclear if Superfluid/Sablier is actually integrated
+2. **Streaming Payments** - NOT using Superfluid/Sablier (using custom timestamp-based system instead)
 3. **Booking System** - Documented in architecture, not built
 4. **DAO Vetting** - Documented, not built
 5. **Rating System** - Documented, not built
@@ -184,15 +184,15 @@ Student → Socket.io Backend → Redis → Smart Contract → Payment
 
 ### Short-term (Next 2 Weeks)
 
-1. **Verify Payment Implementation**
-     - Check if Superfluid/Sablier is actually integrated
-     - If not, document the actual payment mechanism
-     - Update integration docs accordingly
+1. ~~**Verify Payment Implementation**~~ ✅ **COMPLETED**
+     - Confirmed: NOT using Superfluid/Sablier
+     - Using custom timestamp-based payment system
+     - Documentation updated accordingly
 
-2. **Add API Documentation**
-     - Document all HTTP endpoints
-     - Add request/response examples
-     - Create `docs/tech/api-reference.md`
+2. ~~**Add API Documentation**~~ ✅ **COMPLETED**
+     - All HTTP endpoints documented
+     - Request/response examples added
+     - Created `docs/tech/api-reference.md`
 
 3. **Create Deployment Guide**
      - Document production deployment steps
