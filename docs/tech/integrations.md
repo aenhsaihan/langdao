@@ -1,24 +1,57 @@
 # Integrations
 
-## Huddle01 (live)
+## Currently Integrated
 
-- Wallet-gated rooms
-- Session host & participants
-- Recording optional
+### Custom WebRTC Implementation
+- Peer-to-peer video calls
+- Real-time audio/video communication
+- Session monitoring and disconnect detection
+- Custom server implementation (not Huddle01)
+- **Status:** ✅ Implemented
 
-## POAP / Credentials (live)
+### PYUSD (Payment Token)
+- PayPal USD stablecoin on Sepolia testnet
+- Used for all session payments
+- Contract address: `0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9`
+- **Status:** ✅ Implemented
 
-- Mint proof of completion
+### Custom Payment System
+- Timestamp-based payment calculation
+- Payment = `(endTime - startTime) * ratePerSecond`
+- No external streaming protocol needed
+- **Status:** ✅ Implemented (replaced Superfluid/Sablier)
+
+## Planned / Future
+
+### POAP / Credentials
+- Mint proof of session completion
 - Display in wallet/portfolio
+- **Status:** 🔄 Planned
 
-## Streaming payments
+### Chainlink
+- Data feeds for exchange rates
+- Automation for scheduled sessions
+- **Status:** 🔄 Planned
 
-- Superfluid
-- Sablier
-- PYUSD
+### Storage (IPFS/Arweave)
+- Session metadata
+- User profiles
+- Rating/review data
+- **Status:** 🔄 Planned
 
-## Future/Optional
+### Attestation Layers
+- EAS (Ethereum Attestation Service)
+- Tutor credentials
+- Skill verification
+- **Status:** 🔄 Planned
 
-- Chainlink (data feeds / proofs)
-- Attestation layers
-- Storage (IPFS/Arweave)
+## Removed / Not Using
+
+### ~~Superfluid~~
+- Originally planned for streaming payments
+- Removed due to complexity with session end handling
+- Replaced with custom timestamp-based system
+
+### ~~Sablier~~
+- Originally considered as Superfluid alternative
+- Not needed with custom payment system

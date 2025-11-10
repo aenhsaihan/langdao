@@ -2,7 +2,7 @@
 
 ## M1 — Hackathon
 
-- Live session flow (Huddle01) + POAP mint + streaming payment
+- Live session flow (WebRTC) + timestamp-based payment
 - Simple schedule or roulette-style + wallet join
 - Mentor feedback captured in repo issues
 

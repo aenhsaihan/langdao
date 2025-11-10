@@ -8,7 +8,7 @@ Deliver a **clickable + minimally on-chain** path that proves the core loop:
 ## Scope
 
 - **Auth:** connect wallet (no complex profiles).
-- **Session:** join a Huddle01 room from a simple schedule link.
+- **Session:** join a WebRTC room from a simple schedule link.
 - **Proof:** mint a POAP (or test credential NFT) upon completion.
 - **Payment:** display mock reward or testnet payout claim.
 

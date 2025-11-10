@@ -3,19 +3,31 @@ site_description: Helping people use their language skills to learn, teach, and 
 repo_url: https://github.com/aenhsaihan/langdao-ethonline2025
 nav:
   - Home: index.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - Legacy (Outdated): tech/architecture.md
   - Product:
       - Overview: product/overview.md
       - MVP Scope: product/scope-mvp.md
       - Roadmap: product/roadmap.md
       - Testbed (LatAm): product/testbed-latam.md
+  - Guides:
+      - Language Matching Fix: guides/language-matching-fix.md
+      - WebRTC Integration: guides/webrtc-integration.md
   - Tech:
-      - Architecture: tech/architecture.md
       - Integrations: tech/integrations.md
       - DAO Vetting: tech/dao-vetting.md
+  - Project:
+      - Audit: project/audit.md
+      - Cleanup Summary: project/cleanup-summary.md
+      - Documentation Status: project/documentation-status.md
+      - Documentation Reorganization: project/documentation-reorganization.md
+      - Reorganization Complete: project/reorganization-complete.md
+      - Huddle01 to WebRTC: project/huddle01-to-webrtc.md
   - Research:
       - Assumptions: research/assumptions.md
       - Decisions (ADRs):
-          - 0001 - Huddle01 Integration: adr/0001-huddle01.md
+          - 0001 - WebRTC Implementation (superseded Huddle01): adr/0001-huddle01.md
 theme:
   name: material
   features:
