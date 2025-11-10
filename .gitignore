@@ -17,3 +17,6 @@ node_modules/
 # Optional
 .env
 .env.localsite/
+
+# Docs
+site/
