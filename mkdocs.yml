@@ -15,6 +15,7 @@ nav:
       - Language Matching Fix: guides/language-matching-fix.md
       - WebRTC Integration: guides/webrtc-integration.md
   - Tech:
+      - Socket Events Reference: tech/socket-events.md
       - Integrations: tech/integrations.md
       - DAO Vetting: tech/dao-vetting.md
   - Project:
@@ -23,6 +24,7 @@ nav:
       - Documentation Status: project/documentation-status.md
       - Documentation Reorganization: project/documentation-reorganization.md
       - Reorganization Complete: project/reorganization-complete.md
+      - Review Pass 2: project/review-pass-2.md
       - Huddle01 to WebRTC: project/huddle01-to-webrtc.md
   - Research:
       - Assumptions: research/assumptions.md

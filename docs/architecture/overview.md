@@ -48,12 +48,14 @@ LangDAO is a real-time language tutoring platform where students and tutors conn
 **Location:** `webapp/packages/nextjs/`
 
 **Key Pages:**
+
 - `/` - Landing page
 - `/find-tutor` - Student flow (request tutor, accept offers, start session)
 - `/tutor` - Tutor flow (set availability, accept requests, join sessions)
 - `/dashboard` - User dashboard (session history, earnings)
 
 **Tech Stack:**
+
 - Next.js 14 (App Router)
 - wagmi + viem (Web3 interactions)
 - Socket.io-client (Real-time matching)
@@ -61,6 +63,7 @@ LangDAO is a real-time language tutoring platform where students and tutors conn
 - TailwindCSS + Framer Motion (UI)
 
 **Key Features:**
+
 - Wallet connection (WalletConnect, MetaMask, etc.)
 - Real-time tutor/student matching
 - Session lifecycle management
@@ -73,12 +76,14 @@ LangDAO is a real-time language tutoring platform where students and tutors conn
 **Purpose:** Real-time matching and session coordination
 
 **Tech Stack:**
+
 - Express.js (HTTP API)
 - Socket.io (Real-time events)
 - Redis (State management)
 - ethers.js (Blockchain interactions)
 
 **Key Responsibilities:**
+
 - Match students with available tutors
 - Manage pending requests and acceptances
 - Track session state (waiting, active, ended)
@@ -156,11 +161,13 @@ IERC20(PYUSD_TOKEN).transfer(tutor, totalPayment);
 ```
 
 **Language System:**
+
 - 38 supported languages (English=0, Spanish=1, French=2, etc.)
 - Each tutor can teach multiple languages with different rates
 - Language IDs are uint8 for gas efficiency
 
 **Payment Token:**
+
 - PYUSD (PayPal USD) on Sepolia testnet
 - Address: `0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9`
 
@@ -171,13 +178,14 @@ IERC20(PYUSD_TOKEN).transfer(tutor, totalPayment);
 **Purpose:** Video call infrastructure (custom WebRTC implementation)
 
 **Key Features:**
+
 - Peer-to-peer video/audio calls
 - Session heartbeat monitoring
 - Disconnect detection
 - Sends events to main backend when:
-  - User disconnects
-  - Call ends
-  - Heartbeat timeout (2 minutes)
+    - User disconnects
+    - Call ends
+    - Heartbeat timeout (2 minutes)
 
 **Integration:**
 ```javascript
@@ -201,94 +209,94 @@ await langDAOContract.endSession(tutorAddress);
 ### Student Journey
 
 1. **Connect Wallet**
-   - Student connects wallet (MetaMask, WalletConnect, etc.)
-   - Frontend checks if registered on-chain
+    - Student connects wallet (MetaMask, WalletConnect, etc.)
+    - Frontend checks if registered on-chain
 
 2. **Register (if needed)**
-   - Call `registerStudent(targetLanguage, budgetPerSec)`
-   - Deposit PYUSD via `depositFunds(amount)`
+    - Call `registerStudent(targetLanguage, budgetPerSec)`
+    - Deposit PYUSD via `depositFunds(amount)`
 
 3. **Request Tutor**
-   - Select language and budget
-   - Emit `student:request-tutor` socket event
-   - Backend stores request in Redis
-   - Backend notifies all matching tutors
+    - Select language and budget
+    - Emit `student:request-tutor` socket event
+    - Backend stores request in Redis
+    - Backend notifies all matching tutors
 
 4. **Wait for Offers**
-   - Tutors who accept emit `tutor:accept-request`
-   - Student receives `student:tutor-accepted` events
-   - UI shows list of tutors who accepted
+    - Tutors who accept emit `tutor:accept-request`
+    - Student receives `student:tutor-accepted` events
+    - UI shows list of tutors who accepted
 
 5. **Select Tutor**
-   - Student clicks "Accept" on a tutor
-   - Emit `student:accept-tutor` socket event
-   - Backend notifies rejected tutors
-   - Backend notifies selected tutor
+    - Student clicks "Accept" on a tutor
+    - Emit `student:accept-tutor` socket event
+    - Backend notifies rejected tutors
+    - Backend notifies selected tutor
 
 6. **Start Session (Blockchain)**
-   - Student approves PYUSD spending (if needed)
-   - Call `startSession(tutorAddress, languageId)`
-   - Transaction mined → session starts on-chain
-   - Emit `session:started` socket event
+    - Student approves PYUSD spending (if needed)
+    - Call `startSession(tutorAddress, languageId)`
+    - Transaction mined → session starts on-chain
+    - Emit `session:started` socket event
 
 7. **Enter Video Call**
-   - Student redirected to WebRTC room
-   - Emit `student:entered-room` socket event
-   - Backend notifies tutor to join
+    - Student redirected to WebRTC room
+    - Emit `student:entered-room` socket event
+    - Backend notifies tutor to join
 
 8. **Video Session**
-   - Both parties in WebRTC call
-   - WebRTC server monitors connection
-   - Payment accrues per second on-chain
+    - Both parties in WebRTC call
+    - WebRTC server monitors connection
+    - Payment accrues per second on-chain
 
 9. **End Session**
-   - Either party clicks "End Call"
-   - WebRTC server → Backend → `endSession(tutorAddress)`
-   - Payment calculated: `duration * ratePerSecond`
-   - PYUSD transferred to tutor
-   - Both parties redirected to dashboard
+    - Either party clicks "End Call"
+    - WebRTC server → Backend → `endSession(tutorAddress)`
+    - Payment calculated: `duration * ratePerSecond`
+    - PYUSD transferred to tutor
+    - Both parties redirected to dashboard
 
 ### Tutor Journey
 
 1. **Connect Wallet**
-   - Tutor connects wallet
+    - Tutor connects wallet
 
 2. **Register (if needed)**
-   - Call `registerTutor(languages[], ratePerSecond)`
-   - Set languages and rates
+    - Call `registerTutor(languages[], ratePerSecond)`
+    - Set languages and rates
 
 3. **Set Available**
-   - Select language to teach
-   - Set rate per second
-   - Emit `tutor:setAvailable` socket event
-   - Backend stores in Redis
+    - Select language to teach
+    - Set rate per second
+    - Emit `tutor:setAvailable` socket event
+    - Backend stores in Redis
 
 4. **Receive Requests**
-   - Backend sends `tutor:incoming-request` for matching students
-   - UI shows pending student requests
+    - Backend sends `tutor:incoming-request` for matching students
+    - UI shows pending student requests
 
 5. **Accept Request**
-   - Tutor clicks "Accept"
-   - Emit `tutor:accept-request` socket event
-   - Backend notifies student
+    - Tutor clicks "Accept"
+    - Emit `tutor:accept-request` socket event
+    - Backend notifies student
 
 6. **Wait for Student Selection**
-   - Student may accept or reject
-   - If accepted: receive `tutor:student-selected`
-   - If rejected: receive `tutor:student-rejected`
+    - Student may accept or reject
+    - If accepted: receive `tutor:student-selected`
+    - If rejected: receive `tutor:student-rejected`
 
 7. **Wait for Blockchain Confirmation**
-   - Student calls `startSession()` on-chain
-   - Tutor receives `session:started` socket event
+    - Student calls `startSession()` on-chain
+    - Tutor receives `session:started` socket event
 
 8. **Wait for Student to Enter Room**
-   - Student enters WebRTC room first
-   - Tutor receives `student:in-room` socket event
-   - Tutor can now join
+    - Student enters WebRTC room first
+    - Tutor receives `student:in-room` socket event
+    - Tutor can now join
 
 9. **Join Video Call**
-   - Tutor joins WebRTC room
-   - Session is live
+    - Tutor joins WebRTC room
+    - Session is live
 
 10. **End Session**
     - Either party ends call
@@ -346,6 +354,7 @@ tutors[tutor].totalEarnings += totalPayment;
 ### Why This Approach?
 
 **Advantages over Superfluid/Sablier:**
+
 - ✅ Simpler implementation (no external dependencies)
 - ✅ No liquidation risk
 - ✅ No buffer requirements
@@ -354,11 +363,13 @@ tutors[tutor].totalEarnings += totalPayment;
 - ✅ More predictable behavior
 
 **Trade-offs:**
+
 - ⚠️ Payment happens at end (not streaming in real-time)
 - ⚠️ Requires trust that `endSession()` will be called
 - ⚠️ Backend must be reliable to call `endSession()` on disconnect
 
 **Mitigation:**
+
 - WebRTC server monitors connection and calls `endSession()` on disconnect
 - Heartbeat timeout (2 min) triggers auto-end
 - Owner can emergency end sessions
@@ -369,6 +380,7 @@ tutors[tutor].totalEarnings += totalPayment;
 ## Security Considerations
 
 ### Smart Contract
+
 - ✅ Payment capped at student balance (no revert risk)
 - ✅ Only student, tutor, or owner can end session
 - ✅ Session must be active to end
@@ -377,6 +389,7 @@ tutors[tutor].totalEarnings += totalPayment;
 - ⚠️ No emergency pause mechanism
 
 ### Backend
+
 - ✅ Rate limiting on socket events (10 req/min)
 - ✅ Rate limiting on HTTP endpoints (100 req/min)
 - ✅ CORS configured
@@ -385,6 +398,7 @@ tutors[tutor].totalEarnings += totalPayment;
 - ⚠️ No authentication on socket events (anyone can emit)
 
 ### Frontend
+
 - ✅ Wallet signature verification
 - ✅ Transaction confirmation before session start
 - ⚠️ No session timeout on frontend
@@ -496,28 +510,30 @@ cd webapp && yarn start
 ```
 
 2. **Test student flow:**
-   - Open http://localhost:3000
-   - Connect wallet
-   - Register as student
-   - Deposit PYUSD
-   - Request tutor
+    - Open http://localhost:3000
+    - Connect wallet
+    - Register as student
+    - Deposit PYUSD
+    - Request tutor
 
 3. **Test tutor flow:**
-   - Open http://localhost:3000 in incognito
-   - Connect different wallet
-   - Register as tutor
-   - Set available
-   - Accept student request
+    - Open http://localhost:3000 in incognito
+    - Connect different wallet
+    - Register as tutor
+    - Set available
+    - Accept student request
 
 4. **Test session:**
-   - Student accepts tutor
-   - Student starts session (blockchain tx)
-   - Both enter video call
-   - End call
-   - Verify payment on dashboard
+    - Student accepts tutor
+    - Student starts session (blockchain tx)
+    - Both enter video call
+    - End call
+    - Verify payment on dashboard
 
 ### Automated Tests
+
 ⚠️ **Not implemented yet** - need to add:
+
 - Smart contract tests (Hardhat)
 - Backend integration tests (Jest + Supertest)
 - Socket event tests (Socket.io-client)
@@ -528,6 +544,7 @@ cd webapp && yarn start
 ## Future Improvements
 
 ### Short-term
+
 1. Add proper language ID mapping throughout stack
 2. Add socket authentication (signed messages)
 3. Add session timeout handling
@@ -535,6 +552,7 @@ cd webapp && yarn start
 5. Add reentrancy guard to contract
 
 ### Medium-term
+
 1. Implement POAP/credential minting
 2. Add rating system
 3. Add session history UI
@@ -542,6 +560,7 @@ cd webapp && yarn start
 5. Add booking system
 
 ### Long-term
+
 1. Multi-chain support
 2. DAO governance for tutor vetting
 3. Reputation system
@@ -553,12 +572,14 @@ cd webapp && yarn start
 ## Summary
 
 **What works:**
+
 - Real-time matching via Socket.io
 - Video calls via custom WebRTC implementation
 - Timestamp-based payments via custom smart contract
 - Full session lifecycle from request to payment
 
 **What's different from docs:**
+
 - No Superfluid/Sablier (custom payment system instead)
 - No separate Matchmaker API (Socket.io backend handles it)
 - No Relayer Bot (backend calls contract directly)
