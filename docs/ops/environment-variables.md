@@ -33,6 +33,7 @@ Complete reference for all environment variables used across the LangDAO platfor
 | `REDIS_URL` | No | `redis://localhost:6379` | Redis connection URL |
 
 **Redis is used for:**
+
 - Tutor availability state
 - Student request storage
 - Session mappings
@@ -245,6 +246,7 @@ Ensure these are in `.gitignore`:
 ### Production Secrets Management
 
 For production, use:
+
 - **Vercel:** Environment Variables in project settings
 - **Railway:** Environment Variables in service settings
 - **Render:** Environment Variables in service settings
@@ -267,6 +269,7 @@ For production, use:
 **Error:** `Redis connection failed`
 
 **Solution:**
+
 1. Check Redis is running: `redis-cli ping`
 2. Verify `REDIS_URL` is correct
 3. Check firewall/network settings
@@ -276,6 +279,7 @@ For production, use:
 **Error:** `Socket.io connection failed`
 
 **Solution:**
+
 1. Check `NEXT_PUBLIC_SOCKET_URL` matches backend URL
 2. Verify CORS settings in backend
 3. Check backend is running: `curl http://localhost:4000/health`
@@ -285,6 +289,7 @@ For production, use:
 **Error:** `Insufficient funds` or `Invalid API key`
 
 **Solution:**
+
 1. Check `ALCHEMY_API_KEY` is valid
 2. Ensure deployer wallet has testnet ETH
 3. Verify network configuration in `hardhat.config.ts`
@@ -294,6 +299,7 @@ For production, use:
 **Error:** `Backend notification failed`
 
 **Solution:**
+
 1. Check `BACKEND_URL` is correct
 2. Verify backend is running and accessible
 3. Check network/firewall settings
