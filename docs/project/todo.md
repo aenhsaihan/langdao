@@ -347,62 +347,76 @@ This means users MUST go back to the main app and manually end the session, whic
 - Bugs when mapping fails
 
 **Desired State:**
-- **Single source of truth:** Use numeric language IDs everywhere
-- Frontend, backend, and contract all use the same IDs
-- No string-based matching
-- Direct pass-through from frontend to contract
+- **Single source of truth:** Use ISO 639-1 codes ("en", "es", "fr") everywhere
+- Frontend, backend, and contract all use the same ISO codes
+- Contract converts ISO codes to numeric IDs internally using keccak256 hash
+- Consistent string-based matching using ISO standard
+- Direct pass-through of ISO codes from frontend → backend → contract
 
-**Language ID Standard (from Smart Contract):**
+**Language Code Standard (ISO 639-1):**
 ```
-0  = English (en)
-1  = Spanish (es)
-2  = French (fr)
-3  = German (de)
-4  = Italian (it)
-5  = Portuguese (pt)
+"en" = English  (ID: 0)
+"es" = Spanish  (ID: 1)
+"fr" = French   (ID: 2)
+"de" = German   (ID: 3)
+"it" = Italian  (ID: 4)
+"pt" = Portuguese (ID: 5)
 ... (38 languages total)
 ```
+
+**Implementation Approach:**
+- Use ISO 639-1 codes ("en", "es", "fr") throughout frontend and backend
+- Smart contract uses numeric IDs internally for gas efficiency
+- Contract provides `isoToLanguage(string)` helper function
+- Uses keccak256 hash comparison for efficient ISO → ID conversion
+- Only convert to numeric ID at the contract boundary
 
 **Changes Needed:**
 
 #### Frontend
-- Update `LANGUAGES` constant to use IDs as primary key
-- Store language ID in state (not string code)
-- Send language ID in all API calls and socket events
-- Display language name in UI but use ID internally
-- Update registration forms to use IDs
-- Update matching UI to use IDs
+- Update `LANGUAGES` constant to use ISO codes as primary key
+- Change from `"spanish"` to `"es"`, `"french"` to `"fr"`, etc.
+- Store ISO code in state (e.g., `"es"` not `"spanish"` or `1`)
+- Send ISO code in all API calls and socket events
+- Display language name in UI but use ISO code internally
+- Update registration forms to use ISO codes
+- Update matching UI to use ISO codes
 
 #### Backend
-- Update matching logic to use language IDs (not strings)
-- Update Redis storage to use IDs
-- Update socket event handlers to expect IDs
-- Remove all string-based language matching
-- Update session storage to use IDs
+- Update matching logic to use ISO codes (e.g., `"es"` not `"spanish"`)
+- Update Redis storage to use ISO codes
+- Update socket event handlers to expect ISO codes
+- Use ISO code comparison for language matching
+- Update session storage to use ISO codes
+- When calling smart contract, use `isoToLanguage()` helper to convert
 
 #### Socket Events
-- Change all language fields from strings to numbers
-- `tutor:setAvailable` → `languageId: 1` (not `language: "spanish"`)
-- `student:request-tutor` → `languageId: 1`
+- Change all language fields to ISO codes
+- `tutor:setAvailable` → `languageCode: "es"` (not `language: "spanish"` or `languageId: 1`)
+- `student:request-tutor` → `languageCode: "es"`
 - Update socket events documentation
 
 #### Smart Contract
-- No changes needed (already uses IDs)
-- This is the source of truth
+- No changes needed (already supports ISO codes via `isoToLanguage()`)
+- Uses numeric IDs internally for gas efficiency
+- Provides helper function for ISO → ID conversion using keccak256 hash
+- ISO codes are the source of truth, IDs are internal implementation
 
 **Migration Strategy:**
-1. Add language ID alongside existing string fields (backward compatible)
-2. Update frontend to send both (transition period)
-3. Update backend to accept both but prefer IDs
-4. Remove string-based logic once all clients updated
-5. Update documentation
+1. Add ISO code field alongside existing fields (backward compatible)
+2. Update frontend to send both `"spanish"` and `"es"` (transition period)
+3. Update backend to accept both but prefer ISO codes
+4. Remove old string format (`"spanish"`) once all clients updated
+5. Update documentation and socket events reference
 
 **Benefits:**
-- ✅ No more string/ID mapping bugs
-- ✅ Consistent across entire stack
-- ✅ Easier to maintain
-- ✅ Better performance (numeric comparison vs string)
-- ✅ Type-safe (TypeScript can enforce number type)
+- ✅ No more custom string/ID mapping bugs
+- ✅ Consistent ISO 639-1 standard across entire stack
+- ✅ Easier to maintain (standard codes, not custom strings)
+- ✅ Human-readable ("es" vs 1)
+- ✅ Contract handles conversion efficiently with keccak256
+- ✅ Type-safe (TypeScript can enforce ISO code format)
+- ✅ Internationally recognized standard
 
 **Estimated Effort:** Small-Medium (2-3 days)
 
