@@ -22,6 +22,7 @@ nav:
   - Operations:
       - Environment Variables: ops/environment-variables.md
   - Project:
+      - TODO List: project/todo.md
       - Audit: project/audit.md
       - Cleanup Summary: project/cleanup-summary.md
       - Documentation Status: project/documentation-status.md
