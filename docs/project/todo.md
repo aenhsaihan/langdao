@@ -541,7 +541,104 @@ keccak256("fr") = 0x...
 
 ## 🔧 Technical Improvements
 
-### 11. Add Automated Tests
+### 11. Better Balance/Fund Management UX
+
+**Current State:**
+- Students must manually deposit PYUSD before sessions
+- No clear indication of current balance in UI
+- No warnings when balance is low
+- No way to estimate session cost before starting
+- Unclear how much to deposit
+- No real-time balance updates during session
+
+**Desired State:**
+- Show current PYUSD balance prominently in dashboard
+- Estimate session cost based on tutor rate and expected duration
+- Warn if balance too low for minimum session time
+- Show "time remaining" during session based on current balance
+- Easy top-up flow during or before session
+- Transaction history showing deposits and session costs
+
+**Changes Needed:**
+- Add balance display component in header/dashboard
+- Add cost estimator: `rate × duration = estimated cost`
+- Add low balance warnings before starting session
+- Add real-time balance tracking during active session
+- Add quick deposit/top-up modal
+- Add transaction history page
+
+**Estimated Effort:** Medium (2-3 days)
+
+**Priority:** 🟡 Medium (improves UX, prevents confusion)
+
+---
+
+### 12. Error Messages & User Feedback
+
+**Current State:**
+- Generic error messages ("Transaction failed")
+- No loading states in many places
+- Users don't know what's happening during blockchain transactions
+- Socket connection failures are silent
+- No feedback when operations succeed
+
+**Desired State:**
+- Clear, actionable error messages ("Insufficient PYUSD balance. Please deposit at least 100 PYUSD")
+- Loading states for all async operations
+- Transaction progress indicators ("Confirming transaction... 1/3 confirmations")
+- Connection status indicators
+- Success confirmations with next steps
+
+**Changes Needed:**
+- Add toast/notification system (react-hot-toast or similar)
+- Improve error handling with user-friendly messages
+- Add loading spinners/skeletons everywhere
+- Add transaction status tracking component
+- Add connection status indicator in header
+- Add success messages with clear next actions
+
+**Estimated Effort:** Small-Medium (2-3 days)
+
+**Priority:** 🟡 Medium (significantly improves UX)
+
+---
+
+### 13. Code Documentation & Comments
+
+**Current State:**
+- Minimal code comments
+- No JSDoc/TSDoc for functions
+- Complex logic not explained (especially language matching, session lifecycle)
+- Hard for new developers (or AI assistants!) to understand codebase
+- No architecture diagrams in code
+
+**Desired State:**
+- All exported functions have JSDoc comments
+- Complex logic explained with inline comments
+- README in each major directory explaining purpose
+- Architecture diagrams embedded in code comments
+- Clear explanation of state management patterns
+
+**Changes Needed:**
+- Add JSDoc to all exported functions (params, returns, examples)
+- Add inline comments for complex logic (socket events, matching algorithm)
+- Create README files for:
+  - `webapp/packages/nextjs/app/` - Page structure
+  - `webapp/packages/nextjs/components/` - Component library
+  - `backend/src/services/` - Service layer
+  - `backend/src/routes/` - API routes
+- Document state management patterns (React hooks, context)
+- Add mermaid diagrams in comments for complex flows
+
+**Estimated Effort:** Medium (3-4 days)
+
+**Priority:** 🟢 Low (helps maintainability but not user-facing)
+
+**Note:** This would significantly help AI assistants understand the codebase and make better suggestions!
+
+---
+
+### 14. Add Automated Tests
 
 **Current State:**
 - No automated tests
@@ -560,7 +657,7 @@ keccak256("fr") = 0x...
 
 ---
 
-### 12. Improve Error Handling
+### 15. Improve Error Handling
 
 **Current State:**
 - Basic error handling
@@ -580,7 +677,7 @@ keccak256("fr") = 0x...
 
 ---
 
-### 13. Add Deployment Guide
+### 16. Add Deployment Guide
 
 **Current State:**
 - No production deployment documentation
