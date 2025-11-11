@@ -106,15 +106,15 @@ This creates multiple critical issues:
 - Dashboard shows stale session state
 
 **Backend Issues:**
-- Can't receive disconnect events from WebRTC server (server is local, not accessible)
+- Can't receive disconnect events from live WebRTC server (backend is local, not accessible from live server)
 - Can't call `endSession()` when users disconnect
 - Can't implement heartbeat monitoring
 - Can't track active sessions
-- WebRTC server can't notify backend of session events
+- Live WebRTC server can't notify local backend of session events
 - Payment continues even after call ends
 
 **Root Cause:**
-WebRTC server runs locally (`localhost:3000`) and is not accessible from deployed backend or frontend. There's no communication channel between WebRTC server and the rest of the system.
+Backend and frontend run locally (`localhost:4000` and `localhost:3000`) while WebRTC session runs on a live/deployed URL. Local backend/frontend cannot communicate with the live WebRTC server. There's no communication channel between the local development environment and the live WebRTC system.
 
 **Desired State:**
 - Frontend receives real-time updates from WebRTC session
@@ -168,13 +168,13 @@ WebRTC server runs locally (`localhost:3000`) and is not accessible from deploye
 - Show video/audio streams in React components
 
 #### Backend
-- **Deploy WebRTC signaling server** (currently only runs locally!)
 - WebRTC signaling server (Socket.io for signaling)
 - Coordinate peer connections
 - Track active sessions
 - Send session events to frontend
-- Make WebRTC server accessible from deployed backend
+- **Deploy backend to production** so it can communicate with live WebRTC server
 - Configure proper URLs (not localhost)
+- Ensure backend is accessible from WebRTC server
 
 **Benefits of Embedding:**
 - ✅ Frontend knows session status in real-time
@@ -194,10 +194,10 @@ If embedding is too complex right now, implement Option 3 (polling):
 - Backend checks Redis for session status
 - Shows basic status (active/ended)
 - **Effort:** Small (1 day)
-- **Note:** Still requires WebRTC server to be deployed and accessible!
+- **Note:** Still requires backend/frontend to be deployed and accessible!
 
 **Deployment Requirement:**
-Regardless of which option is chosen, the WebRTC server MUST be deployed to a publicly accessible URL (not localhost) so it can communicate with the backend and frontend.
+Regardless of which option is chosen, the backend and frontend MUST be deployed to publicly accessible URLs (not localhost) so they can communicate with the live WebRTC server. Currently, backend/frontend run locally while WebRTC is live, preventing any communication.
 
 ---
 
