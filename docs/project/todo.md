@@ -345,78 +345,111 @@ This means users MUST go back to the main app and manually end the session, whic
 - Error-prone conversions at every layer
 - Hard to maintain (3 different systems)
 - Bugs when mapping fails
+- String comparisons are inefficient
 
 **Desired State:**
-- **Single source of truth:** Use ISO 639-1 codes ("en", "es", "fr") everywhere
-- Frontend, backend, and contract all use the same ISO codes
-- Contract converts ISO codes to numeric IDs internally using keccak256 hash
-- Consistent string-based matching using ISO standard
-- Direct pass-through of ISO codes from frontend → backend → contract
+- **Single source of truth:** Use keccak256 hash of ISO 639-1 codes everywhere
+- Frontend, backend, and contract all use the same hash values
+- No conversions needed at any layer
+- Efficient hash comparison (bytes32) instead of string matching
+- Direct pass-through of hash values from frontend → backend → contract
 
-**Language Code Standard (ISO 639-1):**
-```
-"en" = English  (ID: 0)
-"es" = Spanish  (ID: 1)
-"fr" = French   (ID: 2)
-"de" = German   (ID: 3)
-"it" = Italian  (ID: 4)
-"pt" = Portuguese (ID: 5)
+**Language Hash Standard (keccak256 of ISO 639-1):**
+```javascript
+// Generate hash from ISO code
+const languageHash = keccak256("es"); // Spanish
+const languageHash = keccak256("en"); // English
+const languageHash = keccak256("fr"); // French
+
+// Example hash values (bytes32):
+keccak256("en") = 0x559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd
+keccak256("es") = 0x3e0b1d3e5c4c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c
+keccak256("fr") = 0x...
 ... (38 languages total)
 ```
 
 **Implementation Approach:**
-- Use ISO 639-1 codes ("en", "es", "fr") throughout frontend and backend
-- Smart contract uses numeric IDs internally for gas efficiency
-- Contract provides `isoToLanguage(string)` helper function
-- Uses keccak256 hash comparison for efficient ISO → ID conversion
-- Only convert to numeric ID at the contract boundary
+- Use keccak256 hash of ISO 639-1 codes as the universal identifier
+- Frontend generates hash: `keccak256("es")` and uses that everywhere
+- Backend stores and matches by hash value
+- Contract compares hash values directly (already does this internally)
+- Human-readable ISO code only used for display purposes
+- Hash is the actual data passed between systems
 
 **Changes Needed:**
 
 #### Frontend
-- Update `LANGUAGES` constant to use ISO codes as primary key
-- Change from `"spanish"` to `"es"`, `"french"` to `"fr"`, etc.
-- Store ISO code in state (e.g., `"es"` not `"spanish"` or `1`)
-- Send ISO code in all API calls and socket events
-- Display language name in UI but use ISO code internally
-- Update registration forms to use ISO codes
-- Update matching UI to use ISO codes
+- Add keccak256 hashing utility (use ethers.js or viem)
+- Update `LANGUAGES` constant to include hash values:
+  ```javascript
+  {
+    id: 1,
+    name: "Spanish",
+    iso: "es",
+    hash: keccak256("es"), // This is what gets used
+    flag: "🇪🇸"
+  }
+  ```
+- Store language hash in state (not string or numeric ID)
+- Send language hash in all API calls and socket events
+- Display language name in UI but use hash internally
+- Update registration forms to send hash values
+- Update matching UI to use hash values
 
 #### Backend
-- Update matching logic to use ISO codes (e.g., `"es"` not `"spanish"`)
-- Update Redis storage to use ISO codes
-- Update socket event handlers to expect ISO codes
-- Use ISO code comparison for language matching
-- Update session storage to use ISO codes
-- When calling smart contract, use `isoToLanguage()` helper to convert
+- Update matching logic to use language hashes (bytes32)
+- Update Redis storage to use hash values as keys
+- Update socket event handlers to expect hash values
+- Use hash comparison for language matching (exact match, very efficient)
+- Update session storage to use hash values
+- When calling smart contract, pass hash directly (no conversion needed)
 
 #### Socket Events
-- Change all language fields to ISO codes
-- `tutor:setAvailable` → `languageCode: "es"` (not `language: "spanish"` or `languageId: 1`)
-- `student:request-tutor` → `languageCode: "es"`
-- Update socket events documentation
+- Change all language fields to hash values (bytes32/string)
+- `tutor:setAvailable` → `languageHash: "0x559aead..."` (keccak256 of ISO code)
+- `student:request-tutor` → `languageHash: "0x559aead..."`
+- Update socket events documentation with hash format
 
 #### Smart Contract
-- No changes needed (already supports ISO codes via `isoToLanguage()`)
-- Uses numeric IDs internally for gas efficiency
-- Provides helper function for ISO → ID conversion using keccak256 hash
-- ISO codes are the source of truth, IDs are internal implementation
+- Contract already uses keccak256 hashing internally
+- Can accept hash values directly for comparison
+- May need to add functions that accept bytes32 hash instead of string
+- Or continue using `isoToLanguage()` but frontend pre-computes the hash
+- Internal numeric IDs can remain for storage efficiency
 
 **Migration Strategy:**
-1. Add ISO code field alongside existing fields (backward compatible)
-2. Update frontend to send both `"spanish"` and `"es"` (transition period)
-3. Update backend to accept both but prefer ISO codes
-4. Remove old string format (`"spanish"`) once all clients updated
+1. Add hash field alongside existing fields (backward compatible)
+2. Update frontend to send both old format and hash (transition period)
+3. Update backend to accept both but prefer hash values
+4. Remove old string/ID formats once all clients updated
 5. Update documentation and socket events reference
 
+**Example Migration:**
+```javascript
+// Old format
+{ language: "spanish", languageId: 1 }
+
+// Transition (send both)
+{ 
+  language: "spanish",  // deprecated
+  languageId: 1,        // deprecated
+  languageHash: keccak256("es")  // new standard
+}
+
+// Final format
+{ languageHash: keccak256("es") }
+```
+
 **Benefits:**
-- ✅ No more custom string/ID mapping bugs
-- ✅ Consistent ISO 639-1 standard across entire stack
-- ✅ Easier to maintain (standard codes, not custom strings)
-- ✅ Human-readable ("es" vs 1)
-- ✅ Contract handles conversion efficiently with keccak256
-- ✅ Type-safe (TypeScript can enforce ISO code format)
-- ✅ Internationally recognized standard
+- ✅ No more string/ID mapping bugs
+- ✅ Single identifier (hash) used across entire stack
+- ✅ Efficient comparison (bytes32 hash vs string matching)
+- ✅ No conversions needed at any layer
+- ✅ Based on ISO 639-1 standard (hash of "es", "en", etc.)
+- ✅ Type-safe (TypeScript can enforce bytes32/hex string format)
+- ✅ Gas efficient in smart contract
+- ✅ Deterministic (same ISO code always produces same hash)
+- ✅ Frontend, backend, and contract speak the same language
 
 **Estimated Effort:** Small-Medium (2-3 days)
 
