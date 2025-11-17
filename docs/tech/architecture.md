@@ -1,5 +1,15 @@
 # Architecture (MVP)
 
+> ⚠️ **OUTDATED DOCUMENT** - This document describes the originally planned architecture with Superfluid streaming, separate Matchmaker API, Relayer Bot, and other components that were not implemented.
+> 
+> **For the actual implemented architecture, see:** [`docs/architecture/overview.md`](../architecture/overview.md)
+>
+> This document is kept for historical reference and may be useful for future enhancements.
+
+---
+
+# Original Planned Architecture
+
 This MVP lets a **Tutor** go online with a per-minute/per-second rate, and a **Student**:
 
 - match via **roulette** or booking

@@ -10,7 +10,7 @@ to **teach, guide, translate, and onboard** others into Web3 — and **earn cryp
 
 ## Solution
 
-- **Live sessions** (Huddle01) and **token-gated rooms** via wallet.
+- **Live sessions** (WebRTC) and **wallet-connected rooms**.
 - **Proof of participation/skill** using POAP or lightweight credential NFTs.
 - **Micro-rewards** for verified tasks: teaching, moderating, translating, or guiding.
 

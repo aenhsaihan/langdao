@@ -13,7 +13,7 @@
 - **What:** A community platform where Spanish (and any language) speakers teach/guide learners and **earn crypto**.
 - **Why now:** Web3 adoption needs human onboarding; language is the missing bridge.
 - **First testbed:** **Latin America**, scalable globally.
-- **Status:** Pre-code; validating with mentors, defining MVP, lining up integrations (Huddle01, POAP).
+- **Status:** MVP implemented with WebRTC video calls, real-time matching, and on-chain payments.
 
 ## Problem
 
@@ -21,7 +21,7 @@ Millions have skills but no clear path to earn in Web3. Learning is scattered, i
 
 ## Solution
 
-- **Live sessions (Huddle01)** + **token-gated rooms** via wallet.
+- **Live sessions (WebRTC)** + **wallet-connected rooms**.
 - **Proof of participation/skill** via **POAP/credentials**.
 - **Micro-bounties** for teaching, vetting, or guiding onboarding.
 
@@ -33,10 +33,10 @@ Millions have skills but no clear path to earn in Web3. Learning is scattered, i
 ## Architecture (high-level)
 
 - Frontend: Next.js + wagmi/viem, WalletConnect.
-- Video: **Huddle01** for decentralized sessions.
-- Credentials: POAP (or lightweight credential NFT/SBT).
-- Payments: Superfluid, Sablier or custom solution
-- Backend: minimal (serverless or none) for scheduling/metadata.
+- Video: **Custom WebRTC implementation** for peer-to-peer sessions.
+- Payments: Custom timestamp-based system (PYUSD on Sepolia)
+- Backend: Express + Socket.io + Redis for real-time matching
+- Smart Contract: Session management and payment processing
 
 ## Roadmap (milestones)
 

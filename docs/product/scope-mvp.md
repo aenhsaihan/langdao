@@ -1,25 +1,53 @@
-# MVP Scope (Hackathon)
+# MVP Scope
 
 ## Goal
 
-Deliver a **clickable + minimally on-chain** path that proves the core loop:
-**Join session → complete session → mint credential → get paid**.
+Deliver a working platform that proves the core loop:
+**Student finds tutor → Match confirmed → Live session → Payment processed**.
 
-## Scope
+## What's Implemented ✅
 
-- **Auth:** connect wallet (no complex profiles).
-- **Session:** join a Huddle01 room from a simple schedule link.
-- **Proof:** mint a POAP (or test credential NFT) upon completion.
-- **Payment:** display mock reward or testnet payout claim.
+### Core Matching System
+- **Real-time matching:** Students and tutors can search for each other via Socket.io
+- **Roulette-style:** Whoever comes online first gets matched
+- **Language selection:** Match based on language and rate preferences
 
-## Descope (post-hack)
+### Session Management
+- **Wallet authentication:** Connect wallet (MetaMask, WalletConnect, etc.)
+- **User registration:** Register as student or tutor on-chain
+- **Session lifecycle:** Start session → WebRTC call → End session → Payment
 
-- Full tokenomics
-- Complex reputation graphs
+### Payment System
+- **PYUSD payments:** Students deposit PYUSD, tutors receive PYUSD
+- **Timestamp-based:** Payment = (endTime - startTime) × ratePerSecond
+- **On-chain settlement:** All payments processed via smart contract
+
+### Video Sessions
+- **Custom WebRTC:** Peer-to-peer video/audio calls
+- **Session monitoring:** Detect disconnects and end sessions
+- **Auto-return:** Both parties return to search after session ends
+
+## Descoped (Post-MVP)
+
+- POAP/credential minting (moved to roadmap)
+- Booking/scheduling system
+- Full tokenomics and reputation system
 - Multi-language orchestration
+- DAO vetting for tutors
+- Rating/review system
 
-## Success Signals
+## Success Metrics
 
-- ≥ 1 working live session
-- ≥ 10 successful POAP mints
-- ≥ 5 mentor validations/notes captured
+- ✅ Students can find and match with tutors
+- ✅ Sessions start and payments are processed on-chain
+- ✅ Video calls work peer-to-peer
+- ✅ Tutors receive payment after sessions
+- ✅ Both parties can return to search after session ends
+
+## Technical Stack
+
+- **Frontend:** Next.js + wagmi/viem + Socket.io-client
+- **Backend:** Express + Socket.io + Redis
+- **Video:** Custom WebRTC implementation
+- **Blockchain:** Hardhat + Sepolia testnet
+- **Payment Token:** PYUSD (PayPal USD)
