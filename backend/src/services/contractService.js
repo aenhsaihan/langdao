@@ -240,6 +240,121 @@ class ContractService {
 
     throw new Error('Contract not available and fallback disabled');
   }
+
+  normalizeSessionStruct(session) {
+    if (!session) return null;
+
+    const toNumber = value => {
+      if (value === undefined || value === null) return 0;
+      if (typeof value === 'number') return value;
+      if (typeof value === 'bigint') return Number(value);
+      if (typeof value === 'object' && typeof value.toString === 'function') {
+        return Number(value.toString());
+      }
+      return Number(value);
+    };
+
+    const toStringValue = value => {
+      if (value === undefined || value === null) return '0';
+      if (typeof value === 'string') return value;
+      if (typeof value === 'bigint') return value.toString();
+      if (typeof value === 'object' && typeof value.toString === 'function') {
+        return value.toString();
+      }
+      return String(value);
+    };
+
+    return {
+      student: session.student,
+      tutor: session.tutor,
+      token: session.token,
+      startTime: toNumber(session.startTime),
+      endTime: toNumber(session.endTime),
+      ratePerSecondWei: toStringValue(session.ratePerSecond),
+      totalPaidWei: toStringValue(session.totalPaid),
+      language: toNumber(session.language),
+      id: toNumber(session.id),
+      isActive: Boolean(session.isActive),
+    };
+  }
+
+  async getActiveSession(tutorAddress) {
+    await this.init();
+
+    if (!this.contract) {
+      if (this.enableFallback) {
+        return null;
+      }
+      throw new Error('Contract not initialized');
+    }
+
+    try {
+      const session = await this.contract.activeSessions(tutorAddress);
+      return this.normalizeSessionStruct(session);
+    } catch (error) {
+      console.warn('ContractService.getActiveSession: Failed to read active session:', error.message);
+      if (!this.enableFallback) {
+        throw error;
+      }
+      return null;
+    }
+  }
+
+  async getSessionFromHistory(sessionId) {
+    await this.init();
+
+    if (!this.contract) {
+      if (this.enableFallback) {
+        return null;
+      }
+      throw new Error('Contract not initialized');
+    }
+
+    try {
+      const session = await this.contract.sessionHistory(sessionId);
+      if (!session) return null;
+      const normalized = this.normalizeSessionStruct(session);
+      if (normalized) {
+        normalized.durationSeconds = Math.max(0, (normalized.endTime || 0) - (normalized.startTime || 0));
+      }
+      return normalized;
+    } catch (error) {
+      console.warn('ContractService.getSessionFromHistory: Failed:', error.message);
+      if (!this.enableFallback) {
+        throw error;
+      }
+      return null;
+    }
+  }
+
+  async endSession(tutorAddress) {
+    await this.init();
+
+    if (this.contract && this.signer) {
+      try {
+        console.log('ContractService: Ending session on blockchain');
+        const tx = await this.contract.endSession(tutorAddress);
+        const receipt = await tx.wait();
+        return { success: true, txHash: receipt?.hash, receipt };
+      } catch (error) {
+        console.warn('ContractService.endSession: Failed:', error.message);
+        if (!this.enableFallback) {
+          throw error;
+        }
+      }
+    }
+
+    if (this.enableFallback) {
+      console.log('ContractService: Mock session end');
+      return {
+        success: true,
+        mockData: true,
+        message: 'Session would be ended on-chain when signer/contract is available',
+      };
+    }
+
+    throw new Error('Contract not available and fallback disabled');
+  }
 }
 
 module.exports = new ContractService();

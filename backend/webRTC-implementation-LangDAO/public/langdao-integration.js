@@ -17,10 +17,18 @@
 
   // Check if this is a student (has student parameter)
   if (studentAddress && tutorAddress && sessionId) {
+    const resolvedBackendUrl =
+      window.LANGDAO_BACKEND_URL ||
+      window.__LANGDAO_BACKEND_URL ||
+      (window.location.hostname === 'localhost'
+        ? 'http://localhost:4000'
+        : 'https://langdao-backend-production.up.railway.app');
+    window.LANGDAO_BACKEND_URL = resolvedBackendUrl;
+
     console.log('👨‍🎓 This is a student joining the room');
 
     // Connect to LangDAO backend socket
-    const BACKEND_URL = 'http://localhost:4000'; // Change for production
+    const BACKEND_URL = resolvedBackendUrl; // Change via env or query param for production
     
     // Use Socket.IO client (must be loaded in the page)
     if (typeof io !== 'undefined') {

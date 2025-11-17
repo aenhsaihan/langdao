@@ -109,9 +109,16 @@ wss.on("connection", (ws, req) => {
                 notifyBackend({
                     type: 'session-ended',
                     sessionId: roomId,
-                    endedBy: userRole,
+                    endedBy: data.endedBy || userRole,
                     userAddress: data.userAddress,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    session: {
+                        startTime: data.sessionStartTime,
+                        durationSeconds: data.sessionDuration,
+                        tutorAddress: data.tutorAddress,
+                        studentAddress: data.studentAddress,
+                        language: data.language,
+                    }
                 });
 
                 // Forward call-ended message to other room clients
