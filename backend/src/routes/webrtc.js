@@ -1,20 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { ethers } = require('ethers');
 const sessionService = require('../services/sessionService');
-
-// Import contract ABI from hardhat artifacts
-const langDAOArtifact = require('../../../webapp/packages/hardhat/artifacts/contracts/LangDAO.sol/LangDAO.json');
-const LANGDAO_ABI = langDAOArtifact.abi;
-// Use deployed contract address from environment variable
-const LANGDAO_ADDRESS = process.env.CONTRACT_ADDRESS || '0x4Fb5675e6baE48C95c1D4f1b154E3d5e8E36112C';
-
-// Setup provider and wallet for backend transactions
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL || 'https://sepolia.infura.io/v3/3741fbd748fd416e8a866279e62ad5ef');
-const backendWallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-
-// Create contract instance
-const langDAOContract = new ethers.Contract(LANGDAO_ADDRESS, LANGDAO_ABI, backendWallet);
+const { finalizeSession } = require('../services/sessionTerminationService');
 
 // Store active sessions and their heartbeat status
 const activeSessions = new Map();
@@ -29,6 +16,8 @@ router.post('/webrtc-events', async (req, res) => {
 
     console.log(`📡 WebRTC Event received:`, { type, sessionId, userRole, timestamp });
 
+    let handlerResult = null;
+
     switch (type) {
       case 'user-connected':
         handleUserConnected(sessionId, userRole, timestamp);
@@ -39,7 +28,7 @@ router.post('/webrtc-events', async (req, res) => {
         break;
 
       case 'session-ended':
-        await handleSessionEnded(sessionId, endedBy, userAddress, timestamp);
+        handlerResult = await handleSessionEnded(sessionId, endedBy, userAddress, timestamp, req.body?.session || {});
         break;
 
       case 'user-disconnected':
@@ -50,7 +39,11 @@ router.post('/webrtc-events', async (req, res) => {
         console.log(`Unknown event type: ${type}`);
     }
 
-    res.json({ success: true, message: 'Event processed' });
+    res.json({
+      success: true,
+      message: 'Event processed',
+      ...(handlerResult?.summary ? { summary: handlerResult.summary } : {}),
+    });
   } catch (error) {
     console.error('Error processing webRTC event:', error);
     res.status(500).json({ success: false, error: error.message });
@@ -90,38 +83,31 @@ function handleHeartbeat(sessionId, timestamp) {
  * Handle session ended by user clicking "End Call"
  * This should call endSession on the smart contract
  */
-async function handleSessionEnded(sessionId, endedBy, userAddress, timestamp) {
+async function handleSessionEnded(sessionId, endedBy, userAddress, timestamp, extraContext = {}) {
   console.log(`🛑 Session ended by ${endedBy}: ${sessionId}`);
 
-  try {
-    // Get session mapping to find tutor address
-    const sessionResult = await sessionService.getSessionMapping(sessionId);
+  const result = await finalizeSession({
+    sessionId,
+    initiatedBy: endedBy || userAddress,
+    context: {
+      userAddress,
+      endedBy,
+      timestamp,
+      ...extraContext,
+    },
+  });
 
-    if (!sessionResult.success) {
-      console.error(`Session mapping not found for ${sessionId}`);
-      return;
-    }
-
-    const { tutorAddress, studentAddress } = sessionResult.session;
-    console.log(`Session details: Student=${studentAddress}, Tutor=${tutorAddress}`);
-
-    // Call endSession on the smart contract with tutor address
-    console.log(`Calling endSession on smart contract for tutor: ${tutorAddress}`);
-
-    const tx = await langDAOContract.endSession(tutorAddress);
-    console.log(`Transaction sent: ${tx.hash}`);
-
-    const receipt = await tx.wait();
-    console.log(`✅ Session ended on blockchain. Gas used: ${receipt.gasUsed.toString()}`);
-
-    // Clean up local session data
-    activeSessions.delete(sessionId);
-    await sessionService.removeSessionMapping(sessionId);
-
-  } catch (error) {
-    console.error(`Error ending session on blockchain:`, error);
-    throw error;
+  if (!result?.success) {
+    console.error(`Failed to finalize session ${sessionId}:`, result?.error || 'Unknown error');
+    return result;
   }
+
+  activeSessions.delete(sessionId);
+  console.log(
+    `✅ Session ${sessionId} finalized (duration: ${result.summary?.durationSeconds}s, cost: ${result.summary?.costFormatted} ${result.summary?.costCurrency})`
+  );
+
+  return result;
 }
 
 /**
@@ -149,10 +135,14 @@ async function handleUserDisconnected(sessionId, userRole, reason, timestamp) {
       const currentSession = activeSessions.get(sessionId);
       if (currentSession && currentSession.users.size === 0) {
         console.log(`Grace period expired. Ending session ${sessionId} on blockchain...`);
-
-        // TODO: Get tutor address from session data
-        // For now, this is a placeholder
-        // await handleSessionEnded(sessionId, 'system', tutorAddress, Date.now());
+        try {
+          await handleSessionEnded(sessionId, 'system', null, Date.now(), {
+            reason: reason || 'all-users-disconnected',
+            trigger: 'disconnect-grace-period',
+          });
+        } catch (error) {
+          console.error(`Failed to end session ${sessionId} after disconnect:`, error.message);
+        }
       }
     }, 30000);
   }
@@ -172,8 +162,14 @@ setInterval(() => {
     if (timeSinceLastHeartbeat > HEARTBEAT_TIMEOUT) {
       console.log(`⚠️ Session ${sessionId} has stale heartbeat (${Math.floor(timeSinceLastHeartbeat / 1000)}s). Ending session...`);
 
-      // TODO: Get tutor address and end session
-      // handleSessionEnded(sessionId, 'system', tutorAddress, now);
+      handleSessionEnded(sessionId, 'system', null, now, {
+        reason: 'heartbeat-timeout',
+        trigger: 'heartbeat-monitor',
+        lastHeartbeat: session.lastHeartbeat,
+        staleForMs: timeSinceLastHeartbeat,
+      }).catch(error => {
+        console.error(`Failed to end stale session ${sessionId}:`, error.message);
+      });
     }
   }
 }, 60000); // Check every minute

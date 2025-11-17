@@ -434,6 +434,112 @@
                 font-size: 12px;
             }
         }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .session-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .session-modal-content {
+            background: #101010;
+            border-radius: 24px;
+            padding: 32px;
+            width: min(480px, 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .session-modal h2 {
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+
+        .session-modal p {
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .session-modal .spinner {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #00ff88;
+            margin: 0 auto 24px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        .session-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .session-summary-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .session-summary-item label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .session-summary-item span {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .session-modal button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .session-modal button.primary {
+            background: linear-gradient(135deg, #00ff88, #00b894);
+            color: #0b1215;
+        }
+
+        .session-modal button.secondary {
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .session-modal .error {
+            color: #ff7675;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -563,6 +669,40 @@
         </button>
     </div>
 
+    <div class="session-modal hidden" id="sessionModal">
+        <div class="session-modal-content">
+            <div id="sessionModalProcessing">
+                <div class="spinner"></div>
+                <h2>Ending session...</h2>
+                <p>Hang tight while we close your blockchain session and finalize payment.</p>
+            </div>
+
+            <div id="sessionModalSummary" class="hidden">
+                <h2>Session complete ✅</h2>
+                <p>Your payment has been processed. Here's a quick summary:</p>
+                <div class="session-summary-grid">
+                    <div class="session-summary-item">
+                        <label>Duration</label>
+                        <span id="sessionDurationSummary">--</span>
+                    </div>
+                    <div class="session-summary-item">
+                        <label>Total Cost</label>
+                        <span id="sessionCostSummary">--</span>
+                    </div>
+                </div>
+                <p id="sessionTxMessage">Transaction hash: <span id="sessionTxHash">pending...</span></p>
+                <button class="primary" id="returnToAppBtn">Return to dashboard</button>
+            </div>
+
+            <div id="sessionModalError" class="hidden">
+                <h2>We hit a snag</h2>
+                <p class="error" id="sessionModalErrorMessage">Unable to end the session.</p>
+                <button class="primary" id="retryEndSessionBtn">Try again</button>
+                <button class="secondary" id="closeModalBtn">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ISO 639 Language codes (hardcoded for lightweight deployment)
         const languages = {
@@ -589,7 +729,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const roomId = urlParams.get('room') || 'default';
         const userRole = urlParams.get('role') || 'user';
-        const userAddress = urlParams.get('address') || '';
+        let userAddress = urlParams.get('address') || '';
+        const studentWalletParam = urlParams.get('student') || '';
+        const tutorWalletParam = urlParams.get('tutor') || '';
         const languageCode = urlParams.get('language') || 'es';
         const sessionStartParam = urlParams.get('sessionStart') || Date.now();
 
@@ -604,6 +746,25 @@
             language: languageCode,
             startTime: parseInt(sessionStartParam)
         };
+
+        if (!userAddress) {
+            userAddress = userRole === 'student' ? studentWalletParam : tutorWalletParam;
+            sessionData.userAddress = userAddress;
+        }
+
+        const apiBaseUrl = (window.LANGDAO_BACKEND_URL ||
+            (window.location.hostname === 'localhost'
+                ? 'http://localhost:4000'
+                : 'https://langdao-backend-production.up.railway.app')).replace(/\/$/, '');
+
+        const dashboardRedirectUrl = urlParams.get('redirectTo') ||
+            (window.location.hostname === 'localhost'
+                ? 'http://localhost:3000/dashboard'
+                : 'https://app.langdao.xyz/dashboard');
+
+        let isEndingSession = false;
+        let redirectTimeout;
+        let lastSessionEndStats = null;
 
         // Function to shorten wallet addresses
         function shortenAddress(address) {
@@ -677,6 +838,18 @@
         const muteBtn = document.getElementById("muteBtn");
         const videoBtn = document.getElementById("videoBtn");
         const endBtn = document.getElementById("endBtn");
+        const sessionModal = document.getElementById('sessionModal');
+        const sessionModalProcessing = document.getElementById('sessionModalProcessing');
+        const sessionModalSummary = document.getElementById('sessionModalSummary');
+        const sessionModalError = document.getElementById('sessionModalError');
+        const sessionDurationSummary = document.getElementById('sessionDurationSummary');
+        const sessionCostSummary = document.getElementById('sessionCostSummary');
+        const sessionTxHash = document.getElementById('sessionTxHash');
+        const sessionTxMessage = document.getElementById('sessionTxMessage');
+        const returnToAppBtn = document.getElementById('returnToAppBtn');
+        const retryEndSessionBtn = document.getElementById('retryEndSessionBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const sessionModalErrorMessage = document.getElementById('sessionModalErrorMessage');
 
         // Track states
         let isAudioEnabled = true;
@@ -780,6 +953,152 @@
             };
             sendMessageToParent(sessionEndData);
             sendHeartbeat(sessionEndData);
+        }
+
+        function cleanupCallResources() {
+            endCallTimer();
+
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+
+            try {
+                if (pc && pc.signalingState !== 'closed') {
+                    pc.close();
+                }
+            } catch (error) {
+                console.warn('Error closing RTCPeerConnection:', error.message);
+            }
+
+            try {
+                if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+                    ws.close();
+                }
+            } catch (error) {
+                console.warn('Error closing WebSocket:', error.message);
+            }
+        }
+
+        function renderTerminalMessage(title, message) {
+            document.body.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:20px;text-align:center;color:#fff;background:#0d0d0d;">
+                    <h2 style="font-size:28px;margin:0;">${title}</h2>
+                    <p style="max-width:420px;line-height:1.5;color:rgba(255,255,255,0.7);">${message}</p>
+                    <div class="spinner" style="position:static;width:36px;height:36px;border-color:rgba(255,255,255,0.1);border-top-color:#00ff88;"></div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                window.location.href = dashboardRedirectUrl;
+            }, 2500);
+        }
+
+        function handleRemoteTermination(message) {
+            cleanupCallResources();
+            renderTerminalMessage('Call ended', message || 'The other participant closed the session. Redirecting...');
+        }
+
+        function showSessionModal(state) {
+            sessionModal.classList.remove('hidden');
+            sessionModalProcessing.classList.add('hidden');
+            sessionModalSummary.classList.add('hidden');
+            sessionModalError.classList.add('hidden');
+
+            if (state === 'processing') {
+                sessionModalProcessing.classList.remove('hidden');
+            } else if (state === 'summary') {
+                sessionModalSummary.classList.remove('hidden');
+            } else if (state === 'error') {
+                sessionModalError.classList.remove('hidden');
+            }
+        }
+
+        function hideSessionModal() {
+            sessionModal.classList.add('hidden');
+        }
+
+        function formatDurationSummary(seconds) {
+            if (!seconds || seconds <= 0) return '0s';
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+
+            if (hrs > 0) {
+                return `${hrs}h ${mins}m`;
+            }
+
+            if (mins > 0) {
+                return `${mins}m ${secs}s`;
+            }
+
+            return `${secs}s`;
+        }
+
+        function applySessionSummary(summary, transaction) {
+            if (!summary) return;
+            sessionDurationSummary.textContent = formatDurationSummary(summary.durationSeconds || 0);
+            const costValue = summary.costFormatted ? Number(summary.costFormatted).toFixed(2) : '0.00';
+            sessionCostSummary.textContent = `${costValue} ${summary.costCurrency || 'PYUSD'}`;
+
+            if (transaction?.hash) {
+                sessionTxHash.textContent = `${transaction.hash.slice(0, 10)}...`;
+                sessionTxMessage.style.display = 'block';
+            } else {
+                sessionTxMessage.textContent = 'Blockchain confirmation simulated locally.';
+            }
+        }
+
+        function scheduleDashboardRedirect() {
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
+            }
+
+            redirectTimeout = setTimeout(() => {
+                window.location.href = dashboardRedirectUrl;
+            }, 3500);
+        }
+
+        function showSessionError(message) {
+            sessionModalErrorMessage.textContent = message || 'Unable to end the session. Please try again.';
+            showSessionModal('error');
+        }
+
+        function buildTerminationStats(reason = 'manual-end') {
+            const durationSeconds = Math.max(1, Math.floor((Date.now() - (sessionData.startTime || Date.now())) / 1000));
+            const tutorAddressForPayload = userRole === 'tutor' ? userAddress : (tutorWalletParam || remoteUserAddress || '');
+            const studentAddressForPayload = userRole === 'student' ? userAddress : (studentWalletParam || remoteUserAddress || '');
+
+            return {
+                durationSeconds,
+                reason,
+                tutorAddress: tutorAddressForPayload,
+                studentAddress: studentAddressForPayload,
+            };
+        }
+
+        async function triggerSessionEndOnBackend(stats) {
+            const response = await fetch(`${apiBaseUrl}/api/sessions/${sessionData.sessionId}/end`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    userAddress,
+                    userRole,
+                    endedBy: userRole,
+                    reason: stats?.reason,
+                    durationSeconds: stats?.durationSeconds,
+                    ratePerSecondWei: stats?.ratePerSecondWei,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data?.error || 'Failed to end session');
+            }
+            return data;
         }
 
         // Capture camera + mic
@@ -1057,46 +1376,70 @@
             }
         });
 
-        endBtn.addEventListener('click', () => {
-            if (confirm('End the call?')) {
-                // Send call termination message to other participants first
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({
-                        type: 'call-ended',
-                        endedBy: userRole,
-                        userAddress: userAddress,
-                        sessionId: roomId,
-                        timestamp: Date.now()
-                    }));
-                }
+        endBtn.addEventListener('click', async () => {
+            if (isEndingSession) return;
+            isEndingSession = true;
+            endBtn.disabled = true;
+            showSessionModal('processing');
 
-                endCall();
+            const stats = buildTerminationStats('manual-end');
+            lastSessionEndStats = stats;
+
+            const callEndedPayload = {
+                type: 'call-ended',
+                endedBy: userRole,
+                userAddress: userAddress,
+                sessionId: roomId,
+                timestamp: Date.now(),
+                sessionStartTime: sessionData.startTime,
+                sessionDuration: stats.durationSeconds,
+                language: languageCode,
+                tutorAddress: stats.tutorAddress,
+                studentAddress: stats.studentAddress,
+            };
+
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify(callEndedPayload));
+            }
+
+            cleanupCallResources();
+
+            try {
+                const apiResult = await triggerSessionEndOnBackend(stats);
+                applySessionSummary(apiResult.summary, apiResult.transaction);
+                showSessionModal('summary');
+                scheduleDashboardRedirect();
+            } catch (error) {
+                console.error('Failed to end session:', error);
+                showSessionError(error.message || 'Unable to end the session. Please try again.');
             }
         });
 
-        // Function to handle call termination (used by both local end and remote end)
-        function endCall() {
-            endCallTimer();
+        returnToAppBtn.addEventListener('click', () => {
+            window.location.href = dashboardRedirectUrl;
+        });
 
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
+        retryEndSessionBtn.addEventListener('click', async () => {
+            if (!lastSessionEndStats) {
+                hideSessionModal();
+                return;
             }
-            pc.close();
-            ws.close();
 
-            // Show a brief message before closing
-            document.body.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 20px;">
-                    <h2>Call Ended</h2>
-                    <p>The session has been terminated.</p>
-                </div>
-            `;
+            showSessionModal('processing');
+            try {
+                const apiResult = await triggerSessionEndOnBackend(lastSessionEndStats);
+                applySessionSummary(apiResult.summary, apiResult.transaction);
+                showSessionModal('summary');
+                scheduleDashboardRedirect();
+            } catch (error) {
+                console.error('Retry failed:', error);
+                showSessionError(error.message || 'Retry failed. Please try again.');
+            }
+        });
 
-            // Close window after a brief delay
-            setTimeout(() => {
-                window.close();
-            }, 2000);
-        }
+        closeModalBtn.addEventListener('click', () => {
+            hideSessionModal();
+        });
 
         // Chat functionality
         const chatInput = document.getElementById('chatInput');
@@ -1184,7 +1527,7 @@
                     });
 
                     // End the call immediately without confirmation
-                    endCall();
+                    handleRemoteTermination('The other participant ended the session. Redirecting...');
                 } else if (msg.type === 'user-status') {
                     // Update remote user status indicators
                     remoteAudioEnabled = msg.audioEnabled;

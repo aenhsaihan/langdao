@@ -31,6 +31,7 @@ const tutorRoutes = require("./routes/tutors");
 const studentRoutes = require("./routes/students");
 const matchingRoutes = require("./routes/matching");
 const webrtcRoutes = require("./routes/webrtc");
+const sessionRoutes = require("./routes/sessions");
 const matchingService = require("./services/matchingService");
 
 const app = express();
@@ -113,6 +114,7 @@ app.use("/api/tutors", tutorRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/matching", matchingRoutes);
 app.use("/api", webrtcRoutes); // WebRTC events endpoint
+app.use("/api", sessionRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {
