@@ -1,0 +1,38 @@
+{
+  "mcpServers": {
+    "vibe-kanban": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "vibe-kanban@latest",
+        "--mcp"
+      ],
+      "env": {
+        "VIBE_KANBAN_URL": "http://127.0.0.1:63894"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "list_projects",
+        "list_tasks",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "create_task",
+        "start_task_attempt"
+      ]
+    }
+  }
+}
