@@ -37,14 +37,14 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
   });
 
   // Check if user is already registered as student
-  const { data: studentInfo } = useReadContract({
+  const { data: studentInfo, isLoading: isLoadingStudent, error: studentError } = useReadContract({
     contract,
     method: "getStudentInfo",
     params: [account?.address || "0x0000000000000000000000000000000000000000"],
   });
 
   // Check if user is already registered as tutor
-  const { data: tutorInfo } = useReadContract({
+  const { data: tutorInfo, isLoading: isLoadingTutor, error: tutorError } = useReadContract({
     contract,
     method: "getTutorInfo",
     params: [account?.address || "0x0000000000000000000000000000000000000000"],
@@ -57,10 +57,19 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       return;
     }
 
+    // Wait for both queries to finish loading
+    if (isLoadingStudent || isLoadingTutor) {
+      return;
+    }
+
     // Debug logging
     console.log("🔍 Checking registration for address:", account.address);
     console.log("📚 Student Info:", studentInfo);
+    console.log("📚 Student Error:", studentError);
+    console.log("📚 Student Loading:", isLoadingStudent);
     console.log("👨‍🏫 Tutor Info:", tutorInfo);
+    console.log("👨‍🏫 Tutor Error:", tutorError);
+    console.log("👨‍🏫 Tutor Loading:", isLoadingTutor);
 
     // Check if user is already registered
     const isStudentRegistered = studentInfo && studentInfo[2]; // isRegistered is the 3rd element
@@ -85,7 +94,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       setCurrentStep("role");
       setIsCheckingRegistration(false);
     }
-  }, [account?.address, studentInfo, tutorInfo]);
+  }, [account?.address, studentInfo, tutorInfo, isLoadingStudent, isLoadingTutor, studentError, tutorError]);
 
   const handleRoleSelect = (role: "student" | "tutor") => {
     setSelectedRole(role);
