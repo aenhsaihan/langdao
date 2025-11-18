@@ -10,7 +10,18 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: process.env.NEXT_PUBLIC_IGNORE_BUILD_ERROR === "true"
   },
-  webpack: config => { config.resolve.fallback = { fs: false, net: false, tls: false }; config.externals.push("pino-pretty", "lokijs", "encoding"); return config; }
+  webpack: config => { 
+    config.resolve.fallback = { fs: false, net: false, tls: false }; 
+    config.externals.push("pino-pretty", "lokijs", "encoding");
+    
+    // Add polyfill for localStorage in SSR
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'node-localstorage': false,
+    };
+    
+    return config; 
+  }
 };
 
 const isIpfs = process.env.NEXT_PUBLIC_IPFS_BUILD === "true";
