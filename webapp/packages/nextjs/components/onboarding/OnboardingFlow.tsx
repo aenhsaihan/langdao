@@ -57,19 +57,30 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       return;
     }
 
+    // Debug logging
+    console.log("🔍 Checking registration for address:", account.address);
+    console.log("📚 Student Info:", studentInfo);
+    console.log("👨‍🏫 Tutor Info:", tutorInfo);
+
     // Check if user is already registered
     const isStudentRegistered = studentInfo && studentInfo[2]; // isRegistered is the 3rd element
     const isTutorRegistered = tutorInfo && tutorInfo[2]; // isRegistered is the 3rd element
 
+    console.log("✅ Is Student Registered:", isStudentRegistered);
+    console.log("✅ Is Tutor Registered:", isTutorRegistered);
+
     if (isStudentRegistered) {
+      console.log("✨ User is registered as STUDENT, going to dashboard");
       setSelectedRole("student");
       setCurrentStep("dashboard"); // Go directly to dashboard to show balance
       setIsCheckingRegistration(false);
     } else if (isTutorRegistered) {
+      console.log("✨ User is registered as TUTOR, going to availability flow");
       setSelectedRole("tutor");
       setCurrentStep("tutor-availability"); // Go to tutor availability flow
       setIsCheckingRegistration(false);
     } else {
+      console.log("❌ User is NOT registered, showing role selection");
       // Not registered, start with role selection
       setCurrentStep("role");
       setIsCheckingRegistration(false);
