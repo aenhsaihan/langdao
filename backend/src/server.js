@@ -823,11 +823,16 @@ io.on("connection", (socket) => {
         return;
       }
 
-      console.log(`Student ${data.studentAddress} rejected transaction for request ${data.requestId}`);
+      console.log(`🚫 Student ${data.studentAddress} rejected transaction for request ${data.requestId}`);
+      console.log(`🔍 Looking for tutor: ${data.tutorAddress.toLowerCase()}`);
 
       // Notify the tutor that the student rejected the transaction
       const tutorHash = await redisClient.hGetAll(`tutor:${data.tutorAddress.toLowerCase()}`);
       const tutorSocketId = tutorHash?.socketId;
+
+      console.log(`🔍 Tutor hash from Redis:`, tutorHash);
+      console.log(`🔍 Tutor socket ID:`, tutorSocketId);
+      console.log(`🔍 Socket exists:`, tutorSocketId ? !!io.sockets.sockets.get(tutorSocketId) : false);
 
       if (tutorSocketId && io.sockets.sockets.get(tutorSocketId)) {
         io.to(tutorSocketId).emit("tutor:student-rejected-transaction", {
@@ -835,7 +840,9 @@ io.on("connection", (socket) => {
           studentAddress: data.studentAddress,
           message: "Student rejected the transaction. Returning to waiting...",
         });
-        console.log(`Notified tutor ${data.tutorAddress} that student rejected transaction`);
+        console.log(`✅ Notified tutor ${data.tutorAddress} that student rejected transaction`);
+      } else {
+        console.log(`❌ Could not notify tutor - socket not found or not connected`);
       }
 
       // Confirm to student
@@ -932,14 +939,20 @@ io.on("connection", (socket) => {
       }
 
       console.log(
-        `Student ${data.studentAddress} rejected tutor ${data.tutorAddress} for request ${data.requestId}`
+        `⏭️ Student ${data.studentAddress} rejected tutor ${data.tutorAddress} for request ${data.requestId}`
       );
+      console.log(`🔍 Looking for tutor: ${data.tutorAddress.toLowerCase()}`);
 
       // Notify the rejected tutor
       const rejectedTutorHash = await redisClient.hGetAll(
         `tutor:${data.tutorAddress.toLowerCase()}`
       );
       const rejectedTutorSocketId = rejectedTutorHash?.socketId;
+      
+      console.log(`🔍 Tutor hash from Redis:`, rejectedTutorHash);
+      console.log(`🔍 Tutor socket ID:`, rejectedTutorSocketId);
+      console.log(`🔍 Socket exists:`, rejectedTutorSocketId ? !!io.sockets.sockets.get(rejectedTutorSocketId) : false);
+      
       if (
         rejectedTutorSocketId &&
         io.sockets.sockets.get(rejectedTutorSocketId)
@@ -950,6 +963,9 @@ io.on("connection", (socket) => {
           selectedTutorAddress: null, // No one selected yet
           message: "Student rejected you, but request is still active",
         });
+        console.log(`✅ Notified tutor ${data.tutorAddress} of rejection`);
+      } else {
+        console.log(`❌ Could not notify tutor - socket not found or not connected`);
       }
 
       // Confirm to student
