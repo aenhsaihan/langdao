@@ -149,9 +149,9 @@ const deployedContracts = {
             },
             {
               indexed: false,
-              internalType: "uint256",
+              internalType: "uint8",
               name: "language",
-              type: "uint256",
+              type: "uint8",
             },
           ],
           name: "SessionStarted",
@@ -168,9 +168,9 @@ const deployedContracts = {
             },
             {
               indexed: false,
-              internalType: "uint256",
+              internalType: "uint8",
               name: "targetLanguage",
-              type: "uint256",
+              type: "uint8",
             },
             {
               indexed: false,
@@ -193,9 +193,9 @@ const deployedContracts = {
             },
             {
               indexed: false,
-              internalType: "uint256[]",
+              internalType: "uint8[]",
               name: "languages",
-              type: "uint256[]",
+              type: "uint8[]",
             },
             {
               indexed: false,
@@ -208,10 +208,23 @@ const deployedContracts = {
           type: "event",
         },
         {
+          inputs: [],
+          name: "PYUSD_TOKEN",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",
-              name: "tutor",
+              name: "",
               type: "address",
             },
           ],
@@ -253,9 +266,9 @@ const deployedContracts = {
               type: "uint256",
             },
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "language",
-              type: "uint256",
+              type: "uint8",
             },
             {
               internalType: "uint256",
@@ -297,11 +310,6 @@ const deployedContracts = {
         },
         {
           inputs: [
-            {
-              internalType: "address",
-              name: "_token",
-              type: "address",
-            },
             {
               internalType: "uint256",
               name: "_amount",
@@ -406,9 +414,9 @@ const deployedContracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "uint256",
+                  internalType: "uint8",
                   name: "language",
-                  type: "uint256",
+                  type: "uint8",
                 },
                 {
                   internalType: "uint256",
@@ -440,9 +448,9 @@ const deployedContracts = {
           name: "getStudentInfo",
           outputs: [
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "targetLanguage",
-              type: "uint256",
+              type: "uint8",
             },
             {
               internalType: "uint256",
@@ -453,6 +461,25 @@ const deployedContracts = {
               internalType: "bool",
               name: "isRegistered",
               type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_student",
+              type: "address",
+            },
+          ],
+          name: "getStudentPYUSDBalance",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -495,9 +522,9 @@ const deployedContracts = {
               type: "address",
             },
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "_language",
-              type: "uint256",
+              type: "uint8",
             },
           ],
           name: "getTutorLanguage",
@@ -519,9 +546,9 @@ const deployedContracts = {
               type: "address",
             },
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "_language",
-              type: "uint256",
+              type: "uint8",
             },
           ],
           name: "getTutorRate",
@@ -566,11 +593,6 @@ const deployedContracts = {
               name: "_tutorAddress",
               type: "address",
             },
-            {
-              internalType: "address",
-              name: "_token",
-              type: "address",
-            },
           ],
           name: "hasSufficientBalance",
           outputs: [
@@ -587,7 +609,7 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "student",
+              name: "",
               type: "address",
             },
           ],
@@ -600,6 +622,44 @@ const deployedContracts = {
             },
           ],
           stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_isoCode",
+              type: "string",
+            },
+          ],
+          name: "isoToLanguage",
+          outputs: [
+            {
+              internalType: "uint8",
+              name: "",
+              type: "uint8",
+            },
+          ],
+          stateMutability: "pure",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint8",
+              name: "_language",
+              type: "uint8",
+            },
+          ],
+          name: "languageToIso",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "pure",
           type: "function",
         },
         {
@@ -618,9 +678,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "_targetLanguage",
-              type: "uint256",
+              type: "uint8",
             },
             {
               internalType: "uint256",
@@ -636,9 +696,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "uint256[]",
+              internalType: "uint8[]",
               name: "_languages",
-              type: "uint256[]",
+              type: "uint8[]",
             },
             {
               internalType: "uint256",
@@ -668,7 +728,7 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "uint256",
-              name: "sessionId",
+              name: "",
               type: "uint256",
             },
           ],
@@ -710,9 +770,9 @@ const deployedContracts = {
               type: "uint256",
             },
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "language",
-              type: "uint256",
+              type: "uint8",
             },
             {
               internalType: "uint256",
@@ -736,14 +796,9 @@ const deployedContracts = {
               type: "address",
             },
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "_language",
-              type: "uint256",
-            },
-            {
-              internalType: "address",
-              name: "_token",
-              type: "address",
+              type: "uint8",
             },
           ],
           name: "startSession",
@@ -761,12 +816,12 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "student",
+              name: "",
               type: "address",
             },
             {
               internalType: "address",
-              name: "token",
+              name: "",
               type: "address",
             },
           ],
@@ -774,7 +829,7 @@ const deployedContracts = {
           outputs: [
             {
               internalType: "uint256",
-              name: "balance",
+              name: "",
               type: "uint256",
             },
           ],
@@ -785,16 +840,16 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "student",
+              name: "",
               type: "address",
             },
           ],
           name: "students",
           outputs: [
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "targetLanguage",
-              type: "uint256",
+              type: "uint8",
             },
             {
               internalType: "uint256",
@@ -814,7 +869,7 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "tutor",
+              name: "",
               type: "address",
             },
           ],
@@ -855,9 +910,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "uint256",
+              internalType: "uint8",
               name: "_language",
-              type: "uint256",
+              type: "uint8",
             },
             {
               internalType: "uint256",
@@ -874,7 +929,7 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "address",
-              name: "user",
+              name: "",
               type: "address",
             },
             {
@@ -887,7 +942,7 @@ const deployedContracts = {
           outputs: [
             {
               internalType: "uint256",
-              name: "ids",
+              name: "",
               type: "uint256",
             },
           ],
@@ -903,11 +958,6 @@ const deployedContracts = {
         },
         {
           inputs: [
-            {
-              internalType: "address",
-              name: "_token",
-              type: "address",
-            },
             {
               internalType: "uint256",
               name: "_amount",
@@ -928,7 +978,7 @@ const deployedContracts = {
       deployedOnBlock: 1,
     },
     MockERC20: {
-      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
       abi: [
         {
           inputs: [
@@ -1289,7 +1339,7 @@ const deployedContracts = {
         transfer: "@openzeppelin/contracts/token/ERC20/ERC20.sol",
         transferFrom: "@openzeppelin/contracts/token/ERC20/ERC20.sol",
       },
-      deployedOnBlock: 5,
+      deployedOnBlock: 3,
     },
   },
   11155111: {
@@ -2262,10 +2312,9 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 9493794,
     },
     MockERC20: {
-      address: "0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9",
+      address: "0xD9a1F80dFa4917fD80078cBC20d96cc687B9C49F",
       abi: [
         {
           inputs: [
