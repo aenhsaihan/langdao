@@ -45,6 +45,16 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     tutorLanguageChecks[index].data === true
   );
 
+  // Get student's actual budget from blockchain when we have a session
+  const { data: studentInfo } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getStudentInfo",
+    args: [currentSession?.studentAddress as `0x${string}`],
+  });
+
+  // Extract actual budget from student info
+  const actualStudentBudget = studentInfo ? Number(studentInfo[1]) : (currentSession?.budgetPerSecond || 0);
+
   // Get rate for selected language
   const { data: tutorRate } = useScaffoldReadContract({
     contractName: "LangDAO",
@@ -116,12 +126,13 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     id: lang.id
   }));
 
-  // Helper function to convert wei per second back to hourly USD for display
+  // Helper function to convert PYUSD per second to hourly USD for display
   const weiPerSecondToHourlyUsd = (weiPerSecond: number | string | undefined): string => {
     if (!weiPerSecond || weiPerSecond === 0) return "$0.00";
     const wei = typeof weiPerSecond === "string" ? parseFloat(weiPerSecond) : weiPerSecond;
     if (isNaN(wei)) return "$0.00";
-    const pyusdPerSecond = wei / 1e18;
+    // PYUSD has 6 decimals, not 18
+    const pyusdPerSecond = wei / Math.pow(10, PYUSD_DECIMALS);
     const pyusdPerHour = pyusdPerSecond * 3600;
     return pyusdToUsdFormatted(pyusdPerHour);
   };
@@ -784,7 +795,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                   Student: {currentSession?.studentAddress?.slice(0, 6)}...{currentSession?.studentAddress?.slice(-4)}
                 </div>
                 <div>Language: {currentSession?.language}</div>
-                <div>Budget: {weiPerSecondToHourlyUsd(currentSession?.budgetPerSecond)}/hr</div>
+                <div>Budget: {weiPerSecondToHourlyUsd(actualStudentBudget)}/hr</div>
               </div>
             </div>
 
