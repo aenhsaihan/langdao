@@ -35,7 +35,6 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
   const [currentTutor, setCurrentTutor] = useState<TutorResponse | null>(null);
   const [searchStartTime, setSearchStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [showSessionConfirm, setShowSessionConfirm] = useState(false);
 
   // Get student's registered info to pre-fill language and budget
   const { data: studentInfo } = useScaffoldReadContract({
@@ -340,18 +339,8 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     toast("🚀 Starting search...");
   };
 
-  const acceptTutor = () => {
-    if (!socket || !currentTutor || !currentRequestId) return;
-
-    // Show confirmation modal with session details
-    setShowSessionConfirm(true);
-  };
-
-  const confirmAndStartSession = async () => {
+  const acceptTutor = async () => {
     if (!socket || !currentTutor || !currentRequestId || !account?.address) return;
-
-    // Close confirmation modal
-    setShowSessionConfirm(false);
 
     // Notify tutor and backend that student is accepting
     socket.emit("student:accept-tutor", {
@@ -891,89 +880,6 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
               </button>
             </div>
 
-            {/* Session Confirmation Modal */}
-            <AnimatePresence>
-              {showSessionConfirm && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-                  onClick={() => setShowSessionConfirm(false)}
-                >
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.9, opacity: 0 }}
-                    onClick={(e) => e.stopPropagation()}
-                    className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full border-2 border-gray-200 dark:border-gray-700"
-                  >
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                      Confirm Session Start
-                    </h3>
-
-                    <div className="space-y-4 mb-6">
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Student</span>
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {account?.address?.slice(0, 6)}...{account?.address?.slice(-4)}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Tutor</span>
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {currentTutor.tutorAddress.slice(0, 6)}...{currentTutor.tutorAddress.slice(-4)}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Language</span>
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {selectedLanguageData?.flag} {selectedLanguageData?.label}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">Rate</span>
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {weiPerSecondToHourlyUsd(currentTutor.ratePerSecond)}/hr
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
-                      <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                        ⚠️ You'll be prompted to confirm the transaction in your wallet. Make sure you have enough PYUSD tokens and gas fees.
-                      </p>
-                    </div>
-
-                    <div className="flex space-x-3">
-                      <button
-                        onClick={() => setShowSessionConfirm(false)}
-                        className="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={confirmAndStartSession}
-                        disabled={isStartingSession}
-                        className="flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {isStartingSession ? (
-                          <div className="flex items-center justify-center">
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                            Confirming...
-                          </div>
-                        ) : (
-                          "Confirm & Start"
-                        )}
-                      </button>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </motion.div>
       </div>
