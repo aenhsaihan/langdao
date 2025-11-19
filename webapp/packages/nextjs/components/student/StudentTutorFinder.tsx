@@ -95,6 +95,20 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     args: [account?.address, currentTutor?.tutorAddress as `0x${string}`],
   });
 
+  // Get tutor's actual rate from the blockchain
+  const { data: tutorInfoData } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorInfo",
+    args: [currentTutor?.tutorAddress as `0x${string}`],
+  });
+
+  // Extract the actual rate from contract (ratePerSecond is not in the response, need to get it separately)
+  const { data: tutorRatePerSecond } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "tutorRates",
+    args: [currentTutor?.tutorAddress as `0x${string}`],
+  });
+
   // State to store tutor's actual on-chain languages
   const [tutorOnChainLanguages, setTutorOnChainLanguages] = useState<number[]>([]);
 
@@ -155,12 +169,17 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     id: lang.id
   }));
 
+  // Get the actual rate - prefer blockchain data over socket data
+  const actualTutorRate = tutorRatePerSecond ? Number(tutorRatePerSecond) : (currentTutor?.ratePerSecond || 0);
+
   // Helper function to convert wei per second back to hourly USD for display
   const weiPerSecondToHourlyUsd = (weiPerSecond: number | string | undefined): string => {
-    if (!weiPerSecond || weiPerSecond === 0) return "$0.00";
-    const wei = typeof weiPerSecond === "string" ? parseFloat(weiPerSecond) : weiPerSecond;
+    // Use actual blockchain rate if available
+    const rateToUse = weiPerSecond || actualTutorRate;
+    if (!rateToUse || rateToUse === 0) return "$0.00";
+    const wei = typeof rateToUse === "string" ? parseFloat(rateToUse) : rateToUse;
     if (isNaN(wei)) return "$0.00";
-    const pyusdPerSecond = wei / 1e18;
+    const pyusdPerSecond = wei / Math.pow(10, PYUSD_DECIMALS);
     const pyusdPerHour = pyusdPerSecond * 3600;
     return pyusdToUsdFormatted(pyusdPerHour);
   };
