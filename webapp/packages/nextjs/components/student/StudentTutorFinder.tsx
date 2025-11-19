@@ -225,6 +225,13 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
 
     const handleTutorAccepted = (data: any) => {
       console.log("Tutor accepted:", data);
+      console.log("Current finder state:", finderState);
+
+      // Don't change state if we're already in session-starting (student already submitted transaction)
+      if (finderState === "session-starting") {
+        console.log("Already in session-starting, ignoring tutor:accepted event");
+        return;
+      }
 
       // Convert backend format to TutorResponse format
       const tutorResponse: TutorResponse = {
@@ -399,21 +406,22 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
       setFinderState("session-starting");
       toast.success("🎓 Transaction submitted! Waiting for confirmation...");
 
-      // Wait for blockchain confirmation
-      const receipt = await publicClient.waitForTransactionReceipt({
-        hash: txHash,
-      });
-
-      console.log("✅ Transaction confirmed on blockchain:", receipt);
-      
-      // Notify tutor and backend that student confirmed the transaction
-      console.log("📢 Notifying tutor that student confirmed transaction...");
+      // Notify tutor and backend IMMEDIATELY after MetaMask confirmation (transaction submitted)
+      // This lets the tutor see the rotating camera page while waiting for blockchain confirmation
+      console.log("📢 Notifying tutor that student submitted transaction (tx hash:", txHash, ")...");
       socket.emit("student:accept-tutor", {
         requestId: currentRequestId,
         tutorAddress: currentTutor.tutorAddress,
         studentAddress: account?.address,
         language: currentTutor.language,
       });
+
+      // Wait for blockchain confirmation
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: txHash,
+      });
+
+      console.log("✅ Transaction confirmed on blockchain:", receipt);
 
       // Once transaction is confirmed, redirect student to video call
       const videoCallUrl = `https://langdao-production.up.railway.app/?student=${account?.address}&tutor=${currentTutor.tutorAddress}&session=${currentRequestId}`;

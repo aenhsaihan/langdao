@@ -349,7 +349,7 @@ The tutor flow has **5 main states**:
 1. Receives: student:accept-tutor event
 2. Stores session data in currentSession
 3. Transitions to: "session-starting" state
-4. Shows toast: "Student confirmed! Transaction processing..."
+4. Shows rotating camera screen (same as student sees)
 ```
 
 **What happens when student rejects:**

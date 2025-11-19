@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useActiveAccount } from "thirdweb/react";
@@ -8,6 +9,7 @@ import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaf
 
 export const ActiveSessionPrompt = () => {
   const account = useActiveAccount();
+  const pathname = usePathname();
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
 
@@ -44,18 +46,42 @@ export const ActiveSessionPrompt = () => {
 
   // Check if session is active
   useEffect(() => {
+    // Don't show prompt on tutor or find-tutor pages (they're in the session flow)
+    // Also check for exact matches and pathname starts with
+    const isInSessionFlow = 
+      pathname === "/tutor" || 
+      pathname === "/find-tutor" || 
+      pathname?.startsWith("/tutor/") || 
+      pathname?.startsWith("/find-tutor/") ||
+      pathname?.includes("/tutor") ||
+      pathname?.includes("/find-tutor");
+    
+    console.log("ActiveSessionPrompt check:", { pathname, isInSessionFlow, hasActiveSession: !!activeSessionData });
+    
+    // Always hide if in session flow
+    if (isInSessionFlow) {
+      console.log("ActiveSessionPrompt: Hiding (in session flow)");
+      setShowPrompt(false);
+      return;
+    }
+    
     if (activeSessionData) {
       const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
         activeSessionData;
 
       // Show prompt if session is active and has started
       if (isActive && startTime && startTime > 0n) {
+        console.log("ActiveSessionPrompt: Showing modal");
         setShowPrompt(true);
       } else {
+        console.log("ActiveSessionPrompt: Session not active or not started");
         setShowPrompt(false);
       }
+    } else {
+      console.log("ActiveSessionPrompt: Hiding (no active session)");
+      setShowPrompt(false);
     }
-  }, [activeSessionData]);
+  }, [activeSessionData, pathname]);
 
   const handleEndSession = async () => {
     if (!activeSessionData) return;

@@ -12,7 +12,7 @@ interface TutorAvailabilityFlowProps {
   onBack?: () => void;
 }
 
-type AvailabilityState = "setup" | "waiting" | "waiting-for-student" | "in-session";
+type AvailabilityState = "setup" | "waiting" | "waiting-for-student" | "session-starting" | "in-session";
 
 export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ onBack }) => {
   const account = useActiveAccount();
@@ -23,6 +23,11 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
   const [currentSession, setCurrentSession] = useState<any>(null);
   const unavailableTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log("🔄 Tutor availability state changed to:", availabilityState);
+  }, [availabilityState]);
 
   // Read tutor info from contract
   const { data: tutorInfo, isLoading: isTutorInfoLoading } = useScaffoldReadContract({
@@ -71,9 +76,9 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     args: [account?.address],
   });
 
-  // Poll for active session when in waiting-for-student state
+  // Poll for active session ONLY when in session-starting state (not waiting-for-student)
   useEffect(() => {
-    if (availabilityState === "waiting-for-student" && account?.address) {
+    if (availabilityState === "session-starting" && account?.address) {
       console.log("👀 Monitoring blockchain for active session...");
 
       // Check immediately
@@ -89,9 +94,9 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     }
   }, [availabilityState, account?.address, refetchActiveSession]);
 
-  // Detect when session becomes active on blockchain
+  // Detect when session becomes active on blockchain (ONLY in session-starting state)
   useEffect(() => {
-    if (activeSessionData && availabilityState === "waiting-for-student") {
+    if (activeSessionData && availabilityState === "session-starting") {
       const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] = activeSessionData;
 
       console.log("📊 Active session data from blockchain:", {
@@ -110,10 +115,11 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
         toast.success("Session started on blockchain! Redirecting...");
 
+        // Give time to see the "Starting Your Session!" screen
         setTimeout(() => {
-          console.log("🚀 Redirecting to:", videoCallUrl);
+          console.log("🚀 Tutor redirecting to:", videoCallUrl);
           window.location.href = videoCallUrl;
-        }, 1000);
+        }, 3000); // Give 3 seconds to see the screen
       }
     }
   }, [activeSessionData, availabilityState, account?.address]);
@@ -139,9 +145,20 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
   // Socket event listeners
   useEffect(() => {
-    if (!socket || !account?.address) return;
+    if (!socket || !account?.address) {
+      console.log("⚠️ Socket or account not available:", { socket: !!socket, account: account?.address });
+      return;
+    }
 
-    console.log("Setting up tutor socket event listeners");
+    console.log("✅ Setting up tutor socket event listeners for address:", account?.address);
+    console.log("Socket ID:", socket.id);
+    console.log("Socket connected:", socket.connected);
+    
+    // Debug: Listen for ALL events
+    const originalOn = socket.on.bind(socket);
+    socket.onAny((eventName: string, ...args: any[]) => {
+      console.log(`🔔 TUTOR RECEIVED EVENT: ${eventName}`, args);
+    });
 
     // Tutor-specific events
     const handleAvailabilitySet = () => {
@@ -216,13 +233,18 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       });
     };
 
-    const handleStudentSelected = (data: any) => {
-      console.log("🎯 TUTOR RECEIVED tutor:student-selected:", data);
-      console.log("Current availability state:", availabilityState);
+    const handleStudentAcceptedTutor = (data: any) => {
+      console.log("🎯🎯🎯 TUTOR RECEIVED student:accept-tutor (student confirmed transaction) 🎯🎯🎯");
+      console.log("Current state BEFORE transition:", availabilityState);
+      console.log("Student accepted data:", data);
+      
+      // Store session data and transition to session-starting state when student confirms transaction
       setCurrentSession(data);
-      setAvailabilityState("in-session");
+      console.log("Setting state to session-starting...");
+      setAvailabilityState("session-starting");
       setIncomingRequests([]);
-      toast.success("Student selected you! Session starting...");
+      console.log("✅ State transitioned to session-starting - tutor should now see rotating camera screen");
+      // Don't show toast - the session-starting screen is more prominent and informative
     };
 
     const handleSessionStarted = (data: any) => {
@@ -254,7 +276,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
     const handleStudentRejectedTransaction = (data: any) => {
       console.log("Student rejected transaction:", data);
-      // Return to waiting state
+      // Return to waiting state (from either waiting-for-student or session-starting)
       setCurrentSession(null);
       setAvailabilityState("waiting");
       toast("Student rejected the transaction. Back to waiting for new students.", {
@@ -268,7 +290,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     on("tutor:incoming-request", handleIncomingRequest);
     on("tutor:request-accepted", handleRequestAccepted);
     on("tutor:student-rejected", handleStudentRejected);
-    on("tutor:student-selected", handleStudentSelected);
+    on("student:accept-tutor", handleStudentAcceptedTutor);
     on("session:started", handleSessionStarted);
     on("student:in-room", handleStudentInRoom);
     on("tutor:student-rejected-transaction", handleStudentRejectedTransaction);
@@ -279,12 +301,12 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       off("tutor:incoming-request", handleIncomingRequest);
       off("tutor:request-accepted", handleRequestAccepted);
       off("tutor:student-rejected", handleStudentRejected);
-      off("tutor:student-selected", handleStudentSelected);
+      off("student:accept-tutor", handleStudentAcceptedTutor);
       off("session:started", handleSessionStarted);
       off("student:in-room", handleStudentInRoom);
       off("tutor:student-rejected-transaction", handleStudentRejectedTransaction);
     };
-  }, [socket, account?.address, availabilityState]);
+  }, [socket, account?.address, availabilityState]); // Keep availabilityState for logging, but handlers use setters which are stable
 
   const becomeAvailable = () => {
     if (!socket || !isConnected) {
@@ -833,6 +855,41 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
               <span className="mr-2">⬅️</span>
               Back to Waiting
             </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (availabilityState === "session-starting") {
+    console.log("🎨🎨🎨 RENDERING SESSION-STARTING STATE 🎨🎨🎨");
+    return (
+      <div className="min-h-[calc(100vh-8rem)] bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-2xl w-full text-center"
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-700 shadow-xl">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6"
+            >
+              <span className="text-3xl">📹</span>
+            </motion.div>
+
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Starting Your Session! 🎓</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">Connecting you with your student...</p>
+
+            <motion.div
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="inline-flex items-center px-6 py-3 bg-blue-100 dark:bg-blue-900/30 rounded-full"
+            >
+              <div className="w-3 h-3 bg-blue-500 rounded-full mr-3 animate-pulse"></div>
+              <span className="text-blue-700 dark:text-blue-300 font-medium">Preparing video call...</span>
+            </motion.div>
           </div>
         </motion.div>
       </div>
