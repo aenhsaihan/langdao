@@ -225,13 +225,6 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
 
     const handleTutorAccepted = (data: any) => {
       console.log("Tutor accepted:", data);
-      console.log("Current finder state:", finderState);
-
-      // Don't change state if we're already in session-starting (student already submitted transaction)
-      if (finderState === "session-starting") {
-        console.log("Already in session-starting, ignoring tutor:accepted event");
-        return;
-      }
 
       // Convert backend format to TutorResponse format
       const tutorResponse: TutorResponse = {

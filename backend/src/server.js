@@ -725,67 +725,44 @@ io.on("connection", (socket) => {
         `Student ${data.studentAddress} accepted tutor ${data.tutorAddress} for request ${data.requestId}`
       );
 
-      // Get the request data to find all tutors who were notified
-      const requestData = await matchingService.getStudentRequest(
-        data.requestId
-      );
-
-      if (!requestData || !requestData.success) {
-        socket.emit("error", { message: "Request not found or expired" });
-        return;
-      }
-
-      // Find all tutors who were notified of this request
-      const result = await matchingService.findMatchingTutors({
-        language: requestData.language,
-        budgetPerSecond: requestData.budgetPerSecond,
-        studentAddress: data.studentAddress,
-      });
-
-      const tutors =
-        result && Array.isArray(result.tutors) ? result.tutors : [];
-
-      // Notify all tutors except the accepted one that they were rejected
-      let tutorsNotified = 0;
-      for (const tutor of tutors) {
-        if (tutor.address.toLowerCase() !== data.tutorAddress.toLowerCase()) {
-          const tutorHash = await redisClient.hGetAll(
-            `tutor:${tutor.address.toLowerCase()}`
-          );
-          const tutorSocketId = tutorHash?.socketId;
-          if (tutorSocketId && io.sockets.sockets.get(tutorSocketId)) {
-            io.to(tutorSocketId).emit("tutor:student-rejected", {
-              requestId: data.requestId,
-              studentAddress: data.studentAddress,
-              selectedTutorAddress: data.tutorAddress,
-              message: "Student selected another tutor",
-            });
-            tutorsNotified++;
-          }
-        }
-      }
+      console.log("🚀🚀🚀 Processing student acceptance - skipping request data lookup since it may be removed");
 
       // Notify the accepted tutor that they were chosen
       const acceptedTutorHash = await redisClient.hGetAll(
         `tutor:${data.tutorAddress.toLowerCase()}`
       );
       const acceptedTutorSocketId = acceptedTutorHash?.socketId;
-      console.log(`🎯 Looking for tutor ${data.tutorAddress.toLowerCase()}, socketId: ${acceptedTutorSocketId}`);
+      console.log(`🎯🎯🎯 Looking for tutor ${data.tutorAddress.toLowerCase()}, socketId: ${acceptedTutorSocketId}`);
       console.log(`🎯 Tutor hash data:`, acceptedTutorHash);
       console.log(`🎯 Available sockets:`, Array.from(io.sockets.sockets.keys()));
+      console.log(`🎯 Tutor address from data:`, data.tutorAddress);
+      console.log(`🎯 Tutor address lowercased:`, data.tutorAddress.toLowerCase());
+      
+      // ALWAYS broadcast to all sockets for now (debugging)
+      console.log(`📢📢📢 BROADCASTING student:accept-tutor to ALL sockets`);
+      io.emit("student:accept-tutor", {
+        requestId: data.requestId,
+        studentAddress: data.studentAddress,
+        tutorAddress: data.tutorAddress,
+        language: data.language,
+        message: "Student confirmed! Transaction processing...",
+      });
       
       if (
         acceptedTutorSocketId &&
         io.sockets.sockets.get(acceptedTutorSocketId)
       ) {
-        console.log(`🎯 EMITTING tutor:student-selected to tutor ${data.tutorAddress.toLowerCase()}`);
-        io.to(acceptedTutorSocketId).emit("tutor:student-selected", {
+        console.log(`🎯🎯🎯 ALSO EMITTING directly to tutor socket ${acceptedTutorSocketId}`);
+        io.to(acceptedTutorSocketId).emit("student:accept-tutor", {
           requestId: data.requestId,
           studentAddress: data.studentAddress,
-          message: "Student selected you! Session starting...",
+          tutorAddress: data.tutorAddress,
+          language: data.language,
+          message: "Student confirmed! Transaction processing...",
         });
+        console.log(`✅ Event emitted successfully`);
       } else {
-        console.log(`🎯 Tutor ${data.tutorAddress.toLowerCase()} not found or not connected`);
+        console.log(`❌❌❌ Tutor ${data.tutorAddress.toLowerCase()} not found or not connected`);
         console.log(`🎯 Socket ID exists: ${!!acceptedTutorSocketId}`);
         console.log(`🎯 Socket is connected: ${acceptedTutorSocketId ? !!io.sockets.sockets.get(acceptedTutorSocketId) : false}`);
       }
@@ -793,16 +770,11 @@ io.on("connection", (socket) => {
       // Remove the request from storage since it's been resolved
       await matchingService.removeStudentRequest(data.requestId);
 
-      // Confirm to student
-      socket.emit("student:tutor-accepted", {
-        requestId: data.requestId,
-        tutorAddress: data.tutorAddress,
-        tutorsNotified: tutorsNotified,
-        success: true,
-      });
+      // No need to emit student:tutor-accepted back to student - they already know they accepted
+      // because they just submitted the transaction. This was causing state reset issues.
 
       console.log(
-        `✅ Student acceptance processed: ${tutorsNotified} tutors notified of rejection, accepted tutor notified`
+        `✅ Student acceptance processed and broadcast sent to tutor`
       );
     } catch (error) {
       console.error("Error processing student tutor acceptance:", error);
