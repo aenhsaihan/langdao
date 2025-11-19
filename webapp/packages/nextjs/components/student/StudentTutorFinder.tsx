@@ -5,8 +5,9 @@ import { useSocket } from "../../lib/socket/socketContext";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useActiveAccount } from "thirdweb/react";
+import { useWalletClient, usePublicClient } from "wagmi";
 import { CONTRACTS, LANGUAGES, PYUSD_DECIMALS } from "../../lib/constants/contracts";
-import { useScaffoldWriteContract, useScaffoldReadContract, useUsdConversion } from "~~/hooks/scaffold-eth";
+import { useScaffoldWriteContract, useScaffoldReadContract, useUsdConversion, useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 interface StudentTutorFinderProps {
   onBack?: () => void;
@@ -26,6 +27,9 @@ interface TutorResponse {
 export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, onSessionStart }) => {
   const account = useActiveAccount();
   const { socket, isConnected, on, off, emit } = useSocket();
+  const { data: walletClient } = useWalletClient();
+  const publicClient = usePublicClient();
+  const { data: deployedContractData } = useDeployedContractInfo({ contractName: "LangDAO" });
   const [finderState, setFinderState] = useState<FinderState>("setup");
   const [language, setLanguage] = useState("en"); // Use language code instead of name
   const [budgetPerHour, setBudgetPerHour] = useState("10"); // Store as hourly rate string like registration
@@ -342,17 +346,6 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
   const acceptTutor = async () => {
     if (!socket || !currentTutor || !currentRequestId || !account?.address) return;
 
-    // Notify tutor and backend that student is accepting
-    socket.emit("student:accept-tutor", {
-      requestId: currentRequestId,
-      tutorAddress: currentTutor.tutorAddress,
-      studentAddress: account?.address,
-      language: currentTutor.language,
-    });
-
-    setFinderState("session-starting");
-    toast.success("🎓 Starting session with tutor!");
-
     try {
       console.log("=== LANGUAGE MAPPING DEBUG ===");
       console.log("currentTutor.language from socket:", currentTutor.language);
@@ -384,14 +377,43 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         currentTutorData: currentTutor,
       });
 
-      // Call startSession on the smart contract
-      const tx = await startSessionWrite({
+      // Check if wallet and contract are available
+      if (!walletClient || !publicClient || !deployedContractData) {
+        throw new Error("Wallet or contract not available");
+      }
+
+      // Prepare the transaction
+      const { request } = await publicClient.simulateContract({
+        address: deployedContractData.address,
+        abi: deployedContractData.abi,
         functionName: "startSession",
         args: [currentTutor.tutorAddress as `0x${string}`, languageId],
+        account: account?.address as `0x${string}`,
       });
 
-      console.log("Transaction sent successfully:", tx);
-      toast.success("Transaction confirmed! Entering room...");
+      // Write contract (this shows MetaMask popup and waits for user confirmation)
+      // This returns the transaction hash immediately after MetaMask confirmation
+      const txHash = await walletClient.writeContract(request);
+      
+      // NOW show "session-starting" screen after MetaMask confirmation
+      setFinderState("session-starting");
+      toast.success("🎓 Transaction submitted! Waiting for confirmation...");
+
+      // Wait for blockchain confirmation
+      const receipt = await publicClient.waitForTransactionReceipt({
+        hash: txHash,
+      });
+
+      console.log("✅ Transaction confirmed on blockchain:", receipt);
+      
+      // Notify tutor and backend that student confirmed the transaction
+      console.log("📢 Notifying tutor that student confirmed transaction...");
+      socket.emit("student:accept-tutor", {
+        requestId: currentRequestId,
+        tutorAddress: currentTutor.tutorAddress,
+        studentAddress: account?.address,
+        language: currentTutor.language,
+      });
 
       // Once transaction is confirmed, redirect student to video call
       const videoCallUrl = `https://langdao-production.up.railway.app/?student=${account?.address}&tutor=${currentTutor.tutorAddress}&session=${currentRequestId}`;
@@ -405,10 +427,9 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         videoCallUrl,
       }));
 
-      // Redirect student to video call
-      setTimeout(() => {
-        window.location.href = videoCallUrl;
-      }, 1000);
+      // Redirect after transaction confirms
+      console.log("🚀 Student redirecting to video call:", videoCallUrl);
+      window.location.href = videoCallUrl;
     } catch (error: any) {
       console.error("Error starting session:", error);
 
@@ -437,6 +458,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         setFinderState("searching");
       } else {
         toast.error("Failed to start session. Please try again.");
+        // Return to tutor-found state so user can try again
         setFinderState("tutor-found");
       }
     }

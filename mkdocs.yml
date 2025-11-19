@@ -12,6 +12,7 @@ nav:
       - Roadmap: product/roadmap.md
       - Testbed (LatAm): product/testbed-latam.md
   - Guides:
+      - Student-Tutor Pairing Flow: guides/student-tutor-pairing-flow.md
       - Language Matching Fix: guides/language-matching-fix.md
       - WebRTC Integration: guides/webrtc-integration.md
   - Tech:
