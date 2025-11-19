@@ -34,13 +34,13 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
     params: [account?.address || "0x0000000000000000000000000000000000000000"],
   });
 
-  // Get student balance (placeholder - will be implemented with proper token support)
+  // Get student balance from LangDAO contract
   const { data: balance } = useReadContract({
     contract,
     method: "studentBalances",
     params: [
       account?.address || "0x0000000000000000000000000000000000000000",
-      "0x0000000000000000000000000000000000000000" // Zero address placeholder
+      CONTRACTS.PYUSD // Use actual PYUSD token address
     ],
   });
 
