@@ -416,12 +416,21 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
       if (error?.message?.includes("user rejected") || error?.code === 4001 || error?.code === "ACTION_REJECTED") {
         toast.error("Transaction rejected. Returning to search...");
 
-        // Notify tutor that student rejected the transaction
+        // Notify tutor that student rejected the transaction (try both event names)
+        console.log("🚫 Student rejected transaction, notifying tutor:", currentTutor.tutorAddress);
         socket.emit("student:rejected-transaction", {
           requestId: currentRequestId,
           tutorAddress: currentTutor.tutorAddress,
           studentAddress: account?.address,
         });
+        
+        // Also emit the reject-tutor event as backup
+        socket.emit("student:reject-tutor", {
+          requestId: currentRequestId,
+          tutorAddress: currentTutor.tutorAddress,
+          studentAddress: account?.address,
+        });
+        console.log("✅ Rejection events emitted");
 
         // Return both to their previous states
         setCurrentTutor(null);
