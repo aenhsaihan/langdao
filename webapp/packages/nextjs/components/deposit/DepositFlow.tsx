@@ -22,12 +22,12 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
 
   const { address } = useAccount();
 
-  // Get MockERC20 token balance (PYUSD)
+  // Get PYUSD token balance directly from the PYUSD contract
   const {
     data: tokenBalance,
     isLoading: isTokenBalanceLoading
   } = useScaffoldReadContract({
-    contractName: "MockERC20",
+    contractName: "PYUSD",
     functionName: "balanceOf",
     args: [address],
   });
@@ -37,7 +37,7 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
     data: allowance,
     isLoading: isAllowanceLoading
   } = useScaffoldReadContract({
-    contractName: "MockERC20",
+    contractName: "PYUSD",
     functionName: "allowance",
     args: [address, CONTRACTS.LANGDAO],
   });
@@ -64,7 +64,7 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
   });
 
   const { writeContractAsync: writeApproval } = useScaffoldWriteContract({
-    contractName: "MockERC20",
+    contractName: "PYUSD",
   });
 
   const { writeContractAsync: writeDeposit } = useScaffoldWriteContract({
