@@ -37,6 +37,31 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showSessionConfirm, setShowSessionConfirm] = useState(false);
 
+  // Get student's registered info to pre-fill language and budget
+  const { data: studentInfo } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getStudentInfo",
+    args: [account?.address],
+  });
+
+  // Pre-fill language and budget from student registration
+  useEffect(() => {
+    if (studentInfo) {
+      const targetLanguageId = Number(studentInfo[0]);
+      const budgetPerSec = Number(studentInfo[1]);
+      
+      // Find the language code from the ID
+      const targetLang = LANGUAGES.find(l => l.id === targetLanguageId);
+      if (targetLang) {
+        setLanguage(targetLang.code);
+      }
+      
+      // Convert budget per second to per hour and format
+      const budgetPerHourValue = (budgetPerSec * 3600) / Math.pow(10, PYUSD_DECIMALS);
+      setBudgetPerHour(budgetPerHourValue.toFixed(2));
+    }
+  }, [studentInfo]);
+
   // Scaffold-ETH hooks for contract interaction
   const { writeContractAsync: startSessionWrite, isMining: isStartingSession } = useScaffoldWriteContract({
     contractName: "LangDAO",
@@ -452,8 +477,28 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
               </p>
             </div>
 
-            {/* Language Selection */}
+            {/* Language Selection - Shows registered language only */}
             <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                Your Target Language
+              </label>
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border-2 border-blue-200 dark:border-blue-700">
+                <div className="flex items-center justify-center">
+                  <span className="text-4xl mr-3">{selectedLanguageData?.flag}</span>
+                  <div className="text-left">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">
+                      {selectedLanguageData?.label}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      Registered language from your profile
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Hidden language grid for reference - can be removed */}
+            <div className="hidden mb-6">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Language to Learn
               </label>
@@ -462,6 +507,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
                   <button
                     key={lang.value}
                     onClick={() => setLanguage(lang.value)}
+                    disabled={true}
                     className={`p-2 rounded-lg border-2 transition-all duration-200 flex flex-col items-center ${
                       language === lang.value
                         ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
