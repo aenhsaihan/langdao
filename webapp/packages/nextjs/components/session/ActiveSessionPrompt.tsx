@@ -71,18 +71,26 @@ export const ActiveSessionPrompt = () => {
 
       // Show prompt if session is active and has started
       if (isActive && startTime && startTime > 0n) {
-        // Don't show prompt if session just started (within last 30 seconds)
+        // Don't show prompt if session just started (within last 60 seconds)
         // This prevents showing it during the session-starting flow
+        // Increased from 30 to 60 seconds to give more time for the flow to complete
         const sessionStartTime = Number(startTime);
         const sessionAge = currentTime - sessionStartTime;
-        const isNewSession = sessionAge < 30; // 30 seconds grace period
+        const isNewSession = sessionAge < 60; // 60 seconds grace period
         
         if (isNewSession) {
-          console.log("ActiveSessionPrompt: Hiding (session just started, in session-starting flow)");
+          console.log("ActiveSessionPrompt: Hiding (session just started, in session-starting flow, age:", sessionAge, "s)");
           setShowPrompt(false);
         } else {
-          console.log("ActiveSessionPrompt: Showing modal");
-          setShowPrompt(true);
+          // Also hide if we're on the home page (/) and session is very new
+          // This handles the case where tutor is on root path during session-starting
+          if (pathname === "/" && sessionAge < 120) {
+            console.log("ActiveSessionPrompt: Hiding (on home page with new session, age:", sessionAge, "s)");
+            setShowPrompt(false);
+          } else {
+            console.log("ActiveSessionPrompt: Showing modal");
+            setShowPrompt(true);
+          }
         }
       } else {
         console.log("ActiveSessionPrompt: Session not active or not started");

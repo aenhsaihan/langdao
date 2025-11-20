@@ -199,9 +199,11 @@ io.on("connection", (socket) => {
   // Handle user connection (binds socket ID to address)
   socket.on("user:connect", async (data) => {
     try {
-      console.log(`🔗 User connected: ${data.role} ${data.address} (socket: ${socket.id})`);
+      console.log(`🔗 User connected: ${data.role || 'unknown'} ${data.address} (socket: ${socket.id})`);
       
-      if (data.address && data.role) {
+      // Bind socket to address even without role - role can be determined later
+      // This ensures socket ID is updated in Redis on reconnect
+      if (data.address) {
         await bindSocketToAddress(data.address.toLowerCase());
       }
     } catch (error) {
@@ -628,17 +630,55 @@ io.on("connection", (socket) => {
 
       console.log(`Looking for tutor socket: ${tutorSocketId}`);
 
+      let tutorNotified = false;
+
+      // Prepare the event data
+      const eventData = {
+        requestId: data.requestId,
+        studentAddress: data.studentAddress,
+        tutorAddress: data.tutorAddress,
+        videoCallUrl: data.videoCallUrl,
+        message: "Student is in the room! You can join now.",
+      };
+
+      // Try to find tutor by socket ID from Redis
       if (tutorSocketId && io.sockets.sockets.get(tutorSocketId)) {
-        console.log(`✅ Notifying tutor that student is in room`);
-        io.to(tutorSocketId).emit("student:in-room", {
-          requestId: data.requestId,
-          studentAddress: data.studentAddress,
-          videoCallUrl: data.videoCallUrl,
-          message: "Student is in the room! You can join now.",
-        });
+        console.log(`✅ Notifying tutor that student is in room (via socket ID: ${tutorSocketId})`);
+        io.to(tutorSocketId).emit("student:in-room", eventData);
+        tutorNotified = true;
         console.log(`✅ Notified tutor ${data.tutorAddress} that student is in room`);
       } else {
-        console.log(`❌ Could not notify tutor - socket not found`);
+        // Fallback: Find tutor by address across all connected sockets
+        // This handles the case where socket disconnected and reconnected with new ID
+        console.log(`⚠️ Tutor socket ID not found in Redis, searching all sockets by address...`);
+        console.log(`📊 All connected sockets:`, Array.from(io.sockets.sockets.keys()));
+        
+        // Get all connected sockets and check their addresses
+        const allSockets = Array.from(io.sockets.sockets.values());
+        for (const socket of allSockets) {
+          const socketAddress = await redisClient.hGet("socket_to_address", socket.id);
+          if (socketAddress && socketAddress.toLowerCase() === data.tutorAddress.toLowerCase()) {
+            console.log(`✅ Found tutor socket by address search: ${socket.id}`);
+            socket.emit("student:in-room", eventData);
+            tutorNotified = true;
+            // Update Redis with the new socket ID
+            await redisClient.hSet(`tutor:${data.tutorAddress.toLowerCase()}`, { socketId: socket.id });
+            await redisClient.hSet("socket_to_address", socket.id, data.tutorAddress.toLowerCase());
+            console.log(`✅ Notified tutor ${data.tutorAddress} that student is in room (via address search)`);
+            break;
+          }
+        }
+      }
+
+      // ALWAYS broadcast as well (tutor will filter by address if needed)
+      // This ensures the tutor receives the event even if socket lookup fails
+      console.log(`📢 Broadcasting student:in-room to all sockets (always, as backup)`);
+      io.emit("student:in-room", eventData);
+      console.log(`✅ Broadcast sent to all sockets`);
+
+      if (!tutorNotified) {
+        console.log(`⚠️ Could not find tutor socket directly, but broadcast was sent. Tutor address: ${data.tutorAddress}`);
+        console.log(`📊 Debug info: Tutor hash from Redis:`, tutorHash);
       }
 
       // Confirm to student

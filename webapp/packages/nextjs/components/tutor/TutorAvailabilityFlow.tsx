@@ -76,53 +76,9 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     args: [account?.address],
   });
 
-  // Poll for active session ONLY when in session-starting state (not waiting-for-student)
-  useEffect(() => {
-    if (availabilityState === "session-starting" && account?.address) {
-      console.log("👀 Monitoring blockchain for active session...");
-
-      // Check immediately
-      refetchActiveSession();
-
-      // Then poll every 3 seconds
-      const interval = setInterval(() => {
-        console.log("🔄 Checking blockchain for active session...");
-        refetchActiveSession();
-      }, 3000);
-
-      return () => clearInterval(interval);
-    }
-  }, [availabilityState, account?.address, refetchActiveSession]);
-
-  // Detect when session becomes active on blockchain (ONLY in session-starting state)
-  useEffect(() => {
-    if (activeSessionData && availabilityState === "session-starting") {
-      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] = activeSessionData;
-
-      console.log("📊 Active session data from blockchain:", {
-        student,
-        tutor,
-        isActive,
-        startTime: startTime?.toString(),
-        sessionId: sessionId?.toString(),
-      });
-
-      // If session is active and has a start time, redirect to video call
-      if (isActive && startTime && startTime > 0n) {
-        console.log("✅ Session is active on blockchain! Redirecting to video call...");
-
-        const videoCallUrl = `https://langdao-production.up.railway.app/?student=${student}&tutor=${account?.address}&session=${sessionId}`;
-
-        toast.success("Session started on blockchain! Redirecting...");
-
-        // Give time to see the "Starting Your Session!" screen
-        setTimeout(() => {
-          console.log("🚀 Tutor redirecting to:", videoCallUrl);
-          window.location.href = videoCallUrl;
-        }, 3000); // Give 3 seconds to see the screen
-      }
-    }
-  }, [activeSessionData, availabilityState, account?.address]);
+  // Note: Blockchain polling is NOT used for entering the room
+  // The tutor enters when student enters the room (via student:in-room event)
+  // Blockchain polling is only for detecting existing sessions when navigating away
 
   // Use LANGUAGES from constants - map to format needed for UI
   const languages = LANGUAGES.map(lang => ({
@@ -262,16 +218,36 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       console.log("🚪🚪🚪 TUTOR RECEIVED student:in-room EVENT 🚪🚪🚪");
       console.log("Student is in room:", data);
       console.log("Current tutor address:", account?.address);
+      console.log("Current availability state:", availabilityState);
 
-      // Now redirect to video call
+      // If this is a broadcast (includes tutorAddress), verify it's for this tutor
+      if (data.tutorAddress && account?.address) {
+        if (data.tutorAddress.toLowerCase() !== account.address.toLowerCase()) {
+          console.log("⚠️ Ignoring student:in-room - not for this tutor (expected:", data.tutorAddress, ", got:", account.address, ")");
+          return;
+        }
+      }
+
+      // Check if we have an active session on blockchain (fallback if state was lost)
+      const hasActiveSession = activeSessionData && activeSessionData[9] === true && activeSessionData[3] && activeSessionData[3] > 0n;
+
+      // Redirect if:
+      // 1. We're in session-starting state (normal flow), OR
+      // 2. We have an active session on blockchain (state might have been lost due to reconnect/refresh)
+      if (availabilityState !== "session-starting" && !hasActiveSession) {
+        console.log("⚠️ Ignoring student:in-room - not in session-starting state and no active session on blockchain (state:", availabilityState, ")");
+        return;
+      }
+
+      // Student has entered the room (after waiting for blockchain confirmation)
+      // Now tutor should enter immediately - student already confirmed blockchain tx
       const videoCallUrl = data.videoCallUrl || `https://langdao-production.up.railway.app/?student=${data.studentAddress}&tutor=${account?.address}&session=${data.requestId}`;
-      console.log("Student is in room! Redirecting to:", videoCallUrl);
+      console.log("✅ Student entered room! Tutor redirecting to:", videoCallUrl);
 
       toast.success("Student is in the room! Joining now...");
-      setTimeout(() => {
-        console.log("Executing redirect now...");
-        window.location.href = videoCallUrl;
-      }, 1000);
+      
+      // Redirect immediately - student already waited for blockchain confirmation
+      window.location.href = videoCallUrl;
     };
 
     const handleStudentRejectedTransaction = (data: any) => {
@@ -306,7 +282,47 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       off("student:in-room", handleStudentInRoom);
       off("tutor:student-rejected-transaction", handleStudentRejectedTransaction);
     };
-  }, [socket, account?.address, availabilityState]); // Keep availabilityState for logging, but handlers use setters which are stable
+  }, [socket, account?.address, availabilityState, activeSessionData]); // Added activeSessionData for fallback check in handleStudentInRoom
+
+  // Blockchain polling fallback: When in session-starting state, poll for active session
+  // This ensures tutor enters even if socket event fails
+  useEffect(() => {
+    if (availabilityState !== "session-starting" || !currentSession || !account?.address) {
+      return;
+    }
+
+    console.log("🔄 Tutor in session-starting state, starting blockchain polling fallback...");
+
+    // Poll every 1 second for active session
+    const interval = setInterval(() => {
+      console.log("🔄 Polling blockchain for active session (fallback)...");
+      refetchActiveSession();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [availabilityState, currentSession, account?.address, refetchActiveSession]);
+
+  // Redirect when active session is detected on blockchain (fallback if socket event fails)
+  useEffect(() => {
+    if (availabilityState !== "session-starting" || !currentSession || !account?.address) {
+      return;
+    }
+
+    if (activeSessionData) {
+      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] = activeSessionData;
+
+      // If session is active and has started, redirect (student has confirmed tx and likely entered room)
+      if (isActive && startTime && startTime > 0n) {
+        console.log("✅ Blockchain fallback: Active session detected! Redirecting tutor to WebRTC...");
+        const videoCallUrl = `https://langdao-production.up.railway.app/?student=${student}&tutor=${account.address}&session=${sessionId}`;
+        toast.success("Session active on blockchain! Redirecting...");
+        console.log("🚀 Tutor redirecting to (blockchain fallback):", videoCallUrl);
+        window.location.href = videoCallUrl;
+      }
+    }
+  }, [activeSessionData, availabilityState, currentSession, account?.address]);
 
   const becomeAvailable = () => {
     if (!socket || !isConnected) {

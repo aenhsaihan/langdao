@@ -70,6 +70,14 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     contractName: "LangDAO",
   });
 
+  // Monitor active session on blockchain (for redirecting when session becomes active)
+  // NOTE: activeSessions is keyed by tutor address, not student address!
+  const { data: activeSessionData, refetch: refetchActiveSession } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "activeSessions",
+    args: [currentTutor?.tutorAddress as `0x${string}`],
+  });
+
   // Check student's token balance
   const { data: studentBalance } = useScaffoldReadContract({
     contractName: "MockERC20",
@@ -313,6 +321,81 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     };
   }, [socket, account?.address, finderState, currentTutor, language]);
 
+  // Blockchain polling: When in session-starting state, poll for active session
+  // This allows both student and tutor to enter at the same time once blockchain confirms
+  useEffect(() => {
+    if (finderState !== "session-starting" || !currentTutor || !account?.address) {
+      return;
+    }
+
+    console.log("🔄 Student in session-starting state, starting blockchain polling...");
+
+    // Do an immediate refetch when entering session-starting state
+    refetchActiveSession();
+
+    // Poll every 1 second for active session (same as tutor)
+    const interval = setInterval(() => {
+      console.log("🔄 Student polling blockchain for active session...");
+      refetchActiveSession();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [finderState, currentTutor, account?.address, refetchActiveSession]);
+
+  // Redirect when active session is detected on blockchain
+  useEffect(() => {
+    if (finderState !== "session-starting" || !currentTutor || !account?.address) {
+      return;
+    }
+
+    console.log("🔍 Student checking activeSessionData:", activeSessionData);
+    
+    if (activeSessionData) {
+      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] = activeSessionData;
+
+      console.log("🔍 Student session check:", {
+        student,
+        tutor,
+        startTime: startTime?.toString(),
+        isActive,
+        studentAddress: account?.address,
+        matches: student?.toLowerCase() === account?.address?.toLowerCase(),
+      });
+
+      // If session is active and has started, redirect (same as tutor)
+      // Note: We verify the student address matches to ensure this is the student's session
+      if (isActive && startTime && startTime > 0n) {
+        // Verify this session is for this student (address should match)
+        const studentAddressMatches = student?.toLowerCase() === account?.address?.toLowerCase();
+        console.log("🔍 Student session verification:", {
+          sessionStudent: student,
+          currentStudent: account?.address,
+          matches: studentAddressMatches,
+        });
+
+        if (studentAddressMatches) {
+          console.log("✅ Student: Active session detected on blockchain! Redirecting to WebRTC...");
+          const videoCallUrl = `https://langdao-production.up.railway.app/?student=${student}&tutor=${tutor}&session=${sessionId}`;
+          toast.success("Session active! Redirecting...");
+          console.log("🚀 Student redirecting to:", videoCallUrl);
+          window.location.href = videoCallUrl;
+        } else {
+          console.log("⚠️ Student: Active session found but student address doesn't match - waiting for correct session");
+        }
+      } else {
+        console.log("⏳ Student: Session not yet active or not started:", {
+          isActive,
+          startTime: startTime?.toString(),
+          hasStartTime: !!startTime,
+        });
+      }
+    } else {
+      console.log("⏳ Student: No active session data yet");
+    }
+  }, [activeSessionData, finderState, currentTutor, account?.address]);
+
   const startSearch = () => {
     if (!socket || !isConnected) {
       toast.error("Not connected to server");
@@ -409,17 +492,8 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         language: currentTutor.language,
       });
 
-      // Wait for blockchain confirmation
-      const receipt = await publicClient.waitForTransactionReceipt({
-        hash: txHash,
-      });
-
-      console.log("✅ Transaction confirmed on blockchain:", receipt);
-
-      // Once transaction is confirmed, redirect student to video call
+      // Store session info for when student enters room (will be used when blockchain confirms)
       const videoCallUrl = `https://langdao-production.up.railway.app/?student=${account?.address}&tutor=${currentTutor.tutorAddress}&session=${currentRequestId}`;
-
-      // Store session info for when student enters room
       sessionStorage.setItem('pendingSession', JSON.stringify({
         requestId: currentRequestId,
         studentAddress: account?.address,
@@ -428,9 +502,10 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         videoCallUrl,
       }));
 
-      // Redirect after transaction confirms
-      console.log("🚀 Student redirecting to video call:", videoCallUrl);
-      window.location.href = videoCallUrl;
+      // Don't wait for transaction receipt - instead, start polling blockchain for active session
+      // This allows both student and tutor to enter at the same time once blockchain confirms
+      console.log("🔄 Transaction submitted, now polling blockchain for active session...");
+      // The redirect will happen via the useEffect that polls for activeSessionData
     } catch (error: any) {
       console.error("Error starting session:", error);
 

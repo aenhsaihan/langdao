@@ -202,6 +202,14 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         toast(`Global: Tutor became unavailable`, { duration: 2000 });
       });
 
+      newSocket.on('student:in-room', (data) => {
+        console.log('🌍🌍🌍 GLOBAL SOCKET RECEIVED student:in-room:', data);
+      });
+
+      newSocket.on('student:in-room', (data) => {
+        console.log('🌍🌍🌍 GLOBAL SOCKET RECEIVED student:in-room:', data);
+      });
+
       setSocket(newSocket);
     } else if (!account?.address && socket) {
       console.log('Wallet disconnected, closing socket...');
