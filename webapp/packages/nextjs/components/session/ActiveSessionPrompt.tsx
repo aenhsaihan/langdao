@@ -71,8 +71,19 @@ export const ActiveSessionPrompt = () => {
 
       // Show prompt if session is active and has started
       if (isActive && startTime && startTime > 0n) {
-        console.log("ActiveSessionPrompt: Showing modal");
-        setShowPrompt(true);
+        // Don't show prompt if session just started (within last 30 seconds)
+        // This prevents showing it during the session-starting flow
+        const sessionStartTime = Number(startTime);
+        const sessionAge = currentTime - sessionStartTime;
+        const isNewSession = sessionAge < 30; // 30 seconds grace period
+        
+        if (isNewSession) {
+          console.log("ActiveSessionPrompt: Hiding (session just started, in session-starting flow)");
+          setShowPrompt(false);
+        } else {
+          console.log("ActiveSessionPrompt: Showing modal");
+          setShowPrompt(true);
+        }
       } else {
         console.log("ActiveSessionPrompt: Session not active or not started");
         setShowPrompt(false);
@@ -81,7 +92,7 @@ export const ActiveSessionPrompt = () => {
       console.log("ActiveSessionPrompt: Hiding (no active session)");
       setShowPrompt(false);
     }
-  }, [activeSessionData, pathname]);
+  }, [activeSessionData, pathname, currentTime]);
 
   const handleEndSession = async () => {
     if (!activeSessionData) return;
