@@ -103,7 +103,8 @@ export const ActiveSessionPrompt = () => {
       isInSessionFlow, 
       hasActiveSession: !!activeSessionData,
       hasSessionStorage: !!sessionFromStorage,
-      tutorAddressToCheck 
+      tutorAddressFromStorage,
+      accountAddress: account?.address
     });
     
     // Always hide if in session flow
