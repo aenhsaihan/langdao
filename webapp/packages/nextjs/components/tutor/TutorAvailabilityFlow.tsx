@@ -78,12 +78,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       ? Number(studentInfo[1])
       : 0;
 
-  console.log("Budget calculation:", {
-    currentSession: currentSession,
-    currentSessionBudget: currentSession?.budgetPerSecond,
-    studentInfoBudget: studentInfo ? Number(studentInfo[1]) : null,
-    actualStudentBudget,
-  });
 
   // Get rate for selected language
   const { data: tutorRate, isLoading: isTutorRateLoading } = useScaffoldReadContract({
@@ -161,7 +155,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     };
 
     const handleIncomingRequest = (data: any) => {
-      console.log("Incoming request data:", data);
       setIncomingRequests(prev => [...prev, data]);
       const toastId = toast(
         (t: any) => (
@@ -209,7 +202,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
     const handleRequestAccepted = (data: any) => {
       console.log("Request accepted, waiting for student:", data);
-      console.log("Budget per second:", data.budgetPerSecond);
       setCurrentSession(data);
       setAvailabilityState("waiting-for-student");
       setIncomingRequests([]);
@@ -932,9 +924,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                     ? LANGUAGES.find(l => l.code === currentSession.language)?.name || currentSession.language
                     : "N/A"}
                 </div>
-                <div>
-                  Budget: {weiPerSecondToHourlyUsd(actualStudentBudget)}/hr
-                </div>
+                <div>Budget: {weiPerSecondToHourlyUsd(actualStudentBudget)}/hr</div>
               </div>
             </div>
 
