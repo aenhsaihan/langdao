@@ -160,13 +160,14 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     };
 
     const handleIncomingRequest = (data: any) => {
+      console.log("Incoming request data:", data);
       setIncomingRequests(prev => [...prev, data]);
       const toastId = toast(
         (t: any) => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">New Student Request!</div>
-            <div className="text-sm text-gray-600">Student wants to learn {LANGUAGES.find(l => l.code === data.language)?.name || data.language}</div>
-            <div className="text-sm text-gray-600">Budget: {weiPerSecondToHourlyUsd(data.budgetPerSecond)}/hr</div>
+            <div className="text-sm text-gray-600">Student wants to learn {LANGUAGES.find(l => l.code === data.student?.language || data.language)?.name || data.student?.language || data.language}</div>
+            <div className="text-sm text-gray-600">Budget: {weiPerSecondToHourlyUsd(data.student?.budgetPerSecond || data.budgetPerSecond)}/hr</div>
             <div className="flex space-x-2">
               <button
                 onClick={() => {
