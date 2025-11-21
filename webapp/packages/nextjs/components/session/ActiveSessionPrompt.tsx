@@ -131,18 +131,17 @@ export const ActiveSessionPrompt = () => {
 
   // Determine which session data to use
   // Filter out invalid/zero session data first, then prioritize student sessions
-  const isValidTutorSession = tutorSessionData && tutorSessionData[0] && tutorSessionData[1] &&
+  // Note: We do basic validation here (non-zero addresses), but ownership validation happens in useEffect
+  const isValidTutorSessionBasic = tutorSessionData && tutorSessionData[0] && tutorSessionData[1] &&
     tutorSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
-    tutorSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
-    tutorSessionData[1]?.toLowerCase() === account?.address?.toLowerCase();
+    tutorSessionData[1] !== '0x0000000000000000000000000000000000000000';
   
-  const isValidStudentSession = studentSessionData && studentSessionData[0] && studentSessionData[1] &&
+  const isValidStudentSessionBasic = studentSessionData && studentSessionData[0] && studentSessionData[1] &&
     studentSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
-    studentSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
-    studentSessionData[0]?.toLowerCase() === account?.address?.toLowerCase();
+    studentSessionData[1] !== '0x0000000000000000000000000000000000000000';
   
-  // Priority: student session > tutor session (only if valid)
-  const activeSessionData = isValidStudentSession ? studentSessionData : (isValidTutorSession ? tutorSessionData : null);
+  // Priority: student session > tutor session (basic validation only - ownership check in useEffect)
+  const activeSessionData = isValidStudentSessionBasic ? studentSessionData : (isValidTutorSessionBasic ? tutorSessionData : null);
   
   // Refetch function that refetches all queries
   const refetch = () => {
