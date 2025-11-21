@@ -8,7 +8,7 @@
         "--mcp"
       ],
       "env": {
-        "VIBE_KANBAN_URL": "http://127.0.0.1:63894"
+        "VIBE_KANBAN_URL": "http://127.0.0.1:50236"
       },
       "disabled": false,
       "autoApprove": [
@@ -31,7 +31,8 @@
         "create_task",
         "create_task",
         "create_task",
-        "start_task_attempt"
+        "start_task_attempt",
+        "get_task"
       ]
     }
   }
