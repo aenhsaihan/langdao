@@ -257,8 +257,11 @@ mcp_vibe-kanban_get_task(task_id)
 ```
 
 **Available Agents (with API access):**
-- `CODEX` - Code completion focused, **RECOMMENDED DEFAULT**
-- `CURSOR_AGENT` - General coding tasks, **USE WITH CAUTION**
+- `CODEX` - Code completion focused, **RECOMMENDED DEFAULT** (⚠️ May hit API limits)
+- `CLAUDE_CODE` - Claude-based code executor (⚠️ Requires Claude subscription)
+- `CURSOR_AGENT` - General coding tasks, **USE WITH CAUTION** (⚠️ May default to `<synthetic>`)
+- `GEMINI` - Google Gemini executor (⚠️ May have npm/worktree errors)
+- `OPENCODE` - OpenCode executor (⚠️ May have configuration/certificate errors)
 
 **Agent Selection Guide:**
 - **CODEX**: **Default choice** - Works reliably for most tasks:
@@ -1361,6 +1364,131 @@ After successfully restarting the task with CODEX, there was a divergence in wha
 - [ ] If you see "gpt-5-codex" or "gpt-4-codex", the agent is working correctly
 
 **Status:** ✅ **RESOLVED** - Both user and assistant can now verify CODEX is working via UI
+
+---
+
+## Executor Failure Handling & Fallback Strategies
+
+### Common Executor Failures (November 21, 2025)
+
+**Issue:** Multiple executors failed when attempting to run a simple task, requiring fallback to direct implementation.
+
+**Executor Failure Summary:**
+1. **CODEX:** Hit API limit - "codex limit has been hit"
+2. **CLAUDE_CODE:** Requires subscription - "invalid api key because I don't have a claude subscription"
+3. **CURSOR_AGENT:** Defaulted to `<synthetic>` model (similar to "Auto" issue)
+4. **GEMINI:** npm error in worktree - `npm error code ENOENT`, `npm error syscall spawn sh`
+5. **OPENCODE:** Configuration/certificate errors - missing state file, self-signed certificate issues
+
+### Fallback Strategy
+
+**When All Executors Fail:**
+
+If multiple executors fail for a task, consider:
+
+1. **Assess Task Complexity:**
+   - **Small tasks (< 1 hour):** Consider direct implementation
+   - **Medium tasks (1-3 hours):** Try different executors or wait for limits to reset
+   - **Large tasks (> 3 hours):** Wait for executor availability or break into smaller tasks
+
+2. **Direct Implementation Workflow:**
+   - Implement the fix directly in the codebase
+   - Test thoroughly
+   - Commit with clear message referencing the kanban task
+   - Update kanban task status to "done"
+   - Document the executor issues for future reference
+
+3. **When to Retry Executors:**
+   - **API Limits:** Wait for limit reset (usually 24 hours)
+   - **Subscription Issues:** Use different executor that doesn't require subscription
+   - **Configuration Errors:** May need environment setup or can't be fixed easily
+   - **Synthetic/Auto Issues:** Try different executor immediately
+
+### Executor Selection Decision Tree (Updated)
+
+```
+Start Task
+    ↓
+Choose Executor
+    ↓
+    ├─→ CODEX (RECOMMENDED - Default Choice)
+    │       ↓
+    │   Verify in UI (5-10 seconds)
+    │       ↓
+    │   ├─→ "Auto" or "<synthetic>"? → STOP → Try next executor
+    │   ├─→ API limit hit? → Try CLAUDE_CODE or wait
+    │   └─→ Working? → Continue ✅
+    │
+    ├─→ CLAUDE_CODE
+    │       ↓
+    │   Verify in UI (5-10 seconds)
+    │       ↓
+    │   ├─→ Invalid API key? → Requires subscription → Try next executor
+    │   └─→ Working? → Continue ✅
+    │
+    ├─→ CURSOR_AGENT (Use with Caution)
+    │       ↓
+    │   Verify in UI IMMEDIATELY (5-10 seconds)
+    │       ↓
+    │   ├─→ "Auto" or "<synthetic>"? → STOP → Try next executor
+    │   └─→ Working? → Continue (monitor closely)
+    │
+    ├─→ GEMINI
+    │       ↓
+    │   Monitor for npm/worktree errors
+    │       ↓
+    │   ├─→ npm errors? → Try next executor
+    │   └─→ Working? → Continue ✅
+    │
+    └─→ OPENCODE
+            ↓
+        Monitor for config/certificate errors
+            ↓
+        ├─→ Config errors? → Try direct implementation
+        └─→ Working? → Continue ✅
+
+If ALL executors fail:
+    ↓
+Assess task complexity
+    ↓
+Small task? → Direct implementation
+Large task? → Wait or break down
+```
+
+### Best Practices for Executor Failures
+
+1. **Document Failures:**
+   - Note which executor failed and why
+   - Update workflow manual with new failure modes
+   - Share learnings with team
+
+2. **Try Multiple Executors:**
+   - Don't give up after first failure
+   - Try at least 2-3 different executors before falling back
+   - Some executors may work better for specific task types
+
+3. **Know When to Fall Back:**
+   - Small, straightforward tasks: Direct implementation is often faster
+   - Complex tasks: Worth waiting for executor availability
+   - Time-sensitive: Direct implementation may be necessary
+
+4. **Update Task Status:**
+   - If implementing directly, still update kanban task to "done"
+   - Add notes about executor issues in task description
+   - Document the workaround in commit message
+
+### Example: Direct Implementation After Executor Failures
+
+**Scenario:** Simple useEffect hook addition, all executors failed
+
+**Solution:**
+1. Implement directly in codebase
+2. Test the change
+3. Commit: `feat: Auto-select single language for tutor`
+4. Update kanban: `mcp_vibe-kanban_update_task(task_id, status: "done")`
+5. Document executor issues in workflow manual
+
+**Result:** Task completed faster than waiting for executor availability
 
 ---
 
