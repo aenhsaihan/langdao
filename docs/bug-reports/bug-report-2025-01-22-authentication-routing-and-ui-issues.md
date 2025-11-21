@@ -27,9 +27,10 @@
 
 ## 🐛 Bugs Identified
 
-### Bug 1: Authentication/Route "Flicker"
+### Bug 1: Authentication/Route "Flicker" ✅ FIXED
 
-**Priority:** 🔴 CRITICAL
+**Priority:** 🔴 CRITICAL  
+**Status:** ✅ FIXED (2025-01-22)
 
 **Location:** Main App router, AuthProvider, or root index page
 
@@ -57,6 +58,20 @@
 - Check root index page (`app/page.tsx`)
 - Implement global `isLoading` or `isCheckingAuth` state
 - Prevent rendering route content until auth check completes
+
+**Fix Applied:**
+- Created `AuthGuard` component that prevents rendering until authentication state is determined
+- Shows loading screen during auth check to prevent flicker
+- Wrapped `/tutor` and `/find-tutor` routes with `AuthGuard` requiring authentication
+- AuthGuard waits up to 150ms for account state to settle before rendering content
+- If account state is determined earlier, shows content immediately (responsive)
+- Prevents flicker by not showing any route content before auth check completes
+- Redirects to home if auth is required but no account is connected
+
+**Files Modified:**
+- `webapp/packages/nextjs/components/auth/AuthGuard.tsx` (new file)
+- `webapp/packages/nextjs/app/tutor/page.tsx`
+- `webapp/packages/nextjs/app/find-tutor/page.tsx`
 
 ---
 
@@ -286,7 +301,7 @@ Clicking "Find a Tutor" causes the UI to hang for a few seconds with no visual f
 
 ## ✅ Completion Status
 
-- [ ] Bug 1 / Task 1 - Fix Authentication/Route "Flicker" - 🔴 TODO
+- [x] Bug 1 / Task 1 - Fix Authentication/Route "Flicker" - ✅ FIXED
 - [ ] Bug 2 / Task 2 - Fix "$0.00/hr" Budget Display - 🟡 TODO
 - [ ] Bug 3 / Task 3 - Improve Wallet Rejection Error Handling - 🟡 TODO
 - [ ] Bug 4 / Task 4 - Add Loading State to "Find Tutor" Button - 🟡 TODO
