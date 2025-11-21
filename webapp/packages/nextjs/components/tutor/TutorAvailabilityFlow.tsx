@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { LANGUAGES, PYUSD_DECIMALS } from "../../lib/constants/contracts";
+import { useSocket } from "../../lib/socket/socketContext";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useActiveAccount } from "thirdweb/react";
-import { useSocket } from "../../lib/socket/socketContext";
 import { useScaffoldReadContract, useUsdConversion } from "~~/hooks/scaffold-eth";
-import { LANGUAGES, PYUSD_DECIMALS } from "../../lib/constants/contracts";
 
 interface TutorAvailabilityFlowProps {
   onBack?: () => void;
@@ -39,18 +39,16 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   });
 
   // Read which languages the tutor offers (check all 38 languages)
-  const tutorLanguageChecks = LANGUAGES.map(lang => 
+  const tutorLanguageChecks = LANGUAGES.map(lang =>
     useScaffoldReadContract({
       contractName: "LangDAO",
       functionName: "getTutorLanguage",
       args: [account?.address, lang.id],
-    })
+    }),
   );
 
   // Get tutor's registered languages
-  const tutorLanguages = LANGUAGES.filter((lang, index) => 
-    tutorLanguageChecks[index].data === true
-  );
+  const tutorLanguages = LANGUAGES.filter((lang, index) => tutorLanguageChecks[index].data === true);
 
   // Auto-select language if tutor has only one registered language
   useEffect(() => {
@@ -76,13 +74,15 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   // then fall back to currentSession budgetPerSecond (from socket event), then default to 0
   const actualStudentBudget = studentInfo
     ? Number(studentInfo[1])
-    : (currentSession?.budgetPerSecond ? Number(currentSession.budgetPerSecond) : 0);
+    : currentSession?.budgetPerSecond
+      ? Number(currentSession.budgetPerSecond)
+      : 0;
 
   console.log("Budget calculation:", {
     currentSession: currentSession,
     currentSessionBudget: currentSession?.budgetPerSecond,
     studentInfoBudget: studentInfo ? Number(studentInfo[1]) : null,
-    actualStudentBudget
+    actualStudentBudget,
   });
 
   // Get rate for selected language
@@ -111,7 +111,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     value: lang.code,
     label: lang.name,
     flag: lang.flag,
-    id: lang.id
+    id: lang.id,
   }));
 
   // Helper function to convert PYUSD per second to hourly USD for display
@@ -135,7 +135,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     console.log("✅ Setting up tutor socket event listeners for address:", account?.address);
     console.log("Socket ID:", socket.id);
     console.log("Socket connected:", socket.connected);
-    
+
     // Debug: Listen for ALL events
     const originalOn = socket.on.bind(socket);
     socket.onAny((eventName: string, ...args: any[]) => {
@@ -167,8 +167,15 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
         (t: any) => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">New Student Request!</div>
-            <div className="text-sm text-gray-600">Student wants to learn {LANGUAGES.find(l => l.code === data.student?.language || data.language)?.name || data.student?.language || data.language}</div>
-            <div className="text-sm text-gray-600">Budget: {weiPerSecondToHourlyUsd(data.student?.budgetPerSecond || data.budgetPerSecond)}/hr</div>
+            <div className="text-sm text-gray-600">
+              Student wants to learn{" "}
+              {LANGUAGES.find(l => l.code === data.student?.language || data.language)?.name ||
+                data.student?.language ||
+                data.language}
+            </div>
+            <div className="text-sm text-gray-600">
+              Budget: {weiPerSecondToHourlyUsd(data.student?.budgetPerSecond || data.budgetPerSecond)}/hr
+            </div>
             <div className="flex space-x-2">
               <button
                 onClick={() => {
@@ -206,13 +213,13 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       setCurrentSession(data);
       setAvailabilityState("waiting-for-student");
       setIncomingRequests([]);
-      
+
       // Dismiss any active toasts for accepted requests
-      requestToastMapRef.current.forEach((toastId) => {
+      requestToastMapRef.current.forEach(toastId => {
         toast.dismiss(toastId);
       });
       requestToastMapRef.current.clear();
-      
+
       toast.success("Request accepted! Waiting for student to start session...");
     };
 
@@ -230,7 +237,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       console.log("🎯🎯🎯 TUTOR RECEIVED student:accept-tutor (student confirmed transaction) 🎯🎯🎯");
       console.log("Current state BEFORE transition:", availabilityState);
       console.log("Student accepted data:", data);
-      
+
       // Store session data and transition to session-starting state when student confirms transaction
       setCurrentSession(data);
       console.log("Setting state to session-starting...");
@@ -260,29 +267,42 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       // If this is a broadcast (includes tutorAddress), verify it's for this tutor
       if (data.tutorAddress && account?.address) {
         if (data.tutorAddress.toLowerCase() !== account.address.toLowerCase()) {
-          console.log("⚠️ Ignoring student:in-room - not for this tutor (expected:", data.tutorAddress, ", got:", account.address, ")");
+          console.log(
+            "⚠️ Ignoring student:in-room - not for this tutor (expected:",
+            data.tutorAddress,
+            ", got:",
+            account.address,
+            ")",
+          );
           return;
         }
       }
 
       // Check if we have an active session on blockchain (fallback if state was lost)
-      const hasActiveSession = activeSessionData && activeSessionData[9] === true && activeSessionData[3] && activeSessionData[3] > 0n;
+      const hasActiveSession =
+        activeSessionData && activeSessionData[9] === true && activeSessionData[3] && activeSessionData[3] > 0n;
 
       // Redirect if:
       // 1. We're in session-starting state (normal flow), OR
       // 2. We have an active session on blockchain (state might have been lost due to reconnect/refresh)
       if (availabilityState !== "session-starting" && !hasActiveSession) {
-        console.log("⚠️ Ignoring student:in-room - not in session-starting state and no active session on blockchain (state:", availabilityState, ")");
+        console.log(
+          "⚠️ Ignoring student:in-room - not in session-starting state and no active session on blockchain (state:",
+          availabilityState,
+          ")",
+        );
         return;
       }
 
       // Student has entered the room (after waiting for blockchain confirmation)
       // Now tutor should enter immediately - student already confirmed blockchain tx
-      const videoCallUrl = data.videoCallUrl || `https://langdao-production.up.railway.app/?student=${data.studentAddress}&tutor=${account?.address}&session=${data.requestId}`;
+      const videoCallUrl =
+        data.videoCallUrl ||
+        `https://langdao-production.up.railway.app/?student=${data.studentAddress}&tutor=${account?.address}&session=${data.requestId}`;
       console.log("✅ Student entered room! Tutor redirecting to:", videoCallUrl);
 
       toast.success("Student is in the room! Joining now...");
-      
+
       // Redirect immediately - student already waited for blockchain confirmation
       window.location.href = videoCallUrl;
     };
@@ -348,7 +368,8 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     }
 
     if (activeSessionData) {
-      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] = activeSessionData;
+      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
+        activeSessionData;
 
       // If session is active and has started, redirect (student has confirmed tx and likely entered room)
       if (isActive && startTime && startTime > 0n) {
@@ -495,7 +516,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
   // Get selected language data for display
   const selectedLanguageData = selectedLanguageId !== null ? LANGUAGES.find(l => l.id === selectedLanguageId) : null;
-  
+
   // Get rate from active session if available, otherwise use tutorRate
   let rateToUse: bigint | undefined = undefined;
   if (activeSessionData && activeSessionData[6]) {
@@ -505,12 +526,14 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     // Use tutor's rate for selected language
     rateToUse = tutorRate;
   }
-  
+
   // Calculate display rate - use session rate if available, otherwise tutor rate
   // Only show "0" if we're sure there's no rate (not loading and no rate found)
-  const displayRatePerHour = rateToUse 
-    ? (Number(rateToUse) * 3600 / Math.pow(10, PYUSD_DECIMALS)).toFixed(2) 
-    : (isTutorRateLoading ? "..." : "0");
+  const displayRatePerHour = rateToUse
+    ? ((Number(rateToUse) * 3600) / Math.pow(10, PYUSD_DECIMALS)).toFixed(2)
+    : isTutorRateLoading
+      ? "..."
+      : "0";
 
   if (availabilityState === "setup") {
     const selectedLang = selectedLanguageData;
@@ -562,14 +585,17 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                     <button
                       key={lang.id}
                       onClick={() => setSelectedLanguageId(lang.id)}
-                      className={`p-2 rounded-lg border-2 transition-all duration-200 flex flex-col items-center ${selectedLanguageId === lang.id
+                      className={`p-2 rounded-lg border-2 transition-all duration-200 flex flex-col items-center ${
+                        selectedLanguageId === lang.id
                           ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
                           : "border-gray-200 dark:border-gray-600 hover:border-purple-300"
-                        }`}
+                      }`}
                       title={lang.name}
                     >
                       <div className="text-xl">{lang.flag}</div>
-                      <div className="text-xs font-medium text-gray-900 dark:text-white mt-1 truncate w-full text-center">{lang.name}</div>
+                      <div className="text-xs font-medium text-gray-900 dark:text-white mt-1 truncate w-full text-center">
+                        {lang.name}
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -587,9 +613,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                   <div className="text-sm text-gray-500 mt-2">
                     {pyusdToUsdFormatted(parseFloat(displayRatePerHour) / 3600, 6)}/sec
                   </div>
-                  <div className="text-xs text-gray-400 mt-2">
-                    (Rate from blockchain contract)
-                  </div>
+                  <div className="text-xs text-gray-400 mt-2">(Rate from blockchain contract)</div>
                 </div>
               </div>
             )}
@@ -623,7 +647,11 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                 className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="mr-2">🚀</span>
-                {!isTutorRegistered ? "Register First" : selectedLanguageId === null ? "Select Language" : "Go Live & Start Earning"}
+                {!isTutorRegistered
+                  ? "Register First"
+                  : selectedLanguageId === null
+                    ? "Select Language"
+                    : "Go Live & Start Earning"}
               </button>
             </div>
           </div>
@@ -898,8 +926,15 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                 <div>
                   Student: {currentSession?.studentAddress?.slice(0, 6)}...{currentSession?.studentAddress?.slice(-4)}
                 </div>
-                <div>Language: {currentSession?.language ? (LANGUAGES.find(l => l.code === currentSession.language)?.name || currentSession.language) : "N/A"}</div>
-                <div>Budget: {actualStudentBudget > 0 ? weiPerSecondToHourlyUsd(actualStudentBudget) : "Loading..."}/hr</div>
+                <div>
+                  Language:{" "}
+                  {currentSession?.language
+                    ? LANGUAGES.find(l => l.code === currentSession.language)?.name || currentSession.language
+                    : "N/A"}
+                </div>
+                <div>
+                  Budget: {actualStudentBudget > 0 ? weiPerSecondToHourlyUsd(actualStudentBudget) : "Loading..."}/hr
+                </div>
               </div>
             </div>
 
