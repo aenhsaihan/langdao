@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useActiveAccount } from "thirdweb/react";
 import type { NextPage } from "next";
@@ -472,6 +473,50 @@ const ConnectedDashboard = () => {
 const HomeContent = () => {
   const { currentView, showHowItWorks, showHome } = usePageView();
   const account = useActiveAccount();
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [hasCheckedAccount, setHasCheckedAccount] = useState(false);
+
+  // Wait a brief moment to determine account status before rendering
+  // This prevents flicker from showing landing page before account loads
+  useEffect(() => {
+    // Mark that we've checked account state
+    setHasCheckedAccount(true);
+    
+    // Give a small delay to allow account state to settle
+    // This prevents the flicker from showing landing page then switching to dashboard
+    const timer = setTimeout(() => {
+      setIsInitializing(false);
+    }, 150); // 150ms should be enough for account state to initialize
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // If account state changes after initial check, we can show content immediately
+  useEffect(() => {
+    if (hasCheckedAccount && account !== undefined) {
+      // Account state is now determined, we can show content
+      setIsInitializing(false);
+    }
+  }, [account, hasCheckedAccount]);
+
+  // Show loading screen during initialization
+  if (isInitializing) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
+            <span className="text-2xl">🔍</span>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Loading...
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300">
+            Checking your connection...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // If wallet is connected, show dashboard
   if (account) {

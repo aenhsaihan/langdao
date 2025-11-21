@@ -107,9 +107,10 @@
 
 ---
 
-### Bug 3: Root Route "Flicker" (FOUC - Flash of Unstyled Content)
+### Bug 3: Root Route "Flicker" (FOUC - Flash of Unstyled Content) ✅ FIXED
 
-**Priority:** 🟡 MEDIUM
+**Priority:** 🟡 MEDIUM  
+**Status:** ✅ FIXED (2025-01-22)
 
 **Location:** Root page `index.tsx/jsx` or main App router/Authentication Guard
 
@@ -304,7 +305,7 @@ UI displays raw ISO language codes (e.g., "es") instead of human-readable names 
 
 - [x] Bug 1 / Task 1 - Fix Ghost Toast Notification - ✅ FIXED
 - [x] Bug 2 / Task 2 - Fix Broken "Get Started" Button - ✅ FIXED
-- [ ] Bug 3 / Task 3 - Fix Root Route "Flicker" - 🟡 TODO
+- [x] Bug 3 / Task 3 - Fix Root Route "Flicker" - ✅ FIXED
 - [ ] Bug 4 / Task 4 - Map Language Codes to Names - 🟢 TODO
 
 ---
