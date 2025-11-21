@@ -299,12 +299,12 @@ export const ActiveSessionPrompt = () => {
 
       // Show prompt if session is active, has started, and belongs to current user
       if (isActive && startTime && startTime > 0n && sessionBelongsToUser) {
-        // Don't show prompt if session just started (within last 60 seconds)
-        // This prevents showing it during the session-starting flow
-        // Increased from 30 to 60 seconds to give more time for the flow to complete
+        // Don't show prompt if session just started (within last 5 seconds)
+        // This prevents showing it during the session-starting flow, but allows it to show quickly
+        // when users navigate back from WebRTC session
         const sessionStartTime = Number(startTime);
         const sessionAge = currentTime - sessionStartTime;
-        const isNewSession = sessionAge < 60; // 60 seconds grace period
+        const isNewSession = sessionAge < 5; // 5 seconds grace period (reduced from 60s)
         
         console.log("ActiveSessionPrompt: Session age calculation:", {
           startTime: startTime.toString(),
@@ -319,15 +319,9 @@ export const ActiveSessionPrompt = () => {
           console.log("ActiveSessionPrompt: Hiding (session just started, in session-starting flow, age:", sessionAge, "s)");
           setShowPrompt(false);
         } else {
-          // Also hide if we're on the home page (/) and session is very new
-          // This handles the case where tutor is on root path during session-starting
-          if (pathname === "/" && sessionAge < 120) {
-            console.log("ActiveSessionPrompt: Hiding (on home page with new session, age:", sessionAge, "s)");
-            setShowPrompt(false);
-          } else {
-            console.log("ActiveSessionPrompt: Showing modal (session age:", sessionAge, "s)");
-            setShowPrompt(true);
-          }
+          // Show prompt immediately after grace period
+          console.log("ActiveSessionPrompt: Showing modal (session age:", sessionAge, "s)");
+          setShowPrompt(true);
         }
       } else {
         if (!sessionBelongsToUser) {
