@@ -1,7 +1,6 @@
 "use client";
 
 import { StudentTutorFinder } from "~~/components/student/StudentTutorFinder";
-import { AuthGuard } from "~~/components/auth/AuthGuard";
 
 export default function FindTutorPage() {
   const handleSessionStart = (tutorData: any) => {
@@ -10,10 +9,8 @@ export default function FindTutorPage() {
   };
 
   return (
-    <AuthGuard requireAuth={true}>
-      <StudentTutorFinder 
-        onSessionStart={handleSessionStart}
-      />
-    </AuthGuard>
+    <StudentTutorFinder 
+      onSessionStart={handleSessionStart}
+    />
   );
 }
