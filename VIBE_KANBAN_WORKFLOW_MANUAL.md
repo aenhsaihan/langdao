@@ -1087,16 +1087,20 @@ git branch -d vk/xxx
 
 ## Key Learnings
 
-1. **Never bypass Vibe Kanban** - Let it orchestrate tasks
+1. **Never bypass Vibe Kanban** - Let it orchestrate tasks (unless all executors fail for small tasks)
 2. **Always test in isolation** - Use worktree before merging
 3. **Clean up after merge** - Remove worktrees and branches
-4. **Choose right agent** - CODEX for completion, CURSOR_AGENT for setup
-5. **Avoid "Auto" model** - Use specific executors
+4. **Choose right agent** - CODEX for completion, CURSOR_AGENT for setup (but verify it's not using "Auto" or "<synthetic>")
+5. **Avoid "Auto" and "<synthetic>" models** - Use specific executors and verify immediately
 6. **Review thoroughly** - Check structure, code, dependencies
 7. **Update documentation** - Keep implementation plan current
 8. **Maximum parallel execution is achievable** - With careful analysis, 5+ tasks can run safely in parallel
 9. **File target analysis is critical** - Understanding what files each task touches prevents conflicts
-10. **CODEX is reliable for parallel execution** - Consistent performance across multiple simultaneous tasks
+10. **CODEX is reliable for parallel execution** - Consistent performance across multiple simultaneous tasks (when not hitting limits)
+11. **Executor failures are common** - Have fallback strategy for when executors fail (direct implementation for small tasks)
+12. **Verify executor immediately** - Check UI within 5-10 seconds to catch "Auto"/"<synthetic>" issues early
+13. **Multiple executors may fail** - Don't assume one failure means all will fail, try different executors
+14. **Know when to fall back** - Small tasks can be implemented directly when executors are unavailable
 
 ---
 
