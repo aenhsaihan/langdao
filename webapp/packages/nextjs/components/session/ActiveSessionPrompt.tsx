@@ -13,8 +13,9 @@ export const ActiveSessionPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
   const [sessionFromStorage, setSessionFromStorage] = useState<any>(null);
+  const [tutorAddressFromStorage, setTutorAddressFromStorage] = useState<string | null>(null);
 
-  // Check sessionStorage for pending session (for students)
+  // Check sessionStorage for pending session (for students) - do this immediately
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
@@ -23,24 +24,30 @@ export const ActiveSessionPrompt = () => {
       try {
         const sessionData = JSON.parse(pendingSessionStr);
         setSessionFromStorage(sessionData);
+        setTutorAddressFromStorage(sessionData.tutorAddress);
       } catch (error) {
         console.error('Failed to parse pending session:', error);
         sessionStorage.removeItem('pendingSession');
+        setTutorAddressFromStorage(null);
       }
     } else {
       setSessionFromStorage(null);
+      setTutorAddressFromStorage(null);
     }
   }, []);
 
-  // For tutors: query activeSessions with their address (tutor is the key)
-  // For students: if we have sessionStorage data, query with tutorAddress from storage
-  const tutorAddressToCheck = sessionFromStorage?.tutorAddress || account?.address;
+  // For tutors: query activeSessions with their address (tutor is the key) - immediate query
+  // For students: query with tutorAddress from sessionStorage if available
+  // Try tutor address first (for students), fallback to account address (for tutors)
+  const addressToQuery = tutorAddressFromStorage || account?.address;
   
-  // Check for active session (using tutor address as key, or account address if no storage)
+  // Check for active session
+  // For tutors: account?.address is the key (immediate)
+  // For students: tutorAddressFromStorage is the key (after sessionStorage check)
   const { data: activeSessionData, refetch } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "activeSessions",
-    args: [tutorAddressToCheck as `0x${string}`],
+    args: [addressToQuery as `0x${string}`],
   });
 
   const { writeContractAsync, isMining } = useScaffoldWriteContract({
@@ -57,15 +64,16 @@ export const ActiveSessionPrompt = () => {
   }, []);
 
   // Poll for active session every 5 seconds
+  // Update addressToQuery if sessionStorage changes
   useEffect(() => {
-    if (!account?.address) return;
+    if (!account?.address && !tutorAddressFromStorage) return;
 
     const interval = setInterval(() => {
       refetch();
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [account?.address, refetch]);
+  }, [account?.address, tutorAddressFromStorage, refetch]);
 
   // Check if session is active
   useEffect(() => {
