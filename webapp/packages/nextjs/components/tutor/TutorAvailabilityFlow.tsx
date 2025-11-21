@@ -899,7 +899,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                   Student: {currentSession?.studentAddress?.slice(0, 6)}...{currentSession?.studentAddress?.slice(-4)}
                 </div>
                 <div>Language: {currentSession?.language ? (LANGUAGES.find(l => l.code === currentSession.language)?.name || currentSession.language) : "N/A"}</div>
-                <div>Budget: {weiPerSecondToHourlyUsd(actualStudentBudget)}/hr</div>
+                <div>Budget: {actualStudentBudget > 0 ? weiPerSecondToHourlyUsd(actualStudentBudget) : "Loading..."}/hr</div>
               </div>
             </div>
 
