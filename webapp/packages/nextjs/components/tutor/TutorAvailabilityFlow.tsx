@@ -23,6 +23,8 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   const [incomingRequests, setIncomingRequests] = useState<any[]>([]);
   const [currentSession, setCurrentSession] = useState<any>(null);
   const unavailableTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Map of requestId -> toastId for dismissing toasts when accepting from card
+  const requestToastMapRef = useRef<Map<string, string>>(new Map());
 
   // Debug: Log state changes
   useEffect(() => {
@@ -148,7 +150,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
     const handleIncomingRequest = (data: any) => {
       setIncomingRequests(prev => [...prev, data]);
-      toast(
+      const toastId = toast(
         (t: any) => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">New Student Request!</div>
@@ -181,6 +183,8 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
           position: "top-right",
         },
       );
+      // Store toast ID mapped to requestId so we can dismiss it when accepting from card
+      requestToastMapRef.current.set(data.requestId, toastId);
     };
 
     const handleRequestAccepted = (data: any) => {
@@ -188,6 +192,13 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       setCurrentSession(data);
       setAvailabilityState("waiting-for-student");
       setIncomingRequests([]);
+      
+      // Dismiss any active toasts for accepted requests
+      requestToastMapRef.current.forEach((toastId) => {
+        toast.dismiss(toastId);
+      });
+      requestToastMapRef.current.clear();
+      
       toast.success("Request accepted! Waiting for student to start session...");
     };
 
@@ -433,6 +444,13 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       tutorAddress: account?.address,
     });
 
+    // Dismiss the toast for this request if it exists
+    const toastId = requestToastMapRef.current.get(requestId);
+    if (toastId) {
+      toast.dismiss(toastId);
+      requestToastMapRef.current.delete(requestId);
+    }
+
     // Remove this request from the list
     setIncomingRequests(prev => prev.filter(req => req.requestId !== requestId));
   };
@@ -443,6 +461,13 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     emit("tutor:decline-request", {
       requestId,
     });
+
+    // Dismiss the toast for this request if it exists
+    const toastId = requestToastMapRef.current.get(requestId);
+    if (toastId) {
+      toast.dismiss(toastId);
+      requestToastMapRef.current.delete(requestId);
+    }
 
     // Remove this request from the list
     setIncomingRequests(prev => prev.filter(req => req.requestId !== requestId));
