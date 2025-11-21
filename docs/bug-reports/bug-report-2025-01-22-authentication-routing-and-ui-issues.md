@@ -27,10 +27,10 @@
 
 ## 🐛 Bugs Identified
 
-### Bug 1: Authentication/Route "Flicker" ✅ FIXED
+### Bug 1: Authentication/Route "Flicker"
 
 **Priority:** 🔴 CRITICAL  
-**Status:** ✅ FIXED (2025-01-22)
+**Status:** 🔴 TODO (Partial fix attempted - student flicker improved but still present, tutor flicker still quite bad)
 
 **Location:** Main App router, AuthProvider, or root index page
 
@@ -59,14 +59,12 @@
 - Implement global `isLoading` or `isCheckingAuth` state
 - Prevent rendering route content until auth check completes
 
-**Fix Applied:**
+**Partial Fix Attempted:**
 - Created `AuthGuard` component that prevents rendering until authentication state is determined
-- Shows loading screen during auth check to prevent flicker
-- Wrapped `/tutor` and `/find-tutor` routes with `AuthGuard` requiring authentication
-- AuthGuard waits up to 150ms for account state to settle before rendering content
-- If account state is determined earlier, shows content immediately (responsive)
-- Prevents flicker by not showing any route content before auth check completes
-- Redirects to home if auth is required but no account is connected
+- Wrapped `/tutor` and `/find-tutor` routes with `AuthGuard`
+- Student flicker improved but still present
+- Tutor flicker still quite bad - needs further investigation
+- May need to check OnboardingFlow registration checks or other async operations causing flicker
 
 **Files Modified:**
 - `webapp/packages/nextjs/components/auth/AuthGuard.tsx` (new file)
@@ -75,9 +73,10 @@
 
 ---
 
-### Bug 2: "$0.00/hr" Budget Display
+### Bug 2: "$0.00/hr" Budget Display ✅ FIXED
 
-**Priority:** 🟡 MEDIUM
+**Priority:** 🟡 MEDIUM  
+**Status:** ✅ FIXED (2025-01-22)
 
 **Location:** TutorLiveDashboard or "You're Live!" component
 
@@ -103,6 +102,17 @@
 - Trace `budget` or `hourlyRate` prop being passed
 - Verify calculation logic for hourly rate from session data
 - Ensure it uses actual active session rate instead of defaulting to zero
+
+**Fix Applied:**
+- Updated rate calculation to prioritize active session rate over tutor rate
+- If active session exists, use `ratePerSecond` from `activeSessionData`
+- Otherwise, use `tutorRate` from contract query
+- Added loading state check - shows "..." instead of "$0.00" while rate is loading
+- Added `enabled` condition to `getTutorRate` query to only run when account and language are available
+- Prevents showing $0.00/hr when rate is actually set but still loading
+
+**Files Modified:**
+- `webapp/packages/nextjs/components/tutor/TutorAvailabilityFlow.tsx`
 
 ---
 
@@ -301,8 +311,8 @@ Clicking "Find a Tutor" causes the UI to hang for a few seconds with no visual f
 
 ## ✅ Completion Status
 
-- [x] Bug 1 / Task 1 - Fix Authentication/Route "Flicker" - ✅ FIXED
-- [ ] Bug 2 / Task 2 - Fix "$0.00/hr" Budget Display - 🟡 TODO
+- [ ] Bug 1 / Task 1 - Fix Authentication/Route "Flicker" - 🔴 TODO (Partial fix - needs more work)
+- [x] Bug 2 / Task 2 - Fix "$0.00/hr" Budget Display - ✅ FIXED
 - [ ] Bug 3 / Task 3 - Improve Wallet Rejection Error Handling - 🟡 TODO
 - [ ] Bug 4 / Task 4 - Add Loading State to "Find Tutor" Button - 🟡 TODO
 

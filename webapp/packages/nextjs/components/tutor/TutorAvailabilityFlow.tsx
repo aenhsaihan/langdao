@@ -75,10 +75,11 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   const actualStudentBudget = studentInfo ? Number(studentInfo[1]) : (currentSession?.budgetPerSecond || 0);
 
   // Get rate for selected language
-  const { data: tutorRate } = useScaffoldReadContract({
+  const { data: tutorRate, isLoading: isTutorRateLoading } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "getTutorRate",
     args: [account?.address, selectedLanguageId ?? 0],
+    enabled: !!account?.address && selectedLanguageId !== null, // Only query if we have account and selected language
   });
 
   const isTutorRegistered = tutorInfo ? tutorInfo[2] : false;
@@ -481,7 +482,22 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
   // Get selected language data for display
   const selectedLanguageData = selectedLanguageId !== null ? LANGUAGES.find(l => l.id === selectedLanguageId) : null;
-  const displayRatePerHour = tutorRate ? (Number(tutorRate) * 3600 / Math.pow(10, PYUSD_DECIMALS)).toFixed(2) : "0";
+  
+  // Get rate from active session if available, otherwise use tutorRate
+  let rateToUse: bigint | undefined = undefined;
+  if (activeSessionData && activeSessionData[6]) {
+    // Use rate from active session (ratePerSecond is at index 6)
+    rateToUse = activeSessionData[6] as bigint;
+  } else if (tutorRate) {
+    // Use tutor's rate for selected language
+    rateToUse = tutorRate;
+  }
+  
+  // Calculate display rate - use session rate if available, otherwise tutor rate
+  // Only show "0" if we're sure there's no rate (not loading and no rate found)
+  const displayRatePerHour = rateToUse 
+    ? (Number(rateToUse) * 3600 / Math.pow(10, PYUSD_DECIMALS)).toFixed(2) 
+    : (isTutorRateLoading ? "..." : "0");
 
   if (availabilityState === "setup") {
     const selectedLang = selectedLanguageData;
