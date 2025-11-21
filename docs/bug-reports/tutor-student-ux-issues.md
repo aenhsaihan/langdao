@@ -52,9 +52,9 @@ We are fixing UI/UX issues in the LangDAO React application. The flow involves a
 - ✅ Dismiss all toasts in `handleRequestAccepted` for safety
 - ✅ Clean up toast IDs from map when dismissed
 
-#### Task 3: Add Loading State to "Start Session" Button (Student Side)
+#### Task 3: Add Loading State to "Start Session" Button (Student Side) ✅ COMPLETED
 
-**Location:** Look for the component showing "Perfect Match Found!" (likely `StudentMatchFound` or `SessionStart`).
+**Location:** `webapp/packages/nextjs/components/student/StudentTutorFinder.tsx`
 **Current Behavior:** When the Student clicks "Start Session Now," the button provides no visual feedback. The app waits for a MetaMask wallet signature in the background, making the UI look unresponsive.
 **Expected Behavior:**
 
@@ -63,6 +63,14 @@ We are fixing UI/UX issues in the LangDAO React application. The flow involves a
   1.  `onClick` -> Set `isLoading(true)`.
   2.  Show a spinner or change text to "Waiting for Wallet..." and disable the button.
   3.  Once the transaction is submitted or fails, reset the state.
+
+**Implementation:**
+- ✅ Added `isPreparingTransaction` state to track when waiting for MetaMask
+- ✅ Set loading state before `walletClient.writeContract()` call
+- ✅ Show spinner and "Waiting for Wallet..." text when loading
+- ✅ Disable button during transaction preparation
+- ✅ Reset loading state after MetaMask popup appears (transaction submitted)
+- ✅ Reset loading state on error (user rejection, etc.)
 
 ---
 
