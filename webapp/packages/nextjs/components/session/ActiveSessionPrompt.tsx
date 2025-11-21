@@ -5,44 +5,77 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useActiveAccount } from "thirdweb/react";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+import { useBlockNumber } from "wagmi";
 
 export const ActiveSessionPrompt = () => {
   const account = useActiveAccount();
   const pathname = usePathname();
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
+  const [tutorAddressFromStorage, setTutorAddressFromStorage] = useState<string | null>(null);
+  const [sessionFromStorage, setSessionFromStorage] = useState<any>(null);
   
-  // Read sessionStorage and localStorage synchronously on component initialization (not in useEffect)
-  // This ensures it's available immediately for the query, not after a render cycle
-  // localStorage is more persistent and survives tab closes, so we use it as a fallback
-  let tutorAddressFromStorage: string | null = null;
-  let sessionFromStorage: any = null;
-  
-  if (typeof window !== 'undefined') {
-    try {
-      // First try sessionStorage (for current session)
-      const pendingSessionStr = sessionStorage.getItem('pendingSession');
-      if (pendingSessionStr) {
-        sessionFromStorage = JSON.parse(pendingSessionStr);
-        tutorAddressFromStorage = sessionFromStorage.tutorAddress || null;
-      }
+  // Read sessionStorage and localStorage reactively
+  // This ensures we can detect when storage changes and update queries accordingly
+  useEffect(() => {
+    const readStorage = () => {
+      if (typeof window === 'undefined') return;
       
-      // Fallback to localStorage (more persistent, survives tab closes)
-      if (!tutorAddressFromStorage) {
-        const storedTutorAddress = localStorage.getItem('activeSessionTutorAddress');
-        if (storedTutorAddress) {
-          tutorAddressFromStorage = storedTutorAddress;
+      try {
+        let tutorAddress: string | null = null;
+        let session: any = null;
+        
+        // First try sessionStorage (for current session)
+        const pendingSessionStr = sessionStorage.getItem('pendingSession');
+        if (pendingSessionStr) {
+          session = JSON.parse(pendingSessionStr);
+          tutorAddress = session.tutorAddress || null;
         }
+        
+        // Fallback to localStorage (more persistent, survives tab closes)
+        if (!tutorAddress) {
+          const storedTutorAddress = localStorage.getItem('activeSessionTutorAddress');
+          if (storedTutorAddress) {
+            tutorAddress = storedTutorAddress;
+          }
+        }
+        
+        setTutorAddressFromStorage(tutorAddress);
+        setSessionFromStorage(session);
+        
+        console.log("ActiveSessionPrompt: Read storage", { tutorAddress, hasSession: !!session });
+      } catch (error) {
+        console.error('Failed to parse pending session:', error);
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('pendingSession');
+          localStorage.removeItem('activeSessionTutorAddress');
+        }
+        setTutorAddressFromStorage(null);
+        setSessionFromStorage(null);
       }
-    } catch (error) {
-      console.error('Failed to parse pending session:', error);
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('pendingSession');
-        localStorage.removeItem('activeSessionTutorAddress');
+    };
+    
+    // Read immediately
+    readStorage();
+    
+    // Also listen for storage events (in case storage changes in another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'pendingSession' || e.key === 'activeSessionTutorAddress') {
+        readStorage();
       }
-    }
-  }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Poll storage every 2 seconds to catch changes (in case storage events don't fire)
+    const interval = setInterval(readStorage, 2000);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Query 1: For tutors - query immediately with account address (tutor is the key)
   const { data: tutorSessionData, refetch: refetchTutor } = useScaffoldReadContract({
@@ -51,23 +84,73 @@ export const ActiveSessionPrompt = () => {
     args: [account?.address as `0x${string}`],
   });
 
-  // Query 2: For students - query with tutorAddress from sessionStorage (if available)
-  // Only query if we have tutorAddressFromStorage (undefined args will prevent query)
+  // Query 2: For students - query with tutorAddress from storage (if available)
+  // This query will automatically update when tutorAddressFromStorage changes
   const { data: studentSessionData, refetch: refetchStudent } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "activeSessions",
     args: tutorAddressFromStorage ? [tutorAddressFromStorage as `0x${string}`] : undefined,
   });
 
-  // Use tutor session data if available (tutor), otherwise use student session data (student)
-  const activeSessionData = tutorSessionData || studentSessionData;
+  // Query 3: Check if student is studying (fallback to detect active student sessions)
+  const { data: isStudying, refetch: refetchIsStudying } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "isStudying",
+    args: [account?.address as `0x${string}`],
+  });
+
+  // Query 4: If student is studying but we don't have tutor address, query recent SessionStarted events
+  // to find the tutor address
+  const { data: blockNumber } = useBlockNumber();
+  const shouldQueryEvents = isStudying && !tutorAddressFromStorage && account?.address;
+  const { data: sessionStartedEvents } = useScaffoldEventHistory({
+    contractName: "LangDAO",
+    eventName: "SessionStarted",
+    filters: { student: account?.address as `0x${string}` },
+    fromBlock: blockNumber ? blockNumber - BigInt(10000) : undefined, // Last ~10000 blocks (roughly last hour on most chains)
+    enabled: !!shouldQueryEvents,
+    blocksBatchSize: 1000,
+  });
+
+  // Extract tutor address from most recent SessionStarted event
+  useEffect(() => {
+    if (sessionStartedEvents && sessionStartedEvents.length > 0 && !tutorAddressFromStorage && account?.address) {
+      // Get the most recent event (events are typically in chronological order)
+      const mostRecentEvent = sessionStartedEvents[sessionStartedEvents.length - 1];
+      if (mostRecentEvent?.args?.tutor) {
+        const tutorAddress = mostRecentEvent.args.tutor as string;
+        console.log("ActiveSessionPrompt: Found tutor address from SessionStarted event:", tutorAddress);
+        setTutorAddressFromStorage(tutorAddress);
+        // Also store it in localStorage for future use
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('activeSessionTutorAddress', tutorAddress);
+        }
+      }
+    }
+  }, [sessionStartedEvents, tutorAddressFromStorage, account?.address]);
+
+  // Determine which session data to use
+  // Filter out invalid/zero session data first, then prioritize student sessions
+  const isValidTutorSession = tutorSessionData && tutorSessionData[0] && tutorSessionData[1] &&
+    tutorSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
+    tutorSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
+    tutorSessionData[1]?.toLowerCase() === account?.address?.toLowerCase();
   
-  // Refetch function that refetches both
+  const isValidStudentSession = studentSessionData && studentSessionData[0] && studentSessionData[1] &&
+    studentSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
+    studentSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
+    studentSessionData[0]?.toLowerCase() === account?.address?.toLowerCase();
+  
+  // Priority: student session > tutor session (only if valid)
+  const activeSessionData = isValidStudentSession ? studentSessionData : (isValidTutorSession ? tutorSessionData : null);
+  
+  // Refetch function that refetches all queries
   const refetch = () => {
     refetchTutor();
     if (tutorAddressFromStorage) {
       refetchStudent();
     }
+    refetchIsStudying();
   };
 
   const { writeContractAsync, isMining } = useScaffoldWriteContract({
@@ -83,6 +166,14 @@ export const ActiveSessionPrompt = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Refetch student session immediately when tutor address becomes available
+  useEffect(() => {
+    if (tutorAddressFromStorage && account?.address) {
+      console.log("ActiveSessionPrompt: Tutor address available, refetching student session", tutorAddressFromStorage);
+      refetchStudent();
+    }
+  }, [tutorAddressFromStorage, account?.address, refetchStudent]);
+
   // Poll for active session every 5 seconds
   useEffect(() => {
     if (!account?.address && !tutorAddressFromStorage) return;
@@ -92,10 +183,11 @@ export const ActiveSessionPrompt = () => {
       if (tutorAddressFromStorage) {
         refetchStudent();
       }
+      refetchIsStudying();
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [account?.address, tutorAddressFromStorage, refetchTutor, refetchStudent]);
+  }, [account?.address, tutorAddressFromStorage, refetchTutor, refetchStudent, refetchIsStudying]);
 
   // Check if session is active
   useEffect(() => {
@@ -115,12 +207,27 @@ export const ActiveSessionPrompt = () => {
       hasActiveSession: !!activeSessionData,
       hasSessionStorage: !!sessionFromStorage,
       tutorAddressFromStorage,
-      accountAddress: account?.address
+      accountAddress: account?.address,
+      isStudying,
+      tutorSessionData: tutorSessionData ? 'has data' : 'no data',
+      studentSessionData: studentSessionData ? 'has data' : 'no data',
     });
     
     // Always hide if in session flow
     if (isInSessionFlow) {
       console.log("ActiveSessionPrompt: Hiding (in session flow)");
+      setShowPrompt(false);
+      return;
+    }
+    
+    // Check if student is studying but we don't have session data (tutor address missing from storage)
+    // This handles the case where a student has an active session but the tutor address isn't stored
+    if (!activeSessionData && isStudying && account?.address && !tutorSessionData) {
+      console.log("ActiveSessionPrompt: Student is studying but tutor address not in storage - cannot show prompt without tutor address");
+      // Note: We can't show the prompt without the tutor address because we need it to end the session
+      // This is a limitation of the contract design (activeSessions is keyed by tutor address)
+      // The best we can do is log this case - the student would need to navigate to find-tutor page
+      // or the tutor address needs to be stored more persistently
       setShowPrompt(false);
       return;
     }
@@ -194,10 +301,16 @@ export const ActiveSessionPrompt = () => {
         setShowPrompt(false);
       }
     } else {
-      console.log("ActiveSessionPrompt: Hiding (no active session)");
+      // No active session data found
+      // If isStudying is true but we don't have session data, it means tutor address is missing
+      // This is logged above, but we still hide the prompt since we can't end the session without tutor address
+      console.log("ActiveSessionPrompt: Hiding (no active session data)", {
+        isStudying,
+        hasTutorAddress: !!tutorAddressFromStorage
+      });
       setShowPrompt(false);
     }
-  }, [activeSessionData, pathname, currentTime, sessionFromStorage, account?.address]);
+  }, [activeSessionData, pathname, currentTime, sessionFromStorage, account?.address, isStudying, tutorSessionData]);
 
   const handleEndSession = async () => {
     if (!activeSessionData) return;
