@@ -70,13 +70,11 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     enabled: !!currentSession?.studentAddress, // Only query if we have a student address
   });
 
-  // Extract actual budget - prioritize blockchain studentInfo (most reliable)
-  // then fall back to currentSession budgetPerSecond (from socket event), then default to 0
-  const actualStudentBudget = studentInfo
-    ? Number(studentInfo[1])
-    : currentSession?.budgetPerSecond
-      ? Number(currentSession.budgetPerSecond)
-      : 0;
+  // Extract actual budget - prioritize currentSession budgetPerSecond (from socket event, immediate)
+  // then fall back to blockchain studentInfo (slower but more reliable), then default to 0
+  const actualStudentBudget = currentSession?.budgetPerSecond
+    ? Number(currentSession.budgetPerSecond)
+    : (studentInfo ? Number(studentInfo[1]) : 0);
 
   console.log("Budget calculation:", {
     currentSession: currentSession,
