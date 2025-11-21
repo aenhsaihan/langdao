@@ -50,6 +50,18 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     tutorLanguageChecks[index].data === true
   );
 
+  // Auto-select language if tutor has only one registered language
+  useEffect(() => {
+    if (
+      availabilityState === "setup" &&
+      tutorLanguages.length === 1 &&
+      selectedLanguageId === null &&
+      !isTutorInfoLoading
+    ) {
+      setSelectedLanguageId(tutorLanguages[0].id);
+    }
+  }, [tutorLanguages.length, availabilityState, selectedLanguageId, isTutorInfoLoading]);
+
   // Get student's actual budget from blockchain when we have a session
   const { data: studentInfo } = useScaffoldReadContract({
     contractName: "LangDAO",
