@@ -165,6 +165,7 @@ export const useWebRTCSession = () => {
       }));
 
       sessionStorage.removeItem('pendingSession');
+      localStorage.removeItem('activeSessionTutorAddress');
       
       console.log('Session ended successfully');
     } catch (error) {

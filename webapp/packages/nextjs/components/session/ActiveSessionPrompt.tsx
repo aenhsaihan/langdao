@@ -13,22 +13,33 @@ export const ActiveSessionPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
   
-  // Read sessionStorage synchronously on component initialization (not in useEffect)
+  // Read sessionStorage and localStorage synchronously on component initialization (not in useEffect)
   // This ensures it's available immediately for the query, not after a render cycle
+  // localStorage is more persistent and survives tab closes, so we use it as a fallback
   let tutorAddressFromStorage: string | null = null;
   let sessionFromStorage: any = null;
   
   if (typeof window !== 'undefined') {
     try {
+      // First try sessionStorage (for current session)
       const pendingSessionStr = sessionStorage.getItem('pendingSession');
       if (pendingSessionStr) {
         sessionFromStorage = JSON.parse(pendingSessionStr);
         tutorAddressFromStorage = sessionFromStorage.tutorAddress || null;
       }
+      
+      // Fallback to localStorage (more persistent, survives tab closes)
+      if (!tutorAddressFromStorage) {
+        const storedTutorAddress = localStorage.getItem('activeSessionTutorAddress');
+        if (storedTutorAddress) {
+          tutorAddressFromStorage = storedTutorAddress;
+        }
+      }
     } catch (error) {
       console.error('Failed to parse pending session:', error);
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('pendingSession');
+        localStorage.removeItem('activeSessionTutorAddress');
       }
     }
   }
@@ -118,22 +129,41 @@ export const ActiveSessionPrompt = () => {
       const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
         activeSessionData;
 
+      // Validate session data - check if it's a real session (not a zero struct)
+      // Zero structs have zero addresses, so we check if student and tutor are non-zero
+      const isValidSession = student && tutor && 
+        student !== '0x0000000000000000000000000000000000000000' && 
+        tutor !== '0x0000000000000000000000000000000000000000';
+      
+      if (!isValidSession) {
+        console.log("ActiveSessionPrompt: Hiding (invalid/zero session data)");
+        setShowPrompt(false);
+        return;
+      }
+
+      // Determine if current user is a student or tutor
+      // If account address matches tutor, user is tutor; otherwise, check if it matches student
+      const isTutor = account?.address?.toLowerCase() === tutor?.toLowerCase();
+      const isStudent = !isTutor && account?.address?.toLowerCase() === student?.toLowerCase();
+      
       // For students: verify the session belongs to them
       // For tutors: they're the key, so it's always their session
-      const isStudent = sessionFromStorage && account?.address?.toLowerCase() !== tutor?.toLowerCase();
-      const studentAddressMatches = !isStudent || (student?.toLowerCase() === account?.address?.toLowerCase());
+      const sessionBelongsToUser = isTutor || (isStudent && student?.toLowerCase() === account?.address?.toLowerCase());
       
       console.log("ActiveSessionPrompt session check:", {
+        isTutor,
         isStudent,
         studentAddress: student,
+        tutorAddress: tutor,
         currentAddress: account?.address,
-        studentAddressMatches,
+        sessionBelongsToUser,
         isActive,
-        hasStartTime: !!startTime
+        hasStartTime: !!startTime,
+        isValidSession
       });
 
       // Show prompt if session is active, has started, and belongs to current user
-      if (isActive && startTime && startTime > 0n && studentAddressMatches) {
+      if (isActive && startTime && startTime > 0n && sessionBelongsToUser) {
         // Don't show prompt if session just started (within last 60 seconds)
         // This prevents showing it during the session-starting flow
         // Increased from 30 to 60 seconds to give more time for the flow to complete
@@ -156,7 +186,7 @@ export const ActiveSessionPrompt = () => {
           }
         }
       } else {
-        if (!studentAddressMatches) {
+        if (!sessionBelongsToUser) {
           console.log("ActiveSessionPrompt: Hiding (session doesn't belong to current user)");
         } else {
           console.log("ActiveSessionPrompt: Session not active or not started");
@@ -186,6 +216,11 @@ export const ActiveSessionPrompt = () => {
       toast.dismiss();
       toast.success("Session ended successfully!");
       setShowPrompt(false);
+      // Clean up storage
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('pendingSession');
+        localStorage.removeItem('activeSessionTutorAddress');
+      }
       refetch();
     } catch (error) {
       console.error("Error ending session:", error);

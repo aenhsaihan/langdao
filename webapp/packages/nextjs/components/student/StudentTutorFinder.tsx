@@ -503,6 +503,9 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         languageId,
         videoCallUrl,
       }));
+      // Also store in localStorage for ActiveSessionPrompt (more persistent, survives tab closes)
+      localStorage.setItem('activeSessionTutorAddress', currentTutor.tutorAddress);
+      }));
 
       // Don't wait for transaction receipt - instead, start polling blockchain for active session
       // This allows both student and tutor to enter at the same time once blockchain confirms
