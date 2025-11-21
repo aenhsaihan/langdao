@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../../lib/socket/socketContext";
 import toast from "react-hot-toast";
 import { useActiveAccount } from "thirdweb/react";
+import { LANGUAGES } from "../../lib/constants/contracts";
 
 interface IncomingRequest {
   requestId: string;
@@ -39,7 +40,7 @@ export const TutorSocketEvents: React.FC<TutorSocketEventsProps> = ({ onRequestR
               Student: {data.studentAddress.slice(0, 6)}...{data.studentAddress.slice(-4)}
             </div>
             <div className="text-sm text-gray-600">
-              Language: {data.language} | Budget: {data.budgetPerSecond} ETH/sec
+              Language: {LANGUAGES.find(l => l.code === data.language)?.name || data.language} | Budget: {data.budgetPerSecond} ETH/sec
             </div>
             <div className="flex space-x-2">
               <button
@@ -165,7 +166,7 @@ export const TutorSocketEvents: React.FC<TutorSocketEventsProps> = ({ onRequestR
                     {request.studentAddress.slice(0, 6)}...{request.studentAddress.slice(-4)}
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">
-                    {request.language} • {request.budgetPerSecond} ETH/sec
+                    {LANGUAGES.find(l => l.code === request.language)?.name || request.language} • {request.budgetPerSecond} ETH/sec
                   </div>
                 </div>
                 <div className="flex space-x-2">

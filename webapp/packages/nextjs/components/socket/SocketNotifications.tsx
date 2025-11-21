@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSocket } from '../../lib/socket/socketContext';
 import { useActiveAccount } from 'thirdweb/react';
 import { BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { LANGUAGES } from '../../lib/constants/contracts';
 
 interface Notification {
   id: string;
@@ -54,7 +55,7 @@ export const SocketNotifications: React.FC = () => {
       addNotification({
         type: 'tutor-request',
         title: 'New Tutoring Request',
-        message: `Student ${data.studentAddress.slice(0, 6)}...${data.studentAddress.slice(-4)} wants to learn ${data.language}`,
+        message: `Student ${data.studentAddress.slice(0, 6)}...${data.studentAddress.slice(-4)} wants to learn ${LANGUAGES.find(l => l.code === data.language)?.name || data.language}`,
         data,
         actions: [
           {

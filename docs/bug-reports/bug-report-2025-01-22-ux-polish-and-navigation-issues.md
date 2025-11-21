@@ -149,9 +149,10 @@
 
 ---
 
-### Bug 4: Language Code Display (ISO Code Instead of Name)
+### Bug 4: Language Code Display (ISO Code Instead of Name) ✅ FIXED
 
-**Priority:** 🟢 LOW
+**Priority:** 🟢 LOW  
+**Status:** ✅ FIXED (2025-01-22)
 
 **Location:** "Request Accepted" or "Session Details" component (where it lists "Language vs Budget")
 
@@ -162,6 +163,19 @@
 **Expected Behavior:**
 - Display human-readable language name (e.g., "Spanish" instead of "es")
 - Use proper language name mapping
+
+**Fix Applied:**
+- Updated all language code displays to use human-readable names from LANGUAGES constant
+- Fixed "Request Accepted" screen in TutorAvailabilityFlow to show language name instead of code
+- Fixed toast notifications in TutorSocketEvents to show language names
+- Fixed notification messages in SocketNotifications to show language names
+- All displays now use `LANGUAGES.find(l => l.code === languageCode)?.name || languageCode` pattern
+- Falls back to code if language not found in mapping
+
+**Files Modified:**
+- `webapp/packages/nextjs/components/tutor/TutorAvailabilityFlow.tsx`
+- `webapp/packages/nextjs/components/socket/TutorSocketEvents.tsx`
+- `webapp/packages/nextjs/components/socket/SocketNotifications.tsx`
 
 **Steps to Reproduce:**
 1. Accept a tutor request or view session details
@@ -317,7 +331,7 @@ UI displays raw ISO language codes (e.g., "es") instead of human-readable names 
 - [x] Bug 1 / Task 1 - Fix Ghost Toast Notification - ✅ FIXED
 - [x] Bug 2 / Task 2 - Fix Broken "Get Started" Button - ✅ FIXED
 - [x] Bug 3 / Task 3 - Fix Root Route "Flicker" - ✅ FIXED
-- [ ] Bug 4 / Task 4 - Map Language Codes to Names - 🟢 TODO
+- [x] Bug 4 / Task 4 - Map Language Codes to Names - ✅ FIXED
 
 ---
 

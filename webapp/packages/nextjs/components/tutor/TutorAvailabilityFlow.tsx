@@ -154,7 +154,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
         (t: any) => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">New Student Request!</div>
-            <div className="text-sm text-gray-600">Student wants to learn {data.language}</div>
+            <div className="text-sm text-gray-600">Student wants to learn {LANGUAGES.find(l => l.code === data.language)?.name || data.language}</div>
             <div className="text-sm text-gray-600">Budget: {weiPerSecondToHourlyUsd(data.budgetPerSecond)}/hr</div>
             <div className="flex space-x-2">
               <button
@@ -869,7 +869,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                 <div>
                   Student: {currentSession?.studentAddress?.slice(0, 6)}...{currentSession?.studentAddress?.slice(-4)}
                 </div>
-                <div>Language: {currentSession?.language}</div>
+                <div>Language: {currentSession?.language ? (LANGUAGES.find(l => l.code === currentSession.language)?.name || currentSession.language) : "N/A"}</div>
                 <div>Budget: {weiPerSecondToHourlyUsd(actualStudentBudget)}/hr</div>
               </div>
             </div>
