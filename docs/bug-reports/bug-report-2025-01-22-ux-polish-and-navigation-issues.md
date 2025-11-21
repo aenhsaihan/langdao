@@ -67,9 +67,10 @@
 
 ---
 
-### Bug 2: Broken "Get Started" Button (Tutor Onboarding)
+### Bug 2: Broken "Get Started" Button (Tutor Onboarding) ✅ FIXED
 
-**Priority:** 🔴 CRITICAL
+**Priority:** 🔴 CRITICAL  
+**Status:** ✅ FIXED (2025-01-22)
 
 **Location:** Welcome or Onboarding component (page with green "Get Started" button)
 
@@ -93,6 +94,16 @@
 - Check the `handleGetStarted` function
 - Missing navigation logic after console log
 - Should redirect to `/tutor/dashboard` or show dashboard state
+
+**Fix Applied:**
+- Added Next.js router navigation to "Get Started" button in OnboardingFlow
+- Tutors are now redirected to `/tutor` route (TutorAvailabilityFlow)
+- Students are redirected to `/find-tutor` route
+- Added fallback logic to determine role from registration status if selectedRole is not set
+- Button now properly navigates users after onboarding completion
+
+**Files Modified:**
+- `webapp/packages/nextjs/components/onboarding/OnboardingFlow.tsx`
 
 ---
 
@@ -292,7 +303,7 @@ UI displays raw ISO language codes (e.g., "es") instead of human-readable names 
 ## ✅ Completion Status
 
 - [x] Bug 1 / Task 1 - Fix Ghost Toast Notification - ✅ FIXED
-- [ ] Bug 2 / Task 2 - Fix Broken "Get Started" Button - 🔴 TODO
+- [x] Bug 2 / Task 2 - Fix Broken "Get Started" Button - ✅ FIXED
 - [ ] Bug 3 / Task 3 - Fix Root Route "Flicker" - 🟡 TODO
 - [ ] Bug 4 / Task 4 - Map Language Codes to Names - 🟢 TODO
 

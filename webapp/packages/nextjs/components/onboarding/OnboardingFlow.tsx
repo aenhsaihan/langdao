@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useActiveAccount, useReadContract } from "thirdweb/react";
 import { getContract } from "thirdweb";
 import { RoleSelection } from "./RoleSelection";
@@ -25,6 +26,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("role");
   const [selectedRole, setSelectedRole] = useState<UserRole>(null);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
+  const router = useRouter();
 
   const account = useActiveAccount();
 
@@ -194,7 +196,23 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
               }
             </p>
             <button
-              onClick={onComplete}
+              onClick={() => {
+                // Determine role from registration status if selectedRole is not set
+                const isStudentRegistered = studentInfo && studentInfo[2];
+                const isTutorRegistered = tutorInfo && tutorInfo[2];
+                const role = selectedRole || (isTutorRegistered ? "tutor" : isStudentRegistered ? "student" : null);
+                
+                // Navigate based on role
+                if (role === "tutor") {
+                  router.push("/tutor");
+                } else if (role === "student") {
+                  router.push("/find-tutor");
+                } else {
+                  // Fallback: call onComplete and navigate to home
+                  onComplete();
+                  router.push("/");
+                }
+              }}
               className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200"
             >
               Get Started
