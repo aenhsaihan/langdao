@@ -158,22 +158,23 @@ The student flow has **5 main states**:
 
 2. **Accept Tutor (Start Session):**
    ```javascript
+   - Prepares transaction: simulateContract(startSession)
+   - Shows MetaMask popup: writeContract()
+   - Gets transaction hash immediately after MetaMask confirmation
    - Sets state to: "session-starting" IMMEDIATELY (student sees rotating camera screen)
-   - Calls smart contract: startSession(tutorAddress, languageId)
-   - Shows MetaMask popup
-   - Waits for transaction confirmation (await blocks until confirmed)
-   - On transaction confirmation:
-     * Emits: student:accept-tutor {
-         requestId,
-         tutorAddress,
-         studentAddress,
-         language
-       }
-     * Stores session info in sessionStorage
+   - Emits: student:accept-tutor {
+       requestId,
+       tutorAddress,
+       studentAddress,
+       language
+     }
+   - Stores session info in sessionStorage
+   - Starts blockchain polling (every 1 second) for active session
+   - On blockchain confirmation (active session detected):
      * Redirects to video call URL (window.location.href)
    - On transaction rejection:
      * Emits: student:rejected-transaction
-     * Returns to: "searching" state
+     * Returns to: "tutor-found" state (user can try again)
    - On other errors:
      * Returns to: "tutor-found" state (user can try again)
    ```
@@ -197,16 +198,27 @@ The student flow has **5 main states**:
 
 ```javascript
 1. Student clicks "Start Session Now"
-2. setFinderState("session-starting") is called IMMEDIATELY
-3. Student sees "session-starting" screen
-4. MetaMask popup appears for transaction confirmation
-5. After student confirms in MetaMask, transaction is submitted
-6. Code waits for blockchain confirmation (await startSessionWrite)
-7. Once transaction confirms, redirects to video call URL
-8. Student is redirected to video call page
+2. MetaMask popup appears for transaction confirmation
+3. After student confirms in MetaMask, transaction hash is received
+4. setFinderState("session-starting") is called IMMEDIATELY
+5. Student sees "session-starting" screen (rotating camera)
+6. Emits student:accept-tutor event (notifies tutor)
+7. Stores session info in sessionStorage
+8. Starts blockchain polling every 1 second for active session
+9. Polls activeSessions(tutorAddress) until session becomes active
+10. Once blockchain confirms session (isActive && startTime > 0):
+    * Redirects to video call URL
+    * Student enters WebRTC room simultaneously with tutor
 ```
 
-**Note:** The student will see this screen for the duration of the transaction confirmation (typically a few seconds). The redirect only happens after the transaction is confirmed on the blockchain.
+**Blockchain Polling:**
+
+- Polls `activeSessions(tutorAddress)` every 1 second
+- Checks if `isActive === true` and `startTime > 0`
+- When active, redirects to video call URL
+- This ensures both student and tutor enter at the same time
+
+**Note:** The student will see this screen from MetaMask confirmation until blockchain confirms the session (typically a few seconds). Both student and tutor use blockchain polling to enter simultaneously.
 
 ## Tutor Flow
 
@@ -389,24 +401,29 @@ The tutor flow has **5 main states**:
 **What happens:**
 
 ```javascript
-1. Polls blockchain every 3 seconds for active session
-2. When session becomes active on blockchain:
-   - Receives activeSessionData with isActive === true
-   - Redirects to video call URL after 3 seconds
-3. OR receives: student:in-room event
-   - Redirects to video call URL after 1 second
+1. Receives student:accept-tutor event (student confirmed MetaMask transaction)
+2. Transitions to "session-starting" state
+3. Shows rotating camera screen (same as student sees)
+4. Starts blockchain polling every 1 second for active session
+5. Polls activeSessions(tutorAddress) until session becomes active
+6. Once blockchain confirms session (isActive && startTime > 0):
+   * Redirects to video call URL immediately
+   * Tutor enters WebRTC room simultaneously with student
 ```
 
 **Socket events listened for:**
 
-- `session:started` - Transaction confirmed on blockchain
-- `student:in-room` - Student entered video call room
+- `student:accept-tutor` - Student confirmed MetaMask transaction
+- `session:started` - Transaction confirmed on blockchain (informational only)
+- `student:in-room` - Student entered video call room (informational only, not used for redirect)
 
 **Blockchain polling:**
 
-- Polls `activeSessions(tutorAddress)` every 3 seconds
+- Polls `activeSessions(tutorAddress)` every 1 second
 - Checks if `isActive === true` and `startTime > 0`
-- When active, redirects to video call
+- When active, redirects to video call immediately (no delay)
+- This is the primary and only method for entering the WebRTC room
+- Ensures both student and tutor enter simultaneously
 
 ## Backend Matching Logic
 
@@ -474,12 +491,19 @@ Student                    Backend                    Tutor
 Student                    Backend                    Tutor
   │                          │                          │
   │──startSession() tx───────┤                          │
+  │   (MetaMask confirm)     │                          │
+  │──setState("session-      │                          │
+  │   starting")              │                          │
   │──student:accept-tutor────►│                          │
   │                          │──removeStudentRequest()─┤
   │                          │──student:accept-tutor───►│
   │                          │                          │
-  │──redirect to video───────┤                          │
+  │──poll blockchain─────────┤                          │──poll blockchain
+  │   (every 1s)             │                          │   (every 1s)
   │                          │                          │
+  │──detect active session───┤                          │──detect active session
+  │──redirect to video───────┤                          │──redirect to video
+  │   (simultaneously)        │                          │   (simultaneously)
 ```
 
 #### Student Enters Video Room
@@ -487,13 +511,21 @@ Student                    Backend                    Tutor
 ```
 Student                    Backend                    Tutor
   │                          │                          │
+  │──redirect to WebRTC──────┤                          │──redirect to WebRTC
+  │   (after blockchain      │                          │   (after blockchain
+  │    confirms)              │                          │    confirms)
+  │                          │                          │
   │──student:entered-room───►│                          │
+  │   (from WebRTC page)     │                          │
   │                          │──storeSessionMapping()──┤
   │                          │──student:in-room────────►│
+  │                          │   (broadcast to all)     │
   │◄──student:room-entry─────│                          │
   │   -confirmed             │                          │
   │                          │                          │
 ```
+
+**Note:** Both student and tutor redirect to WebRTC simultaneously via blockchain polling. The `student:entered-room` event is emitted after both have already entered the room, and is used for session tracking, not for triggering redirects.
 
 ## Active Session Prompt
 
@@ -504,8 +536,9 @@ Student                    Backend                    Tutor
 **When shown:**
 
 - User has an active session on blockchain (`activeSessions(address)` returns active session)
-- User is NOT on `/tutor` or `/find-tutor` pages
+- User is NOT on `/tutor` or `/find-tutor` pages (or paths starting with these)
 - Session has started (`startTime > 0`)
+- Session is NOT very new (more than 60 seconds old) - grace period for session-starting flow
 
 **What user sees:**
 
@@ -542,10 +575,11 @@ Student                    Backend                    Tutor
    ▼
 ┌─────────────────┐
 │session-starting │
-│ (while tx       │
-│  confirming)    │
+│ (polling        │
+│  blockchain)    │
 └──┬──────────────┘
-   │ tx confirmed
+   │ active session
+   │ detected
    ▼
 [Redirect to Video Call]
 ```
@@ -604,6 +638,9 @@ Student                    Backend                    Tutor
 2. Did `student:accept-tutor` event reach backend? Check backend logs
 3. Did tutor receive `student:accept-tutor`? Check tutor frontend console
 4. Is session stored in Redis? Check `sessionService.storeSessionMapping()`
+5. Is blockchain polling working? Check console for "Student polling blockchain" logs
+6. Is active session detected? Check if `activeSessions(tutorAddress)` returns active session
+7. **Important:** Student queries `activeSessions(tutorAddress)`, not `activeSessions(studentAddress)` - the mapping is keyed by tutor address
 
 ### Tutor stuck in "waiting-for-student"
 
