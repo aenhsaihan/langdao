@@ -12,12 +12,35 @@ export const ActiveSessionPrompt = () => {
   const pathname = usePathname();
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
+  const [sessionFromStorage, setSessionFromStorage] = useState<any>(null);
 
-  // Check for active session
+  // Check sessionStorage for pending session (for students)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const pendingSessionStr = sessionStorage.getItem('pendingSession');
+    if (pendingSessionStr) {
+      try {
+        const sessionData = JSON.parse(pendingSessionStr);
+        setSessionFromStorage(sessionData);
+      } catch (error) {
+        console.error('Failed to parse pending session:', error);
+        sessionStorage.removeItem('pendingSession');
+      }
+    } else {
+      setSessionFromStorage(null);
+    }
+  }, []);
+
+  // For tutors: query activeSessions with their address (tutor is the key)
+  // For students: if we have sessionStorage data, query with tutorAddress from storage
+  const tutorAddressToCheck = sessionFromStorage?.tutorAddress || account?.address;
+  
+  // Check for active session (using tutor address as key, or account address if no storage)
   const { data: activeSessionData, refetch } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "activeSessions",
-    args: [account?.address],
+    args: [tutorAddressToCheck as `0x${string}`],
   });
 
   const { writeContractAsync, isMining } = useScaffoldWriteContract({
@@ -56,7 +79,13 @@ export const ActiveSessionPrompt = () => {
       pathname?.includes("/tutor") ||
       pathname?.includes("/find-tutor");
     
-    console.log("ActiveSessionPrompt check:", { pathname, isInSessionFlow, hasActiveSession: !!activeSessionData });
+    console.log("ActiveSessionPrompt check:", { 
+      pathname, 
+      isInSessionFlow, 
+      hasActiveSession: !!activeSessionData,
+      hasSessionStorage: !!sessionFromStorage,
+      tutorAddressToCheck 
+    });
     
     // Always hide if in session flow
     if (isInSessionFlow) {
@@ -69,8 +98,22 @@ export const ActiveSessionPrompt = () => {
       const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
         activeSessionData;
 
-      // Show prompt if session is active and has started
-      if (isActive && startTime && startTime > 0n) {
+      // For students: verify the session belongs to them
+      // For tutors: they're the key, so it's always their session
+      const isStudent = sessionFromStorage && account?.address?.toLowerCase() !== tutor?.toLowerCase();
+      const studentAddressMatches = !isStudent || (student?.toLowerCase() === account?.address?.toLowerCase());
+      
+      console.log("ActiveSessionPrompt session check:", {
+        isStudent,
+        studentAddress: student,
+        currentAddress: account?.address,
+        studentAddressMatches,
+        isActive,
+        hasStartTime: !!startTime
+      });
+
+      // Show prompt if session is active, has started, and belongs to current user
+      if (isActive && startTime && startTime > 0n && studentAddressMatches) {
         // Don't show prompt if session just started (within last 60 seconds)
         // This prevents showing it during the session-starting flow
         // Increased from 30 to 60 seconds to give more time for the flow to complete
@@ -93,14 +136,18 @@ export const ActiveSessionPrompt = () => {
           }
         }
       } else {
-        console.log("ActiveSessionPrompt: Session not active or not started");
+        if (!studentAddressMatches) {
+          console.log("ActiveSessionPrompt: Hiding (session doesn't belong to current user)");
+        } else {
+          console.log("ActiveSessionPrompt: Session not active or not started");
+        }
         setShowPrompt(false);
       }
     } else {
       console.log("ActiveSessionPrompt: Hiding (no active session)");
       setShowPrompt(false);
     }
-  }, [activeSessionData, pathname, currentTime]);
+  }, [activeSessionData, pathname, currentTime, sessionFromStorage, account?.address]);
 
   const handleEndSession = async () => {
     if (!activeSessionData) return;
