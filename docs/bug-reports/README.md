@@ -19,6 +19,7 @@ bug-report-YYYY-MM-DD-[brief-description].md
 | Date | File | Description | Status | Tasks |
 |------|------|-------------|--------|-------|
 | 2025-01-18 | [bug-report-2025-01-18-tutor-student-ux-issues.md](./bug-report-2025-01-18-tutor-student-ux-issues.md) | Tutor dashboard & student session start flow UX issues | ✅ COMPLETED | 3/3 done |
+| 2025-01-21 | [bug-report-2025-01-21-student-session-warning-and-language-flicker.md](./bug-report-2025-01-21-student-session-warning-and-language-flicker.md) | Missing student session warning & language dropdown flicker | 🔴 TODO | 0/2 done |
 | [YYYY-MM-DD] | [bug-report-YYYY-MM-DD-description.md](./bug-report-YYYY-MM-DD-description.md) | [Description] | [Status] | [X/Y done] |
 
 ## 🎯 Workflow
