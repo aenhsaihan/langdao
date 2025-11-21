@@ -32,8 +32,8 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
   const publicClient = usePublicClient();
   const { data: deployedContractData } = useDeployedContractInfo({ contractName: "LangDAO" });
   const [finderState, setFinderState] = useState<FinderState>("setup");
-  const [language, setLanguage] = useState("en"); // Use language code instead of name
-  const [budgetPerHour, setBudgetPerHour] = useState("10"); // Store as hourly rate string like registration
+  const [language, setLanguage] = useState<string | null>(null); // Initialize to null to prevent flicker
+  const [budgetPerHour, setBudgetPerHour] = useState<string | null>(null); // Initialize to null to prevent flicker
   const { pyusdToUsdFormatted } = useUsdConversion();
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
   const [availableTutors, setAvailableTutors] = useState<TutorResponse[]>([]);
@@ -404,6 +404,10 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     }
 
     // Convert hourly rate to per-second PYUSD units (same as registration)
+    if (!budgetPerHour || !language) {
+      toast.error("Please wait for your profile data to load");
+      return;
+    }
     const budgetPerSecond = Math.floor((parseFloat(budgetPerHour) / 3600) * Math.pow(10, PYUSD_DECIMALS));
 
     const requestId = `req_${Math.random().toString(36).substr(2, 9)}`;
@@ -607,19 +611,31 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 Your Target Language
               </label>
-              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border-2 border-blue-200 dark:border-blue-700">
-                <div className="flex items-center justify-center">
-                  <span className="text-4xl mr-3">{selectedLanguageData?.flag}</span>
-                  <div className="text-left">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">
-                      {selectedLanguageData?.label}
-                    </div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      Registered language from your profile
+              {language && selectedLanguageData ? (
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border-2 border-blue-200 dark:border-blue-700">
+                  <div className="flex items-center justify-center">
+                    <span className="text-4xl mr-3">{selectedLanguageData.flag}</span>
+                    <div className="text-left">
+                      <div className="text-lg font-bold text-gray-900 dark:text-white">
+                        {selectedLanguageData.label}
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        Registered language from your profile
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border-2 border-gray-200 dark:border-gray-700 animate-pulse">
+                  <div className="flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
+                    <div className="text-left">
+                      <div className="h-5 w-32 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                      <div className="h-4 w-48 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Hidden language grid for reference - can be removed */}
@@ -657,7 +673,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
                   type="number"
                   step="0.01"
                   min="0"
-                  value={budgetPerHour}
+                  value={budgetPerHour || ""}
                   onChange={e => setBudgetPerHour(e.target.value)}
                   className="w-full p-4 pr-28 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg"
                   placeholder="10.00"
@@ -796,7 +812,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
               Searching for <span className="font-semibold text-purple-600">{selectedLanguageData?.label}</span> tutors
               <br />
-              Budget: <span className="font-semibold">{pyusdToUsdFormatted(budgetPerHour)}/hr</span>
+              Budget: <span className="font-semibold">{budgetPerHour ? pyusdToUsdFormatted(budgetPerHour) : 'Loading...'}/hr</span>
             </p>
 
             {/* Search Progress */}
@@ -969,7 +985,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
                       Budget Too Low
                     </h3>
                     <p className="text-sm text-yellow-600 dark:text-yellow-400">
-                      Your budget ({pyusdToUsdFormatted(budgetPerHour)}/hr) is lower than this tutor's rate ({weiPerSecondToHourlyUsd(currentTutor.ratePerSecond)}/hr).
+                      Your budget ({budgetPerHour ? pyusdToUsdFormatted(budgetPerHour) : 'N/A'}/hr) is lower than this tutor's rate ({weiPerSecondToHourlyUsd(currentTutor.ratePerSecond)}/hr).
                       <br />
                       Please increase your budget or find another tutor.
                     </p>

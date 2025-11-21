@@ -3,7 +3,7 @@
 **Date:** 2025-01-21  
 **Session:** 2  
 **Source:** Video analysis via Google AI Studio  
-**Status:** 🟡 PARTIALLY FIXED (Bug 1 fixed, Bug 2 pending)
+**Status:** ✅ FIXED
 
 ---
 
@@ -72,9 +72,10 @@
 
 ---
 
-### Bug 2: Language Default "Flicker" (English to Spanish)
+### Bug 2: Language Default "Flicker" (English to Spanish) ✅ FIXED
 
-**Priority:** 🟡 MEDIUM
+**Priority:** 🟡 MEDIUM  
+**Status:** ✅ FIXED (2025-01-21)
 
 **Location:** Find Tutor component / "Find Your Perfect Tutor" screen
 
@@ -104,6 +105,17 @@
 - Fix: Change initial state to null or show loading skeleton
 - Do not render language dropdown until `registeredLanguage` fetch is complete
 - Alternatively: Ensure fetch happens earlier so component mounts with correct language
+
+**Fix Applied:**
+
+- Changed `language` initial state from `"en"` to `null` to prevent showing incorrect default
+- Changed `budgetPerHour` initial state from `"10"` to `null` for consistency
+- Added conditional rendering: show loading skeleton until language data loads, then display actual language
+- Added validation to prevent search until both language and budget are loaded from student profile
+- Fixed all usages of `budgetPerHour` to handle null values gracefully
+
+**Files Modified:**
+- `webapp/packages/nextjs/components/student/StudentTutorFinder.tsx`
 
 ---
 
@@ -187,7 +199,7 @@ When student clicks "Find a Tutor," the language dropdown briefly shows "English
 ## ✅ Completion Status
 
 - [x] Bug 1 / Task 1 - Implement "Active Session" Warning for Students - ✅ FIXED
-- [ ] Bug 2 / Task 2 - Fix Language Default "Flicker" - 🟡 TODO
+- [x] Bug 2 / Task 2 - Fix Language Default "Flicker" - ✅ FIXED
 
 ---
 
