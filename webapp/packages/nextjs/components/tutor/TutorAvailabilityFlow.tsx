@@ -79,6 +79,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     : (studentInfo ? Number(studentInfo[1]) : 0);
 
   console.log("Budget calculation:", {
+    currentSession: currentSession,
     currentSessionBudget: currentSession?.budgetPerSecond,
     studentInfoBudget: studentInfo ? Number(studentInfo[1]) : null,
     actualStudentBudget
