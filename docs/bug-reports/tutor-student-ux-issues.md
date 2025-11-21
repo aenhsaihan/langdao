@@ -35,14 +35,22 @@ We are fixing UI/UX issues in the LangDAO React application. The flow involves a
 - ✅ Waits for tutor info to finish loading before auto-selecting
 - ✅ Implemented in `TutorAvailabilityFlow.tsx` (lines 53-62)
 
-#### Task 2: Fix Persistent Notification Toast (Tutor Side)
+#### Task 2: Fix Persistent Notification Toast (Tutor Side) ✅ COMPLETED
 
-**Location:** Look for the "Incoming Requests" logic or the "New Student Request" toast/notification component (likely triggered via a Socket event).
+**Location:** `webapp/packages/nextjs/components/tutor/TutorAvailabilityFlow.tsx`
 **Current Behavior:** When a student requests a session, a top-level Toast notification appears _and_ a card appears in the main dashboard. When the Tutor clicks "Accept" on the _dashboard card_, the top-level Toast notification remains on screen ("lingers") and does not disappear.
 **Expected Behavior:**
 
 - Ensure that the state controlling the visibility of the "New Student Request" Toast is tied to the request status.
 - **Fix:** When the request is `Accepted` (via the main card button), strictly force the Toast notification to close/dismiss. Check for a `setShowNotification(false)` or similar cleanup function that is missing in the `handleAccept` handler.
+
+**Implementation:**
+- ✅ Added `requestToastMapRef` to store mapping of requestId -> toastId
+- ✅ Store toast ID when creating toast in `handleIncomingRequest`
+- ✅ Dismiss toast in `acceptRequest` when called from card button
+- ✅ Dismiss toast in `declineRequest` when called from card button (for consistency)
+- ✅ Dismiss all toasts in `handleRequestAccepted` for safety
+- ✅ Clean up toast IDs from map when dismissed
 
 #### Task 3: Add Loading State to "Start Session" Button (Student Side)
 
