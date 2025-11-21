@@ -86,11 +86,23 @@ export const ActiveSessionPrompt = () => {
 
   // Query 2: For students - query with tutorAddress from storage (if available)
   // This query will automatically update when tutorAddressFromStorage changes
-  const { data: studentSessionData, refetch: refetchStudent } = useScaffoldReadContract({
+  const { data: studentSessionData, refetch: refetchStudent, isLoading: isLoadingStudentSession } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "activeSessions",
     args: tutorAddressFromStorage ? [tutorAddressFromStorage as `0x${string}`] : undefined,
   });
+
+  // Debug: Log when student session query state changes
+  useEffect(() => {
+    if (tutorAddressFromStorage) {
+      console.log("ActiveSessionPrompt: Student session query state:", {
+        tutorAddress: tutorAddressFromStorage,
+        hasData: !!studentSessionData,
+        isLoading: isLoadingStudentSession,
+        data: studentSessionData
+      });
+    }
+  }, [tutorAddressFromStorage, studentSessionData, isLoadingStudentSession]);
 
   // Query 3: Check if student is studying (fallback to detect active student sessions)
   const { data: isStudying, refetch: refetchIsStudying } = useScaffoldReadContract({
@@ -134,13 +146,16 @@ export const ActiveSessionPrompt = () => {
   // Note: We do basic validation here (non-zero addresses), but ownership validation happens in useEffect
   const isValidTutorSessionBasic = tutorSessionData && tutorSessionData[0] && tutorSessionData[1] &&
     tutorSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
-    tutorSessionData[1] !== '0x0000000000000000000000000000000000000000';
+    tutorSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
+    tutorSessionData[9] === true; // Also check isActive flag
   
   const isValidStudentSessionBasic = studentSessionData && studentSessionData[0] && studentSessionData[1] &&
     studentSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
-    studentSessionData[1] !== '0x0000000000000000000000000000000000000000';
+    studentSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
+    studentSessionData[9] === true; // Also check isActive flag
   
   // Priority: student session > tutor session (basic validation only - ownership check in useEffect)
+  // Only use tutor session if student session is not available
   const activeSessionData = isValidStudentSessionBasic ? studentSessionData : (isValidTutorSessionBasic ? tutorSessionData : null);
   
   // Refetch function that refetches all queries
@@ -210,6 +225,20 @@ export const ActiveSessionPrompt = () => {
       isStudying,
       tutorSessionData: tutorSessionData ? 'has data' : 'no data',
       studentSessionData: studentSessionData ? 'has data' : 'no data',
+      isLoadingStudentSession,
+      isValidStudentSessionBasic,
+      isValidTutorSessionBasic,
+      activeSessionData: activeSessionData ? 'has data' : 'no data',
+      tutorSessionDataDetails: tutorSessionData ? {
+        student: tutorSessionData[0],
+        tutor: tutorSessionData[1],
+        isActive: tutorSessionData[9]
+      } : null,
+      studentSessionDataDetails: studentSessionData ? {
+        student: studentSessionData[0],
+        tutor: studentSessionData[1],
+        isActive: studentSessionData[9]
+      } : null,
     });
     
     // Always hide if in session flow
@@ -277,6 +306,15 @@ export const ActiveSessionPrompt = () => {
         const sessionAge = currentTime - sessionStartTime;
         const isNewSession = sessionAge < 60; // 60 seconds grace period
         
+        console.log("ActiveSessionPrompt: Session age calculation:", {
+          startTime: startTime.toString(),
+          sessionStartTime,
+          currentTime,
+          sessionAge,
+          isNewSession,
+          pathname
+        });
+        
         if (isNewSession) {
           console.log("ActiveSessionPrompt: Hiding (session just started, in session-starting flow, age:", sessionAge, "s)");
           setShowPrompt(false);
@@ -287,7 +325,7 @@ export const ActiveSessionPrompt = () => {
             console.log("ActiveSessionPrompt: Hiding (on home page with new session, age:", sessionAge, "s)");
             setShowPrompt(false);
           } else {
-            console.log("ActiveSessionPrompt: Showing modal");
+            console.log("ActiveSessionPrompt: Showing modal (session age:", sessionAge, "s)");
             setShowPrompt(true);
           }
         }
