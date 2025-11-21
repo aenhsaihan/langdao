@@ -27,9 +27,10 @@
 
 ## 🐛 Bugs Identified
 
-### Bug 1: Ghost Toast Notification ("Global Tutor Removed")
+### Bug 1: Ghost Toast Notification ("Global Tutor Removed") ✅ FIXED
 
-**Priority:** 🟡 MEDIUM
+**Priority:** 🟡 MEDIUM  
+**Status:** ✅ FIXED (2025-01-22)
 
 **Location:** StudentDashboard and global SocketProvider (WebSocket event handlers)
 
@@ -54,6 +55,15 @@
 - Check WebSocket disconnection or component unmount logic
 - Investigate where the "Global Tutor removed" toast is triggered
 - Ensure toasts are context-aware based on user role and session state
+
+**Fix Applied:**
+- Removed global debug toasts for `tutor:available-updated` and `tutor:became-unavailable` events in SocketProvider
+- These toasts were showing irrelevant "Global Tutor removed" messages to all users (including students)
+- Components (TutorAvailabilityFlow, StudentTutorFinder) already handle these events contextually where appropriate
+- Students no longer see confusing tutor-related notifications when navigating away or refreshing
+
+**Files Modified:**
+- `webapp/packages/nextjs/lib/socket/socketContext.tsx`
 
 ---
 
@@ -281,7 +291,7 @@ UI displays raw ISO language codes (e.g., "es") instead of human-readable names 
 
 ## ✅ Completion Status
 
-- [ ] Bug 1 / Task 1 - Fix Ghost Toast Notification - 🟡 TODO
+- [x] Bug 1 / Task 1 - Fix Ghost Toast Notification - ✅ FIXED
 - [ ] Bug 2 / Task 2 - Fix Broken "Get Started" Button - 🔴 TODO
 - [ ] Bug 3 / Task 3 - Fix Root Route "Flicker" - 🟡 TODO
 - [ ] Bug 4 / Task 4 - Map Language Codes to Names - 🟢 TODO
