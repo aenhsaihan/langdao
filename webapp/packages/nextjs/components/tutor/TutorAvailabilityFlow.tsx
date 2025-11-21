@@ -78,7 +78,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       ? Number(studentInfo[1])
       : 0;
 
-
   // Get rate for selected language
   const { data: tutorRate, isLoading: isTutorRateLoading } = useScaffoldReadContract({
     contractName: "LangDAO",
