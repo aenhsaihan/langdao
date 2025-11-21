@@ -542,6 +542,9 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         // Return to tutor-found state so user can try again
         setFinderState("tutor-found");
       }
+      
+      // Reset loading state on error
+      setIsPreparingTransaction(false);
     }
   };
 
