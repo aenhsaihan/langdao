@@ -69,10 +69,14 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     contractName: "LangDAO",
     functionName: "getStudentInfo",
     args: [currentSession?.studentAddress as `0x${string}`],
+    enabled: !!currentSession?.studentAddress, // Only query if we have a student address
   });
 
-  // Extract actual budget from student info
-  const actualStudentBudget = studentInfo ? Number(studentInfo[1]) : (currentSession?.budgetPerSecond || 0);
+  // Extract actual budget - prioritize currentSession budgetPerSecond (from socket event)
+  // then fall back to blockchain studentInfo, then default to 0
+  const actualStudentBudget = currentSession?.budgetPerSecond 
+    ? Number(currentSession.budgetPerSecond)
+    : (studentInfo ? Number(studentInfo[1]) : 0);
 
   // Get rate for selected language
   const { data: tutorRate, isLoading: isTutorRateLoading } = useScaffoldReadContract({
