@@ -74,9 +74,15 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
   // Extract actual budget - prioritize currentSession budgetPerSecond (from socket event)
   // then fall back to blockchain studentInfo, then default to 0
-  const actualStudentBudget = currentSession?.budgetPerSecond 
+  const actualStudentBudget = currentSession?.budgetPerSecond
     ? Number(currentSession.budgetPerSecond)
     : (studentInfo ? Number(studentInfo[1]) : 0);
+
+  console.log("Budget calculation:", {
+    currentSessionBudget: currentSession?.budgetPerSecond,
+    studentInfoBudget: studentInfo ? Number(studentInfo[1]) : null,
+    actualStudentBudget
+  });
 
   // Get rate for selected language
   const { data: tutorRate, isLoading: isTutorRateLoading } = useScaffoldReadContract({
@@ -194,6 +200,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
     const handleRequestAccepted = (data: any) => {
       console.log("Request accepted, waiting for student:", data);
+      console.log("Budget per second:", data.budgetPerSecond);
       setCurrentSession(data);
       setAvailabilityState("waiting-for-student");
       setIncomingRequests([]);
