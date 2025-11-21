@@ -12,30 +12,26 @@ export const ActiveSessionPrompt = () => {
   const pathname = usePathname();
   const [showPrompt, setShowPrompt] = useState(false);
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
-  const [sessionFromStorage, setSessionFromStorage] = useState<any>(null);
-  const [tutorAddressFromStorage, setTutorAddressFromStorage] = useState<string | null>(null);
-
-  // Check sessionStorage for pending session (for students) - do this immediately on mount
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    // Read synchronously on mount for immediate access
-    const pendingSessionStr = sessionStorage.getItem('pendingSession');
-    if (pendingSessionStr) {
-      try {
-        const sessionData = JSON.parse(pendingSessionStr);
-        setSessionFromStorage(sessionData);
-        setTutorAddressFromStorage(sessionData.tutorAddress);
-      } catch (error) {
-        console.error('Failed to parse pending session:', error);
-        sessionStorage.removeItem('pendingSession');
-        setTutorAddressFromStorage(null);
+  
+  // Read sessionStorage synchronously on component initialization (not in useEffect)
+  // This ensures it's available immediately for the query, not after a render cycle
+  let tutorAddressFromStorage: string | null = null;
+  let sessionFromStorage: any = null;
+  
+  if (typeof window !== 'undefined') {
+    try {
+      const pendingSessionStr = sessionStorage.getItem('pendingSession');
+      if (pendingSessionStr) {
+        sessionFromStorage = JSON.parse(pendingSessionStr);
+        tutorAddressFromStorage = sessionFromStorage.tutorAddress || null;
       }
-    } else {
-      setSessionFromStorage(null);
-      setTutorAddressFromStorage(null);
+    } catch (error) {
+      console.error('Failed to parse pending session:', error);
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('pendingSession');
+      }
     }
-  }, []);
+  }
 
   // Query 1: For tutors - query immediately with account address (tutor is the key)
   const { data: tutorSessionData, refetch: refetchTutor } = useScaffoldReadContract({
