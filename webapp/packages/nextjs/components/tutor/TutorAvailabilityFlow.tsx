@@ -74,7 +74,9 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   // then fall back to blockchain studentInfo (slower but more reliable), then default to 0
   const actualStudentBudget = currentSession?.budgetPerSecond
     ? Number(currentSession.budgetPerSecond)
-    : (studentInfo ? Number(studentInfo[1]) : 0);
+    : studentInfo
+      ? Number(studentInfo[1])
+      : 0;
 
   console.log("Budget calculation:", {
     currentSession: currentSession,
@@ -931,7 +933,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                     : "N/A"}
                 </div>
                 <div>
-                  Budget: {actualStudentBudget > 0 ? weiPerSecondToHourlyUsd(actualStudentBudget) : "Loading..."}/hr
+                  Budget: {weiPerSecondToHourlyUsd(actualStudentBudget)}/hr
                 </div>
               </div>
             </div>
