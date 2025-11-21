@@ -136,6 +136,17 @@
 - Check role checking sequence
 - Implement loading state that prevents rendering until all checks complete
 
+**Fix Applied:**
+- Added loading state (`isInitializing`) to `HomeContent` component
+- Shows a loading screen with "Checking your connection..." message during initialization
+- Waits up to 150ms for account state to settle before rendering content
+- If account state is determined earlier, shows content immediately (responsive)
+- Prevents flicker by not showing landing page before account check completes
+- Smooth transition to either landing page (no account) or dashboard (account connected)
+
+**Files Modified:**
+- `webapp/packages/nextjs/app/page.tsx`
+
 ---
 
 ### Bug 4: Language Code Display (ISO Code Instead of Name)
