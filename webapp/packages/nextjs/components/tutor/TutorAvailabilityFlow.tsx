@@ -287,15 +287,15 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
       // Student has entered the room (after waiting for blockchain confirmation)
       // Now tutor should enter immediately - student already confirmed blockchain tx
-      const videoCallUrl =
-        data.videoCallUrl ||
-        `https://langdao-production.up.railway.app/?student=${data.studentAddress}&tutor=${account?.address}&session=${data.requestId}`;
-      console.log("✅ Student entered room! Tutor redirecting to:", videoCallUrl);
-
+      // Redirect to internal session page
+      // const webRTCUrl = `https://langdao-production.up.railway.app/?tutor=${account?.address}&student=${data.studentAddress}&session=${data.requestId}&role=tutor`;
+      const webRTCUrl = `/session/${data.requestId}?role=tutor&tutor=${account?.address}&student=${data.studentAddress}`;
+      
+      console.log("Redirecting to WebRTC:", webRTCUrl);
       toast.success("Student is in the room! Joining now...");
 
       // Redirect immediately - student already waited for blockchain confirmation
-      window.location.href = videoCallUrl;
+      window.location.href = webRTCUrl;
     };
 
     const handleStudentRejectedTransaction = (data: any) => {

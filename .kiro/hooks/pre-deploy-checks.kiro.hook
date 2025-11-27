@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Pre-Deployment Build & Lint",
+  "description": "Runs npm build and lint commands to check for errors before deployment to production",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npm run build && npm run lint"
+  }
+}

@@ -1100,6 +1100,119 @@ io.on("connection", (socket) => {
     }
   });
 
+  // WebRTC Signaling Events
+  
+  // Relay Offer
+  socket.on("webrtc:offer", async (data) => {
+    try {
+      if (!(await checkSocketRateLimit(socket.id))) {
+        socket.emit("error", { message: "Rate limit exceeded" });
+        return;
+      }
+
+      console.log(`📡 Relay Offer from ${data.senderAddress} to ${data.targetAddress}`);
+      
+      // Find target socket
+      const targetHash = await redisClient.hGetAll(`tutor:${data.targetAddress.toLowerCase()}`);
+      let targetSocketId = targetHash?.socketId;
+
+      // If not found in hash, try reverse lookup or broadcast (as fallback)
+      if (!targetSocketId) {
+         // Try to find by iterating (expensive but safe fallback)
+         const allSockets = Array.from(io.sockets.sockets.values());
+         for (const s of allSockets) {
+             const addr = await redisClient.hGet("socket_to_address", s.id);
+             if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+                 targetSocketId = s.id;
+                 break;
+             }
+         }
+      }
+
+      // If still not found, check if target is a student (who might not be in tutor hash)
+      if (!targetSocketId) {
+          // For students, we might need to look up via request ID or just iterate all sockets
+          // Since we don't have a "student:address" hash, we rely on socket_to_address
+          const allSockets = Array.from(io.sockets.sockets.values());
+          for (const s of allSockets) {
+              const addr = await redisClient.hGet("socket_to_address", s.id);
+              if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+                  targetSocketId = s.id;
+                  break;
+              }
+          }
+      }
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("webrtc:offer", data);
+      } else {
+        console.warn(`⚠️ Target ${data.targetAddress} not found for offer`);
+      }
+    } catch (error) {
+      console.error("Error relaying offer:", error);
+    }
+  });
+
+  // Relay Answer
+  socket.on("webrtc:answer", async (data) => {
+    try {
+      if (!(await checkSocketRateLimit(socket.id))) {
+        socket.emit("error", { message: "Rate limit exceeded" });
+        return;
+      }
+
+      console.log(`📡 Relay Answer from ${data.senderAddress} to ${data.targetAddress}`);
+      
+      // Find target socket (similar logic to offer)
+      let targetSocketId;
+      const allSockets = Array.from(io.sockets.sockets.values());
+      for (const s of allSockets) {
+          const addr = await redisClient.hGet("socket_to_address", s.id);
+          if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+              targetSocketId = s.id;
+              break;
+          }
+      }
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("webrtc:answer", data);
+      } else {
+         console.warn(`⚠️ Target ${data.targetAddress} not found for answer`);
+      }
+    } catch (error) {
+      console.error("Error relaying answer:", error);
+    }
+  });
+
+  // Relay ICE Candidate
+  socket.on("webrtc:ice-candidate", async (data) => {
+    try {
+      // Higher rate limit for ICE candidates? For now using standard
+      if (!(await checkSocketRateLimit(socket.id))) {
+        // Silent fail for ICE to avoid spamming errors
+        return;
+      }
+
+      // console.log(`📡 Relay ICE from ${data.senderAddress} to ${data.targetAddress}`);
+      
+      let targetSocketId;
+      const allSockets = Array.from(io.sockets.sockets.values());
+      for (const s of allSockets) {
+          const addr = await redisClient.hGet("socket_to_address", s.id);
+          if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+              targetSocketId = s.id;
+              break;
+          }
+      }
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("webrtc:ice-candidate", data);
+      }
+    } catch (error) {
+      console.error("Error relaying ICE candidate:", error);
+    }
+  });
+
   // Handle disconnection
   socket.on("disconnect", async (reason) => {
     console.log("Client disconnected:", socket.id, "Reason:", reason);

@@ -227,7 +227,11 @@ export const ActiveSessionPrompt = () => {
       pathname?.startsWith("/tutor/") ||
       pathname?.startsWith("/find-tutor/") ||
       pathname?.includes("/tutor") ||
-      pathname?.includes("/find-tutor");
+      pathname?.includes("/find-tutor") ||
+      pathname?.startsWith("/session") ||
+      pathname?.includes("/session") ||
+      pathname?.startsWith("/call") ||
+      pathname?.includes("/call");
 
     console.log("ActiveSessionPrompt check:", {
       pathname,

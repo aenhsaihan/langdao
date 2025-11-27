@@ -382,11 +382,14 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         });
 
         if (studentAddressMatches) {
-          console.log("✅ Student: Active session detected on blockchain! Redirecting to WebRTC...");
-          const videoCallUrl = `https://langdao-production.up.railway.app/?student=${student}&tutor=${tutor}&session=${sessionId}`;
+          console.log("✅ Student: Active session detected on blockchain!");
+          // Redirect to internal session page
+          // const webRTCUrl = `https://langdao-production.up.railway.app/?student=${account?.address}&tutor=${tutor}&session=${sessionId}`;
+          const webRTCUrl = `/session/${sessionId}?role=student&tutor=${tutor}&student=${account?.address}`;
+
           toast.success("Session active! Redirecting...");
-          console.log("🚀 Student redirecting to:", videoCallUrl);
-          window.location.href = videoCallUrl;
+          console.log("🚀 Student redirecting to:", webRTCUrl);
+          window.location.href = webRTCUrl;
         } else {
           console.log(
             "⚠️ Student: Active session found but student address doesn't match - waiting for correct session",
