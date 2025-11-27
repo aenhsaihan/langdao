@@ -1,6 +1,7 @@
 # Thirdweb Client ID Setup
 
 ## Issue
+
 You're seeing a "dummy client" error because the Thirdweb client ID is not properly configured.
 
 ## Quick Fix
@@ -35,6 +36,7 @@ npm run dev
 ## Why This Is Needed
 
 Thirdweb uses the client ID to:
+
 - Make RPC calls to blockchain networks
 - Read contract data (like checking if users are registered)
 - Enable wallet connections

@@ -1,40 +1,40 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useSocket } from '../../lib/socket/socketContext';
-import { useActiveAccount } from 'thirdweb/react';
-import toast from 'react-hot-toast';
-import { LANGUAGES } from '../../lib/constants/contracts';
+import React, { useState } from "react";
+import { LANGUAGES } from "../../lib/constants/contracts";
+import { useSocket } from "../../lib/socket/socketContext";
+import toast from "react-hot-toast";
+import { useActiveAccount } from "thirdweb/react";
 
 export const QuickActions: React.FC = () => {
   const { isConnected, emit } = useSocket();
   const account = useActiveAccount();
   const [isAvailable, setIsAvailable] = useState(false);
-  const [language, setLanguage] = useState('en'); // Use language code
+  const [language, setLanguage] = useState("en"); // Use language code
   const [rate, setRate] = useState(0.001);
   const [budget, setBudget] = useState(0.002);
 
   // Use LANGUAGES from constants
   const languages = LANGUAGES.map(lang => ({
     value: lang.code,
-    label: lang.name
+    label: lang.name,
   }));
 
   const setTutorAvailable = () => {
     if (!account?.address) {
-      toast.error('Wallet not connected');
+      toast.error("Wallet not connected");
       return;
     }
 
     if (!isConnected) {
-      toast.error('Not connected to server');
+      toast.error("Not connected to server");
       return;
     }
 
-    emit('tutor:set-available', {
+    emit("tutor:set-available", {
       address: account.address,
       language,
-      ratePerSecond: rate
+      ratePerSecond: rate,
     });
 
     setIsAvailable(true);
@@ -43,39 +43,39 @@ export const QuickActions: React.FC = () => {
 
   const setTutorUnavailable = () => {
     if (!account?.address) {
-      toast.error('Wallet not connected');
+      toast.error("Wallet not connected");
       return;
     }
 
-    emit('tutor:set-unavailable', {
-      address: account.address
+    emit("tutor:set-unavailable", {
+      address: account.address,
     });
 
     setIsAvailable(false);
-    toast.success('Set as unavailable');
+    toast.success("Set as unavailable");
   };
 
   const requestTutor = () => {
     if (!account?.address) {
-      toast.error('Wallet not connected');
+      toast.error("Wallet not connected");
       return;
     }
 
     if (!isConnected) {
-      toast.error('Not connected to server');
+      toast.error("Not connected to server");
       return;
     }
 
     const requestId = `req_${Math.random().toString(36).substr(2, 9)}`;
-    
-    emit('student:request-tutor', {
+
+    emit("student:request-tutor", {
       requestId,
       studentAddress: account.address,
       language,
-      budgetPerSecond: budget
+      budgetPerSecond: budget,
     });
 
-    toast.success('Tutor request sent! Waiting for responses...');
+    toast.success("Tutor request sent! Waiting for responses...");
   };
 
   if (!account) {
@@ -85,19 +85,17 @@ export const QuickActions: React.FC = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
       <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Quick Actions</h2>
-      
+
       <div className="grid md:grid-cols-2 gap-6">
         {/* Tutor Section */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center">
             👨‍🏫 Become a Tutor
             {isAvailable && (
-              <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                Available
-              </span>
+              <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Available</span>
             )}
           </h3>
-          
+
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -105,17 +103,17 @@ export const QuickActions: React.FC = () => {
               </label>
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                onChange={e => setLanguage(e.target.value)}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
-                {languages.map((lang) => (
+                {languages.map(lang => (
                   <option key={lang.value} value={lang.value}>
                     {lang.label}
                   </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Rate (PYUSD per second)
@@ -124,13 +122,13 @@ export const QuickActions: React.FC = () => {
                 type="number"
                 step="0.0001"
                 value={rate}
-                onChange={(e) => setRate(parseFloat(e.target.value) || 0)}
+                onChange={e => setRate(parseFloat(e.target.value) || 0)}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 placeholder="0.001"
               />
               <div className="text-xs text-gray-500 mt-1">≈ ${(rate * 3600).toFixed(2)}/hr</div>
             </div>
-            
+
             <div className="flex space-x-2">
               {!isAvailable ? (
                 <button
@@ -155,10 +153,8 @@ export const QuickActions: React.FC = () => {
 
         {/* Student Section */}
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            👨‍🎓 Find a Tutor
-          </h3>
-          
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">👨‍🎓 Find a Tutor</h3>
+
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -166,17 +162,17 @@ export const QuickActions: React.FC = () => {
               </label>
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                onChange={e => setLanguage(e.target.value)}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
-                {languages.map((lang) => (
+                {languages.map(lang => (
                   <option key={lang.value} value={lang.value}>
                     {lang.label}
                   </option>
                 ))}
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Budget (PYUSD per second)
@@ -185,13 +181,13 @@ export const QuickActions: React.FC = () => {
                 type="number"
                 step="0.0001"
                 value={budget}
-                onChange={(e) => setBudget(parseFloat(e.target.value) || 0)}
+                onChange={e => setBudget(parseFloat(e.target.value) || 0)}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 placeholder="0.002"
               />
               <div className="text-xs text-gray-500 mt-1">≈ ${(budget * 3600).toFixed(2)}/hr</div>
             </div>
-            
+
             <button
               onClick={requestTutor}
               disabled={!isConnected}
@@ -208,9 +204,9 @@ export const QuickActions: React.FC = () => {
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-600 dark:text-gray-400">Socket Connection:</span>
           <div className="flex items-center space-x-2">
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-            <span className={isConnected ? 'text-green-600' : 'text-red-600'}>
-              {isConnected ? 'Connected' : 'Disconnected'}
+            <div className={`w-2 h-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`}></div>
+            <span className={isConnected ? "text-green-600" : "text-red-600"}>
+              {isConnected ? "Connected" : "Disconnected"}
             </span>
           </div>
         </div>

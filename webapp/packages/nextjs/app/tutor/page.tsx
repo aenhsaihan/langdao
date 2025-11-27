@@ -1,12 +1,24 @@
 "use client";
 
-import { TutorAvailabilityFlow } from "~~/components/tutor/TutorAvailabilityFlow";
+import { useState } from "react";
 import { AuthGuard } from "~~/components/auth/AuthGuard";
+import { TutorDashboard } from "~~/components/dashboard/TutorDashboard";
+import { TutorAvailabilityFlow } from "~~/components/tutor/TutorAvailabilityFlow";
 
 export default function TutorPage() {
+  const [showAvailabilityFlow, setShowAvailabilityFlow] = useState(false);
+
+  if (showAvailabilityFlow) {
+    return (
+      <AuthGuard requireAuth={true}>
+        <TutorAvailabilityFlow />
+      </AuthGuard>
+    );
+  }
+
   return (
     <AuthGuard requireAuth={true}>
-      <TutorAvailabilityFlow />
+      <TutorDashboard onGoLive={() => setShowAvailabilityFlow(true)} />
     </AuthGuard>
   );
 }

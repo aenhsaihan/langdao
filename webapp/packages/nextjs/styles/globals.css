@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800;12..96,900&family=Lexend:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@200;400;500;700;800&display=swap");
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
@@ -79,7 +80,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
   *,
   ::after,
   ::before,
@@ -94,6 +94,12 @@
 
   body {
     min-height: 100vh;
+    font-family:
+      "Lexend",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
   }
 
   h1,
@@ -102,6 +108,12 @@
   h4 {
     margin-bottom: 0.5rem;
     line-height: 1;
+    font-family:
+      "Bricolage Grotesque",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
   }
 }
 
@@ -193,10 +205,12 @@
   0% {
     transform: translateZ(0) rotate(0);
   }
-  15%, 35% {
+  15%,
+  35% {
     transform: translateZ(0) rotate(90deg);
   }
-  65%, 85% {
+  65%,
+  85% {
     transform: translateZ(0) rotate(270deg);
   }
   100% {

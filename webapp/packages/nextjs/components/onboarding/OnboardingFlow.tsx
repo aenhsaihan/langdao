@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useActiveAccount, useReadContract } from "thirdweb/react";
-import { getContract } from "thirdweb";
+import { client } from "../../client";
+import { activeChain } from "../../lib/chains";
+import { CONTRACTS } from "../../lib/constants/contracts";
+import { StudentDashboard } from "../dashboard/StudentDashboard";
+import { DepositFlow } from "../deposit/DepositFlow";
+import { TutorAvailabilityFlow } from "../tutor/TutorAvailabilityFlow";
 import { RoleSelection } from "./RoleSelection";
 import { StudentRegistration } from "./StudentRegistration";
 import { TutorRegistration } from "./TutorRegistration";
-import { DepositFlow } from "../deposit/DepositFlow";
-import { StudentDashboard } from "../dashboard/StudentDashboard";
-import { TutorAvailabilityFlow } from "../tutor/TutorAvailabilityFlow";
-import { CONTRACTS } from "../../lib/constants/contracts";
-import { client } from "../../client";
-import { activeChain } from "../../lib/chains";
+import { getContract } from "thirdweb";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 type OnboardingStep = "role" | "registration" | "deposit" | "dashboard" | "tutor-availability" | "complete";
@@ -35,18 +35,28 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     client,
     chain: activeChain,
     address: CONTRACTS.LANGDAO,
-    abi: deployedContracts[activeChain.id as keyof typeof deployedContracts]?.LangDAO?.abi || deployedContracts[31337].LangDAO.abi,
+    abi:
+      deployedContracts[activeChain.id as keyof typeof deployedContracts]?.LangDAO?.abi ||
+      deployedContracts[31337].LangDAO.abi,
   });
 
   // Check if user is already registered as student
-  const { data: studentInfo, isLoading: isLoadingStudent, error: studentError } = useReadContract({
+  const {
+    data: studentInfo,
+    isLoading: isLoadingStudent,
+    error: studentError,
+  } = useReadContract({
     contract,
     method: "getStudentInfo",
     params: [account?.address || "0x0000000000000000000000000000000000000000"],
   });
 
   // Check if user is already registered as tutor
-  const { data: tutorInfo, isLoading: isLoadingTutor, error: tutorError } = useReadContract({
+  const {
+    data: tutorInfo,
+    isLoading: isLoadingTutor,
+    error: tutorError,
+  } = useReadContract({
     contract,
     method: "getTutorInfo",
     params: [account?.address || "0x0000000000000000000000000000000000000000"],
@@ -134,7 +144,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       case "deposit":
         // If user is already registered, go back to dashboard
         // Otherwise go back to registration
-        if (selectedRole === "student" && (studentInfo && studentInfo[2])) {
+        if (selectedRole === "student" && studentInfo && studentInfo[2]) {
           setCurrentStep("dashboard");
         } else {
           setCurrentStep("registration");
@@ -143,7 +153,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       case "tutor-availability":
         // If tutor is already registered, they can go back to complete
         // Otherwise go back to registration
-        if (selectedRole === "tutor" && (tutorInfo && tutorInfo[2])) {
+        if (selectedRole === "tutor" && tutorInfo && tutorInfo[2]) {
           setCurrentStep("complete");
         } else {
           setCurrentStep("registration");
@@ -154,8 +164,6 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     }
   };
 
-
-
   // Show loading while checking registration status
   if (isCheckingRegistration) {
     return (
@@ -165,9 +173,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
             <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
               <span className="text-2xl">🔍</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-              Checking Registration Status
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Checking Registration Status</h2>
             <p className="text-gray-600 dark:text-gray-300">
               Please wait while we check if you're already registered...
             </p>
@@ -185,15 +191,12 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
             <div className="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-6">
               <span className="text-3xl">🎉</span>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Welcome to LangDAO!
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Welcome to LangDAO!</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-8">
               Your account is set up and ready to go.
               {selectedRole === "student"
                 ? " Start finding tutors and begin your language learning journey!"
-                : " Students can now find and book sessions with you!"
-              }
+                : " Students can now find and book sessions with you!"}
             </p>
             <button
               onClick={() => {
@@ -201,7 +204,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                 const isStudentRegistered = studentInfo && studentInfo[2];
                 const isTutorRegistered = tutorInfo && tutorInfo[2];
                 const role = selectedRole || (isTutorRegistered ? "tutor" : isStudentRegistered ? "student" : null);
-                
+
                 // Navigate based on role
                 if (role === "tutor") {
                   router.push("/tutor");
@@ -227,43 +230,23 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     <div className="relative">
       {/* Content */}
       <div>
-        {currentStep === "role" && (
-          <RoleSelection onRoleSelect={handleRoleSelect} />
-        )}
+        {currentStep === "role" && <RoleSelection onRoleSelect={handleRoleSelect} />}
 
         {currentStep === "registration" && selectedRole === "student" && (
-          <StudentRegistration
-            onComplete={handleRegistrationComplete}
-            onBack={handleBack}
-          />
+          <StudentRegistration onComplete={handleRegistrationComplete} onBack={handleBack} />
         )}
 
         {currentStep === "registration" && selectedRole === "tutor" && (
-          <TutorRegistration
-            onComplete={handleRegistrationComplete}
-            onBack={handleBack}
-          />
+          <TutorRegistration onComplete={handleRegistrationComplete} onBack={handleBack} />
         )}
 
-        {currentStep === "deposit" && (
-          <DepositFlow
-            onComplete={handleDepositComplete}
-            onBack={handleBack}
-          />
-        )}
+        {currentStep === "deposit" && <DepositFlow onComplete={handleDepositComplete} onBack={handleBack} />}
 
         {currentStep === "dashboard" && (
-          <StudentDashboard
-            onStartLearning={handleStartLearning}
-            onAddFunds={handleAddFunds}
-          />
+          <StudentDashboard onStartLearning={handleStartLearning} onAddFunds={handleAddFunds} />
         )}
 
-        {currentStep === "tutor-availability" && (
-          <TutorAvailabilityFlow
-            onBack={handleBack}
-          />
-        )}
+        {currentStep === "tutor-availability" && <TutorAvailabilityFlow onBack={handleBack} />}
       </div>
     </div>
   );

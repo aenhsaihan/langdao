@@ -60,7 +60,7 @@ export const useUsdConversion = () => {
   const formatHourlyRate = (ratePerSecond: number | string, isPyusd: boolean = true): string => {
     const rate = typeof ratePerSecond === "string" ? parseFloat(ratePerSecond) : ratePerSecond;
     const hourlyRate = rate * 3600;
-    
+
     if (isPyusd) {
       return `$${formatUsd(hourlyRate, 2)}/hr`;
     } else {

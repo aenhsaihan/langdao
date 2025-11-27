@@ -2,7 +2,7 @@
 if (typeof window === "undefined") {
   // Create a simple in-memory storage for SSR
   const storage: Record<string, string> = {};
-  
+
   global.localStorage = {
     getItem: (key: string) => storage[key] || null,
     setItem: (key: string, value: string) => {
@@ -22,7 +22,7 @@ if (typeof window === "undefined") {
       return Object.keys(storage).length;
     },
   } as Storage;
-  
+
   global.sessionStorage = global.localStorage;
 }
 

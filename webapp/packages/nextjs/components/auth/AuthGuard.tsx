@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useActiveAccount } from "thirdweb/react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useActiveAccount } from "thirdweb/react";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -23,7 +23,7 @@ export const AuthGuard = ({ children, requireAuth = false }: AuthGuardProps) => 
   useEffect(() => {
     // Mark that we've started checking
     setHasCheckedAccount(true);
-    
+
     // Give a small delay to allow account state to settle
     // This prevents flicker from showing content before auth check completes
     const timer = setTimeout(() => {
@@ -49,12 +49,8 @@ export const AuthGuard = ({ children, requireAuth = false }: AuthGuardProps) => 
           <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
             <span className="text-2xl">🔍</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Loading...
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Checking your connection...
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Loading...</h2>
+          <p className="text-gray-600 dark:text-gray-300">Checking your connection...</p>
         </div>
       </div>
     );
@@ -69,12 +65,8 @@ export const AuthGuard = ({ children, requireAuth = false }: AuthGuardProps) => 
           <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
             <span className="text-2xl">🔒</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Redirecting...
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Please connect your wallet to continue
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Redirecting...</h2>
+          <p className="text-gray-600 dark:text-gray-300">Please connect your wallet to continue</p>
         </div>
       </div>
     );
@@ -83,4 +75,3 @@ export const AuthGuard = ({ children, requireAuth = false }: AuthGuardProps) => 
   // Auth check complete, render children
   return <>{children}</>;
 };
-

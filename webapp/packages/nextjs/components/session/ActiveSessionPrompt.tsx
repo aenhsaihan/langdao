@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useActiveAccount } from "thirdweb/react";
-import { useScaffoldReadContract, useScaffoldWriteContract, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { useBlockNumber } from "wagmi";
+import { useScaffoldEventHistory, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export const ActiveSessionPrompt = () => {
   const account = useActiveAccount();
@@ -15,64 +15,64 @@ export const ActiveSessionPrompt = () => {
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
   const [tutorAddressFromStorage, setTutorAddressFromStorage] = useState<string | null>(null);
   const [sessionFromStorage, setSessionFromStorage] = useState<any>(null);
-  
+
   // Read sessionStorage and localStorage reactively
   // This ensures we can detect when storage changes and update queries accordingly
   useEffect(() => {
     const readStorage = () => {
-      if (typeof window === 'undefined') return;
-      
+      if (typeof window === "undefined") return;
+
       try {
         let tutorAddress: string | null = null;
         let session: any = null;
-        
+
         // First try sessionStorage (for current session)
-        const pendingSessionStr = sessionStorage.getItem('pendingSession');
+        const pendingSessionStr = sessionStorage.getItem("pendingSession");
         if (pendingSessionStr) {
           session = JSON.parse(pendingSessionStr);
           tutorAddress = session.tutorAddress || null;
         }
-        
+
         // Fallback to localStorage (more persistent, survives tab closes)
         if (!tutorAddress) {
-          const storedTutorAddress = localStorage.getItem('activeSessionTutorAddress');
+          const storedTutorAddress = localStorage.getItem("activeSessionTutorAddress");
           if (storedTutorAddress) {
             tutorAddress = storedTutorAddress;
           }
         }
-        
+
         setTutorAddressFromStorage(tutorAddress);
         setSessionFromStorage(session);
-        
+
         console.log("ActiveSessionPrompt: Read storage", { tutorAddress, hasSession: !!session });
       } catch (error) {
-        console.error('Failed to parse pending session:', error);
-        if (typeof window !== 'undefined') {
-          sessionStorage.removeItem('pendingSession');
-          localStorage.removeItem('activeSessionTutorAddress');
+        console.error("Failed to parse pending session:", error);
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("pendingSession");
+          localStorage.removeItem("activeSessionTutorAddress");
         }
         setTutorAddressFromStorage(null);
         setSessionFromStorage(null);
       }
     };
-    
+
     // Read immediately
     readStorage();
-    
+
     // Also listen for storage events (in case storage changes in another tab)
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'pendingSession' || e.key === 'activeSessionTutorAddress') {
+      if (e.key === "pendingSession" || e.key === "activeSessionTutorAddress") {
         readStorage();
       }
     };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
+
+    window.addEventListener("storage", handleStorageChange);
+
     // Poll storage every 2 seconds to catch changes (in case storage events don't fire)
     const interval = setInterval(readStorage, 2000);
-    
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
   }, []);
@@ -86,7 +86,11 @@ export const ActiveSessionPrompt = () => {
 
   // Query 2: For students - query with tutorAddress from storage (if available)
   // This query will automatically update when tutorAddressFromStorage changes
-  const { data: studentSessionData, refetch: refetchStudent, isLoading: isLoadingStudentSession } = useScaffoldReadContract({
+  const {
+    data: studentSessionData,
+    refetch: refetchStudent,
+    isLoading: isLoadingStudentSession,
+  } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "activeSessions",
     args: tutorAddressFromStorage ? [tutorAddressFromStorage as `0x${string}`] : undefined,
@@ -99,7 +103,7 @@ export const ActiveSessionPrompt = () => {
         tutorAddress: tutorAddressFromStorage,
         hasData: !!studentSessionData,
         isLoading: isLoadingStudentSession,
-        data: studentSessionData
+        data: studentSessionData,
       });
     }
   }, [tutorAddressFromStorage, studentSessionData, isLoadingStudentSession]);
@@ -134,8 +138,8 @@ export const ActiveSessionPrompt = () => {
         console.log("ActiveSessionPrompt: Found tutor address from SessionStarted event:", tutorAddress);
         setTutorAddressFromStorage(tutorAddress);
         // Also store it in localStorage for future use
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('activeSessionTutorAddress', tutorAddress);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("activeSessionTutorAddress", tutorAddress);
         }
       }
     }
@@ -144,20 +148,30 @@ export const ActiveSessionPrompt = () => {
   // Determine which session data to use
   // Filter out invalid/zero session data first, then prioritize student sessions
   // Note: We do basic validation here (non-zero addresses), but ownership validation happens in useEffect
-  const isValidTutorSessionBasic = tutorSessionData && tutorSessionData[0] && tutorSessionData[1] &&
-    tutorSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
-    tutorSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
+  const isValidTutorSessionBasic =
+    tutorSessionData &&
+    tutorSessionData[0] &&
+    tutorSessionData[1] &&
+    tutorSessionData[0] !== "0x0000000000000000000000000000000000000000" &&
+    tutorSessionData[1] !== "0x0000000000000000000000000000000000000000" &&
     tutorSessionData[9] === true; // Also check isActive flag
-  
-  const isValidStudentSessionBasic = studentSessionData && studentSessionData[0] && studentSessionData[1] &&
-    studentSessionData[0] !== '0x0000000000000000000000000000000000000000' &&
-    studentSessionData[1] !== '0x0000000000000000000000000000000000000000' &&
+
+  const isValidStudentSessionBasic =
+    studentSessionData &&
+    studentSessionData[0] &&
+    studentSessionData[1] &&
+    studentSessionData[0] !== "0x0000000000000000000000000000000000000000" &&
+    studentSessionData[1] !== "0x0000000000000000000000000000000000000000" &&
     studentSessionData[9] === true; // Also check isActive flag
-  
+
   // Priority: student session > tutor session (basic validation only - ownership check in useEffect)
   // Only use tutor session if student session is not available
-  const activeSessionData = isValidStudentSessionBasic ? studentSessionData : (isValidTutorSessionBasic ? tutorSessionData : null);
-  
+  const activeSessionData = isValidStudentSessionBasic
+    ? studentSessionData
+    : isValidTutorSessionBasic
+      ? tutorSessionData
+      : null;
+
   // Refetch function that refetches all queries
   const refetch = () => {
     refetchTutor();
@@ -207,51 +221,57 @@ export const ActiveSessionPrompt = () => {
   useEffect(() => {
     // Don't show prompt on tutor or find-tutor pages (they're in the session flow)
     // Also check for exact matches and pathname starts with
-    const isInSessionFlow = 
-      pathname === "/tutor" || 
-      pathname === "/find-tutor" || 
-      pathname?.startsWith("/tutor/") || 
+    const isInSessionFlow =
+      pathname === "/tutor" ||
+      pathname === "/find-tutor" ||
+      pathname?.startsWith("/tutor/") ||
       pathname?.startsWith("/find-tutor/") ||
       pathname?.includes("/tutor") ||
       pathname?.includes("/find-tutor");
-    
-    console.log("ActiveSessionPrompt check:", { 
-      pathname, 
-      isInSessionFlow, 
+
+    console.log("ActiveSessionPrompt check:", {
+      pathname,
+      isInSessionFlow,
       hasActiveSession: !!activeSessionData,
       hasSessionStorage: !!sessionFromStorage,
       tutorAddressFromStorage,
       accountAddress: account?.address,
       isStudying,
-      tutorSessionData: tutorSessionData ? 'has data' : 'no data',
-      studentSessionData: studentSessionData ? 'has data' : 'no data',
+      tutorSessionData: tutorSessionData ? "has data" : "no data",
+      studentSessionData: studentSessionData ? "has data" : "no data",
       isLoadingStudentSession,
       isValidStudentSessionBasic,
       isValidTutorSessionBasic,
-      activeSessionData: activeSessionData ? 'has data' : 'no data',
-      tutorSessionDataDetails: tutorSessionData ? {
-        student: tutorSessionData[0],
-        tutor: tutorSessionData[1],
-        isActive: tutorSessionData[9]
-      } : null,
-      studentSessionDataDetails: studentSessionData ? {
-        student: studentSessionData[0],
-        tutor: studentSessionData[1],
-        isActive: studentSessionData[9]
-      } : null,
+      activeSessionData: activeSessionData ? "has data" : "no data",
+      tutorSessionDataDetails: tutorSessionData
+        ? {
+            student: tutorSessionData[0],
+            tutor: tutorSessionData[1],
+            isActive: tutorSessionData[9],
+          }
+        : null,
+      studentSessionDataDetails: studentSessionData
+        ? {
+            student: studentSessionData[0],
+            tutor: studentSessionData[1],
+            isActive: studentSessionData[9],
+          }
+        : null,
     });
-    
+
     // Always hide if in session flow
     if (isInSessionFlow) {
       console.log("ActiveSessionPrompt: Hiding (in session flow)");
       setShowPrompt(false);
       return;
     }
-    
+
     // Check if student is studying but we don't have session data (tutor address missing from storage)
     // This handles the case where a student has an active session but the tutor address isn't stored
     if (!activeSessionData && isStudying && account?.address && !tutorSessionData) {
-      console.log("ActiveSessionPrompt: Student is studying but tutor address not in storage - cannot show prompt without tutor address");
+      console.log(
+        "ActiveSessionPrompt: Student is studying but tutor address not in storage - cannot show prompt without tutor address",
+      );
       // Note: We can't show the prompt without the tutor address because we need it to end the session
       // This is a limitation of the contract design (activeSessions is keyed by tutor address)
       // The best we can do is log this case - the student would need to navigate to find-tutor page
@@ -259,17 +279,19 @@ export const ActiveSessionPrompt = () => {
       setShowPrompt(false);
       return;
     }
-    
+
     if (activeSessionData) {
       const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
         activeSessionData;
 
       // Validate session data - check if it's a real session (not a zero struct)
       // Zero structs have zero addresses, so we check if student and tutor are non-zero
-      const isValidSession = student && tutor && 
-        student !== '0x0000000000000000000000000000000000000000' && 
-        tutor !== '0x0000000000000000000000000000000000000000';
-      
+      const isValidSession =
+        student &&
+        tutor &&
+        student !== "0x0000000000000000000000000000000000000000" &&
+        tutor !== "0x0000000000000000000000000000000000000000";
+
       if (!isValidSession) {
         console.log("ActiveSessionPrompt: Hiding (invalid/zero session data)");
         setShowPrompt(false);
@@ -280,11 +302,11 @@ export const ActiveSessionPrompt = () => {
       // If account address matches tutor, user is tutor; otherwise, check if it matches student
       const isTutor = account?.address?.toLowerCase() === tutor?.toLowerCase();
       const isStudent = !isTutor && account?.address?.toLowerCase() === student?.toLowerCase();
-      
+
       // For students: verify the session belongs to them
       // For tutors: they're the key, so it's always their session
       const sessionBelongsToUser = isTutor || (isStudent && student?.toLowerCase() === account?.address?.toLowerCase());
-      
+
       console.log("ActiveSessionPrompt session check:", {
         isTutor,
         isStudent,
@@ -294,7 +316,7 @@ export const ActiveSessionPrompt = () => {
         sessionBelongsToUser,
         isActive,
         hasStartTime: !!startTime,
-        isValidSession
+        isValidSession,
       });
 
       // Show prompt if session is active, has started, and belongs to current user
@@ -305,18 +327,22 @@ export const ActiveSessionPrompt = () => {
         const sessionStartTime = Number(startTime);
         const sessionAge = currentTime - sessionStartTime;
         const isNewSession = sessionAge < 5; // 5 seconds grace period (reduced from 60s)
-        
+
         console.log("ActiveSessionPrompt: Session age calculation:", {
           startTime: startTime.toString(),
           sessionStartTime,
           currentTime,
           sessionAge,
           isNewSession,
-          pathname
+          pathname,
         });
-        
+
         if (isNewSession) {
-          console.log("ActiveSessionPrompt: Hiding (session just started, in session-starting flow, age:", sessionAge, "s)");
+          console.log(
+            "ActiveSessionPrompt: Hiding (session just started, in session-starting flow, age:",
+            sessionAge,
+            "s)",
+          );
           setShowPrompt(false);
         } else {
           // Show prompt immediately after grace period
@@ -337,7 +363,7 @@ export const ActiveSessionPrompt = () => {
       // This is logged above, but we still hide the prompt since we can't end the session without tutor address
       console.log("ActiveSessionPrompt: Hiding (no active session data)", {
         isStudying,
-        hasTutorAddress: !!tutorAddressFromStorage
+        hasTutorAddress: !!tutorAddressFromStorage,
       });
       setShowPrompt(false);
     }
@@ -361,9 +387,9 @@ export const ActiveSessionPrompt = () => {
       toast.success("Session ended successfully!");
       setShowPrompt(false);
       // Clean up storage
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('pendingSession');
-        localStorage.removeItem('activeSessionTutorAddress');
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("pendingSession");
+        localStorage.removeItem("activeSessionTutorAddress");
       }
       refetch();
     } catch (error) {
@@ -411,8 +437,7 @@ export const ActiveSessionPrompt = () => {
               <div className="bg-white/20 rounded-lg p-3 mb-4">
                 <div className="text-xs text-white/80 mb-1">Session Duration</div>
                 <div className="text-2xl font-bold font-mono">
-                  {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:
-                  {String(seconds).padStart(2, "0")}
+                  {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                 </div>
               </div>
               <div className="flex space-x-2">

@@ -3,12 +3,12 @@
 import React, { useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline";
-import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { client } from "../client";
-import { wallets } from "../wallets";
 import { activeChain } from "../lib/chains";
+import { wallets } from "../wallets";
 import { SwitchTheme } from "./SwitchTheme";
+import { ConnectButton, useActiveAccount } from "thirdweb/react";
+import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline";
 // import { ConnectionStatus } from "./socket/ConnectionStatus";
 // import { SocketNotifications } from "./socket/SocketNotifications";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
@@ -37,28 +37,20 @@ const connectedMenuLinks: HeaderMenuLink[] = [
     href: "/sessions",
   },
   {
-    label: 'Schedule',
-    href: '/schedule'
+    label: "Schedule",
+    href: "/schedule",
   },
-  {
-    label: 'Socket Demo',
-    href: '/socket-demo'
-  },
-  {
-    label: 'Debug',
-    href: '/debug'
-  }
 ];
 
 const disconnectedMenuLinks: HeaderMenuLink[] = [
   {
-    label: 'Home',
-    href: '/'
+    label: "Home",
+    href: "/",
   },
   {
-    label: 'How it Works',
-    href: '/'
-  }
+    label: "How it Works",
+    href: "/",
+  },
 ];
 
 export const HeaderMenuLinks = () => {
@@ -86,8 +78,11 @@ export const HeaderMenuLinks = () => {
             <Link
               key={href}
               href={href}
-              className={`${isActive ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
-                } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
+              className={`${
+                isActive
+                  ? "text-white bg-white/10 font-semibold shadow-sm"
+                  : "text-white/70 hover:text-white hover:bg-white/5"
+              } px-4 py-2.5 text-sm font-medium rounded-xl transition-all whitespace-nowrap`}
             >
               {label}
             </Link>
@@ -102,15 +97,21 @@ export const HeaderMenuLinks = () => {
     <>
       <button
         onClick={handleHomeClick}
-        className={`${currentView === 'home' ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
-          } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
+        className={`${
+          currentView === "home"
+            ? "text-white bg-white/10 font-semibold shadow-sm"
+            : "text-white/70 hover:text-white hover:bg-white/5"
+        } px-4 py-2.5 text-sm font-medium rounded-xl transition-all whitespace-nowrap`}
       >
         Home
       </button>
       <button
         onClick={handleHowItWorksClick}
-        className={`${currentView === 'how-it-works' ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
-          } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
+        className={`${
+          currentView === "how-it-works"
+            ? "text-white bg-white/10 font-semibold shadow-sm"
+            : "text-white/70 hover:text-white hover:bg-white/5"
+        } px-4 py-2.5 text-sm font-medium rounded-xl transition-all whitespace-nowrap`}
       >
         How it Works
       </button>
@@ -125,7 +126,7 @@ export const Header = () => {
   const burgerMenuRef = useRef<HTMLDetailsElement>(null);
   const account = useActiveAccount();
   const { showHome } = usePageView();
-  
+
   useOutsideClick(burgerMenuRef, () => {
     burgerMenuRef?.current?.removeAttribute("open");
   });
@@ -138,52 +139,51 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header className="relative bg-gradient-to-r from-[#1A0B2E] via-[#2D1B4E] to-[#1A0B2E] border-b border-white/10 backdrop-blur-xl">
+      {/* Subtle glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 to-transparent pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="flex justify-between items-center h-20">
           {/* Logo and Navigation */}
-          <div className="flex items-center">
-            <Link href="/" onClick={handleLogoClick} className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">L</span>
+          <div className="flex items-center gap-8 xl:gap-12">
+            <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3 group flex-shrink-0">
+              <div className="relative w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40 transition-all group-hover:scale-105">
+                <span className="text-white font-black text-lg">L</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-xl" />
               </div>
-              <span className="font-bold text-xl text-gray-900 dark:text-white">LangDAO</span>
+              <span className="font-black text-2xl text-white tracking-tight">LangDAO</span>
             </Link>
 
-            <nav className="hidden md:ml-8 md:flex md:space-x-8">
+            <nav className="hidden lg:flex items-center gap-2">
               <HeaderMenuLinks />
             </nav>
           </div>
 
           {/* Right side - Theme, Notifications and Connect Button */}
-          <div className="flex items-center space-x-4">
-            <SwitchTheme />
-
-            {/* {account && <ConnectionStatus />} */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden md:block">
+              <SwitchTheme />
+            </div>
 
             {account && (
-              <button className="relative p-2 text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white">
-                <BellIcon className="h-6 w-6" />
-                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
+              <button className="relative p-2.5 text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-all">
+                <BellIcon className="h-5 w-5" />
+                <span className="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-rose-400 ring-2 ring-[#1A0B2E]"></span>
               </button>
             )}
 
-            {/* {account && <SocketNotifications />} */}
-
-            <ConnectButton 
-              client={client} 
-              wallets={wallets}
-              chain={activeChain}
-              autoConnect={true}
-            />
+            <div className="[&_button]:!bg-gradient-to-r [&_button]:!from-amber-400 [&_button]:!to-orange-500 [&_button]:!text-gray-900 [&_button]:!font-bold [&_button]:!px-5 [&_button]:sm:!px-6 [&_button]:!py-2.5 [&_button]:!rounded-xl [&_button]:hover:!scale-105 [&_button]:!transition-all [&_button]:!shadow-lg [&_button]:!shadow-amber-500/20 [&_button]:!text-sm [&_button]:sm:!text-base">
+              <ConnectButton client={client} wallets={wallets} chain={activeChain} autoConnect={true} />
+            </div>
           </div>
 
           {/* Mobile menu button */}
-          <details className="dropdown md:hidden" ref={burgerMenuRef}>
-            <summary className="btn btn-ghost">
+          <details className="dropdown lg:hidden" ref={burgerMenuRef}>
+            <summary className="btn btn-ghost text-white hover:bg-white/10">
               <Bars3Icon className="h-6 w-6" />
             </summary>
-            <ul className="menu dropdown-content mt-3 p-2 shadow bg-white dark:bg-gray-800 rounded-box w-52 right-0">
+            <ul className="menu dropdown-content mt-3 p-3 shadow-2xl bg-[#1A0B2E] border border-white/10 rounded-2xl w-56 right-0 backdrop-blur-xl">
               <HeaderMenuLinks />
             </ul>
           </details>
