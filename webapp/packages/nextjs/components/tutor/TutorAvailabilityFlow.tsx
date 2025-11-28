@@ -287,8 +287,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
       // Student has entered the room (after waiting for blockchain confirmation)
       // Now tutor should enter immediately - student already confirmed blockchain tx
-      // Redirect to internal session page
-      // const webRTCUrl = `https://langdao-production.up.railway.app/?tutor=${account?.address}&student=${data.studentAddress}&session=${data.requestId}&role=tutor`;
+      // Redirect to internal session page (already using internal route, keeping it)
       const webRTCUrl = `/session/${data.requestId}?role=tutor&tutor=${account?.address}&student=${data.studentAddress}`;
       
       console.log("Redirecting to WebRTC:", webRTCUrl);
@@ -308,6 +307,32 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       });
     };
 
+    const handleSessionReady = (data: any) => {
+      console.log("🎉 TUTOR RECEIVED session:ready EVENT:", data);
+      
+      // Verify this session is for this tutor
+      if (data.tutorAddress && account?.address) {
+        if (data.tutorAddress.toLowerCase() !== account.address.toLowerCase()) {
+          console.log("⚠️ Ignoring session:ready - not for this tutor");
+          return;
+        }
+      }
+
+      // Only redirect if we're in session-starting state
+      if (availabilityState !== "session-starting") {
+        console.log("⚠️ Ignoring session:ready - not in session-starting state");
+        return;
+      }
+
+      if (data.tutorUrl) {
+        console.log("✅ Session ready! Redirecting tutor to:", data.tutorUrl);
+        toast.success("Session ready! Redirecting...");
+        window.location.href = data.tutorUrl;
+      } else {
+        console.log("⚠️ session:ready event missing tutorUrl");
+      }
+    };
+
     // Register event listeners
     on("tutor:availability-set", handleAvailabilitySet);
     on("tutor:availability-removed", handleAvailabilityRemoved);
@@ -318,6 +343,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     on("session:started", handleSessionStarted);
     on("student:in-room", handleStudentInRoom);
     on("tutor:student-rejected-transaction", handleStudentRejectedTransaction);
+    on("session:ready", handleSessionReady);
 
     return () => {
       off("tutor:availability-set", handleAvailabilitySet);
@@ -329,6 +355,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       off("session:started", handleSessionStarted);
       off("student:in-room", handleStudentInRoom);
       off("tutor:student-rejected-transaction", handleStudentRejectedTransaction);
+      off("session:ready", handleSessionReady);
     };
   }, [socket, account?.address, availabilityState, activeSessionData]); // Added activeSessionData for fallback check in handleStudentInRoom
 
@@ -365,7 +392,8 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       // If session is active and has started, redirect (student has confirmed tx and likely entered room)
       if (isActive && startTime && startTime > 0n) {
         console.log("✅ Blockchain fallback: Active session detected! Redirecting tutor to WebRTC...");
-        const videoCallUrl = `https://langdao-production.up.railway.app/?student=${student}&tutor=${account.address}&session=${sessionId}`;
+        // Use internal Next.js route instead of external Railway URL
+        const videoCallUrl = `/session/${sessionId}?role=tutor&tutor=${account.address}&student=${student}`;
         toast.success("Session active on blockchain! Redirecting...");
         console.log("🚀 Tutor redirecting to (blockchain fallback):", videoCallUrl);
         window.location.href = videoCallUrl;

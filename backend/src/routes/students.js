@@ -49,4 +49,24 @@ router.post("/:address/validate-budget", async (req, res) => {
   }
 });
 
+/**
+ * POST /api/students/:address/invalidate-cache
+ * Invalidate registration cache for a student (call after registration)
+ */
+router.post("/:address/invalidate-cache", async (req, res) => {
+  try {
+    const { address } = req.params;
+    await contractService.invalidateRegistrationCache(address);
+    res.json({
+      success: true,
+      message: "Cache invalidated",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Failed to invalidate cache",
+    });
+  }
+});
+
 module.exports = router;

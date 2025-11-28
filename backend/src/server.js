@@ -884,38 +884,95 @@ io.on("connection", (socket) => {
       console.log(`🚀 Session started on blockchain for request ${data.requestId}`);
       console.log(`Looking for tutor: ${data.tutorAddress.toLowerCase()}`);
 
-      // Store session mapping for webRTC end session handling
+      // Generate WebRTC URLs for both student and tutor
+      const sessionId = data.requestId; // Use requestId as sessionId
+      const studentUrl = `/session/${sessionId}?role=student&tutor=${data.tutorAddress}&student=${data.studentAddress}`;
+      const tutorUrl = `/session/${sessionId}?role=tutor&tutor=${data.tutorAddress}&student=${data.studentAddress}`;
+
+      // Store session mapping for webRTC end session handling (with URLs)
       const sessionService = require('./services/sessionService');
       await sessionService.storeSessionMapping(
         data.requestId,
         data.studentAddress,
         data.tutorAddress,
-        data.languageId || 1
+        data.languageId || 1,
+        studentUrl,
+        tutorUrl
       );
 
-      // Notify the tutor that the session has started
+      // Find tutor socket
       const tutorHash = await redisClient.hGetAll(`tutor:${data.tutorAddress.toLowerCase()}`);
-      const tutorSocketId = tutorHash?.socketId;
+      let tutorSocketId = tutorHash?.socketId;
 
-      console.log(`Tutor hash from Redis:`, tutorHash);
-      console.log(`Tutor socket ID:`, tutorSocketId);
-      console.log(`Socket exists:`, tutorSocketId ? !!io.sockets.sockets.get(tutorSocketId) : false);
-      console.log(`All connected sockets:`, Array.from(io.sockets.sockets.keys()));
+      // If tutor socket not found in Redis, search by address
+      if (!tutorSocketId || !io.sockets.sockets.get(tutorSocketId)) {
+        const allSockets = Array.from(io.sockets.sockets.values());
+        for (const s of allSockets) {
+          const socketAddress = await redisClient.hGet("socket_to_address", s.id);
+          if (socketAddress && socketAddress.toLowerCase() === data.tutorAddress.toLowerCase()) {
+            tutorSocketId = s.id;
+            // Update Redis with the socket ID
+            await redisClient.hSet(`tutor:${data.tutorAddress.toLowerCase()}`, { socketId: s.id });
+            break;
+          }
+        }
+      }
 
+      // Find student socket
+      let studentSocketId = socket.id; // Current socket is likely the student
+      // Verify by checking socket_to_address
+      const currentSocketAddress = await redisClient.hGet("socket_to_address", socket.id);
+      if (currentSocketAddress && currentSocketAddress.toLowerCase() !== data.studentAddress.toLowerCase()) {
+        // If current socket is not student, search for student socket
+        const allSockets = Array.from(io.sockets.sockets.values());
+        for (const s of allSockets) {
+          const socketAddress = await redisClient.hGet("socket_to_address", s.id);
+          if (socketAddress && socketAddress.toLowerCase() === data.studentAddress.toLowerCase()) {
+            studentSocketId = s.id;
+            break;
+          }
+        }
+      }
+
+      // Prepare session:ready event data
+      const sessionReadyData = {
+        requestId: data.requestId,
+        sessionId: sessionId,
+        studentAddress: data.studentAddress,
+        tutorAddress: data.tutorAddress,
+        studentUrl: studentUrl,
+        tutorUrl: tutorUrl,
+        languageId: data.languageId || 1,
+      };
+
+      // Send session:ready to tutor
       if (tutorSocketId && io.sockets.sockets.get(tutorSocketId)) {
-        console.log(`✅ Emitting session:started to tutor socket ${tutorSocketId}`);
+        console.log(`✅ Emitting session:ready to tutor socket ${tutorSocketId}`);
+        io.to(tutorSocketId).emit("session:ready", sessionReadyData);
+        console.log(`✅ Notified tutor ${data.tutorAddress} that session is ready`);
+      } else {
+        console.log(`⚠️ Could not find tutor socket, but will broadcast session:ready`);
+      }
+
+      // Send session:ready to student
+      if (studentSocketId && io.sockets.sockets.get(studentSocketId)) {
+        console.log(`✅ Emitting session:ready to student socket ${studentSocketId}`);
+        io.to(studentSocketId).emit("session:ready", sessionReadyData);
+        console.log(`✅ Notified student ${data.studentAddress} that session is ready`);
+      }
+
+      // Also broadcast session:ready as backup (both will filter by address if needed)
+      console.log(`📢 Broadcasting session:ready to all sockets (as backup)`);
+      io.emit("session:ready", sessionReadyData);
+
+      // Keep backward compatibility: also emit session:started to tutor
+      if (tutorSocketId && io.sockets.sockets.get(tutorSocketId)) {
         io.to(tutorSocketId).emit("session:started", {
           requestId: data.requestId,
           studentAddress: data.studentAddress,
-          videoCallUrl: data.videoCallUrl,
+          videoCallUrl: tutorUrl,
           message: "Session confirmed on blockchain! Redirecting to video call...",
         });
-        console.log(`✅ Notified tutor ${data.tutorAddress} that session started`);
-      } else {
-        console.log(`❌ Could not notify tutor - socket not found or not connected`);
-        console.log(`   Tutor address: ${data.tutorAddress}`);
-        console.log(`   Socket ID from Redis: ${tutorSocketId}`);
-        console.log(`   Socket connected: ${tutorSocketId ? !!io.sockets.sockets.get(tutorSocketId) : 'N/A'}`);
       }
 
       // Confirm to student

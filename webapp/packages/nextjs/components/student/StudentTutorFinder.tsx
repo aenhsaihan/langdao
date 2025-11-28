@@ -308,6 +308,32 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
       }
     };
 
+    const handleSessionReady = (data: any) => {
+      console.log("🎉 STUDENT RECEIVED session:ready EVENT:", data);
+      
+      // Verify this session is for this student
+      if (data.studentAddress && account?.address) {
+        if (data.studentAddress.toLowerCase() !== account.address.toLowerCase()) {
+          console.log("⚠️ Ignoring session:ready - not for this student");
+          return;
+        }
+      }
+
+      // Only redirect if we're in session-starting state
+      if (finderState !== "session-starting") {
+        console.log("⚠️ Ignoring session:ready - not in session-starting state");
+        return;
+      }
+
+      if (data.studentUrl) {
+        console.log("✅ Session ready! Redirecting student to:", data.studentUrl);
+        toast.success("Session ready! Redirecting...");
+        window.location.href = data.studentUrl;
+      } else {
+        console.log("⚠️ session:ready event missing studentUrl");
+      }
+    };
+
     // Register event listeners
     on("student:request-sent", handleRequestSent);
     on("student:no-tutors-available", handleNoTutorsAvailable);
@@ -315,6 +341,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     on("student:tutor-declined", handleTutorDeclined);
     on("tutor:available-updated", handleTutorAvailabilityUpdated);
     on("tutor:withdrew-acceptance", handleTutorWithdrewAcceptance);
+    on("session:ready", handleSessionReady);
 
     return () => {
       off("student:request-sent", handleRequestSent);
@@ -323,6 +350,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
       off("student:tutor-declined", handleTutorDeclined);
       off("tutor:available-updated", handleTutorAvailabilityUpdated);
       off("tutor:withdrew-acceptance", handleTutorWithdrewAcceptance);
+      off("session:ready", handleSessionReady);
     };
   }, [socket, account?.address, finderState, currentTutor, language]);
 

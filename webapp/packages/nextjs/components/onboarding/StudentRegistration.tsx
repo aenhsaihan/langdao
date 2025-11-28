@@ -8,9 +8,10 @@ import { useScaffoldWriteContract, useUsdConversion } from "~~/hooks/scaffold-et
 interface StudentRegistrationProps {
   onComplete: () => void;
   onBack: () => void;
+  onRegistrationSuccess?: () => void;
 }
 
-export const StudentRegistration = ({ onComplete, onBack }: StudentRegistrationProps) => {
+export const StudentRegistration = ({ onComplete, onBack, onRegistrationSuccess }: StudentRegistrationProps) => {
   const [targetLanguage, setTargetLanguage] = useState<number | null>(null);
   const [budgetPerHour, setBudgetPerHour] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,6 +42,12 @@ export const StudentRegistration = ({ onComplete, onBack }: StudentRegistrationP
       });
 
       toast.success("Registration successful!");
+      
+      // Notify parent component to invalidate cache
+      if (onRegistrationSuccess) {
+        onRegistrationSuccess();
+      }
+      
       onComplete();
     } catch (err) {
       console.error("Registration error:", err);

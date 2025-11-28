@@ -1,6 +1,7 @@
 const { ethers } = require('ethers');
 const fs = require('fs');
 const path = require('path');
+const redis = require('redis');
 
 class ContractService {
   constructor() {
@@ -11,8 +12,77 @@ class ContractService {
     this.initialized = false;
     this.initializing = null;
     this.enableFallback = (process.env.ALLOW_CONTRACT_FALLBACK || 'true').toLowerCase() !== 'false';
+    this.redisClient = null;
+    this.registrationCacheTTL = parseInt(process.env.REGISTRATION_CACHE_TTL || '300'); // 5 minutes default
 
     console.log('ContractService: Constructor called, enableFallback:', this.enableFallback);
+    
+    // Initialize Redis client for caching
+    this.initRedis();
+  }
+
+  async initRedis() {
+    try {
+      this.redisClient = redis.createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+      });
+
+      this.redisClient.on('error', (err) => console.error('ContractService Redis error:', err));
+      
+      if (!this.redisClient.isOpen) {
+        await this.redisClient.connect();
+        console.log('ContractService: Redis connected for caching');
+      }
+    } catch (error) {
+      console.warn('ContractService: Failed to connect to Redis (caching disabled):', error.message);
+      this.redisClient = null;
+    }
+  }
+
+  async getCachedRegistration(address, type) {
+    if (!this.redisClient || !this.redisClient.isOpen) {
+      return null;
+    }
+
+    try {
+      const key = `registration:${type}:${address.toLowerCase()}`;
+      const cached = await this.redisClient.get(key);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch (error) {
+      console.warn('ContractService: Failed to get cached registration:', error.message);
+    }
+    return null;
+  }
+
+  async setCachedRegistration(address, type, data) {
+    if (!this.redisClient || !this.redisClient.isOpen) {
+      return;
+    }
+
+    try {
+      const key = `registration:${type}:${address.toLowerCase()}`;
+      await this.redisClient.setEx(key, this.registrationCacheTTL, JSON.stringify(data));
+      console.log(`ContractService: Cached ${type} registration for ${address}`);
+    } catch (error) {
+      console.warn('ContractService: Failed to cache registration:', error.message);
+    }
+  }
+
+  async invalidateRegistrationCache(address) {
+    if (!this.redisClient || !this.redisClient.isOpen) {
+      return;
+    }
+
+    try {
+      const studentKey = `registration:student:${address.toLowerCase()}`;
+      const tutorKey = `registration:tutor:${address.toLowerCase()}`;
+      await this.redisClient.del([studentKey, tutorKey]);
+      console.log(`ContractService: Invalidated registration cache for ${address}`);
+    } catch (error) {
+      console.warn('ContractService: Failed to invalidate cache:', error.message);
+    }
   }
 
   async init() {
@@ -127,6 +197,13 @@ class ContractService {
   }
 
   async getTutorInfo(address) {
+    // Check cache first
+    const cached = await this.getCachedRegistration(address, 'tutor');
+    if (cached) {
+      console.log('ContractService: Using cached tutor info for:', address);
+      return cached;
+    }
+
     await this.init();
 
     if (this.contract) {
@@ -138,7 +215,7 @@ class ContractService {
 
         console.log('ContractService: Got tutor data from contract:', tutorData);
 
-        return {
+        const tutorInfo = {
           address,
           name: tutorData[0] || tutorData.name || `Tutor_${address.slice(-4)}`,
           languages: tutorData[1] || tutorData.languages || ['english'],
@@ -147,6 +224,11 @@ class ContractService {
           rating: Number(tutorData[4] || tutorData.rating || 0),
           isRegistered: Boolean(tutorData[5] !== undefined ? tutorData[5] : tutorData.isRegistered !== undefined ? tutorData.isRegistered : true),
         };
+
+        // Cache the result
+        await this.setCachedRegistration(address, 'tutor', tutorInfo);
+
+        return tutorInfo;
       } catch (e) {
         console.warn('ContractService.getTutorInfo: Contract call failed:', e.message);
         if (!this.enableFallback) {
@@ -158,7 +240,7 @@ class ContractService {
     // Fallback (mock) for dev/test
     if (this.enableFallback) {
       console.log('ContractService: Using mock data for tutor:', address);
-      return {
+      const mockData = {
         address,
         name: `MockTutor_${address?.slice?.(-4) || '0000'}`,
         languages: ['english', 'spanish'],
@@ -168,12 +250,24 @@ class ContractService {
         isRegistered: true,
         mockData: true,
       };
+      
+      // Cache mock data too
+      await this.setCachedRegistration(address, 'tutor', mockData);
+      
+      return mockData;
     }
 
     throw new Error('Contract not available and fallback disabled');
   }
 
   async getStudentInfo(address) {
+    // Check cache first
+    const cached = await this.getCachedRegistration(address, 'student');
+    if (cached) {
+      console.log('ContractService: Using cached student info for:', address);
+      return cached;
+    }
+
     await this.init();
 
     if (this.contract) {
@@ -182,13 +276,18 @@ class ContractService {
 
         const studentData = await this.contract.getStudent(address);
 
-        return {
+        const studentInfo = {
           address,
           name: studentData[0] || studentData.name || `Student_${address.slice(-4)}`,
           totalSessions: Number(studentData[1] || studentData.totalSessions || 0),
           averageRating: Number(studentData[2] || studentData.averageRating || 0),
           isRegistered: Boolean(studentData[3] !== undefined ? studentData[3] : studentData.isRegistered !== undefined ? studentData.isRegistered : true),
         };
+
+        // Cache the result
+        await this.setCachedRegistration(address, 'student', studentInfo);
+
+        return studentInfo;
       } catch (e) {
         console.warn('ContractService.getStudentInfo: Contract call failed:', e.message);
         if (!this.enableFallback) {
@@ -199,7 +298,7 @@ class ContractService {
 
     if (this.enableFallback) {
       console.log('ContractService: Using mock data for student:', address);
-      return {
+      const mockData = {
         address,
         name: `MockStudent_${address?.slice?.(-4) || '0000'}`,
         totalSessions: 3,
@@ -207,6 +306,11 @@ class ContractService {
         isRegistered: true,
         mockData: true,
       };
+      
+      // Cache mock data too
+      await this.setCachedRegistration(address, 'student', mockData);
+      
+      return mockData;
     }
 
     throw new Error('Contract not available and fallback disabled');

@@ -7,6 +7,11 @@ export interface WebRTCState {
   isAudioEnabled: boolean;
   isVideoEnabled: boolean;
   connectionStatus: "new" | "connecting" | "connected" | "disconnected" | "failed" | "closed";
+  mediaError: {
+    type: "permission-denied" | "no-device" | "not-supported" | "unknown" | null;
+    message: string;
+  } | null;
+  isRequestingMedia: boolean;
 }
 
 const ICE_SERVERS = {
@@ -26,6 +31,8 @@ export const useWebRTC = (
     isAudioEnabled: true,
     isVideoEnabled: true,
     connectionStatus: "new",
+    mediaError: null,
+    isRequestingMedia: false,
   });
 
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
@@ -33,16 +40,70 @@ export const useWebRTC = (
 
   // Initialize Media
   const initializeMedia = useCallback(async () => {
+    // Check if getUserMedia is available
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const error = {
+        type: "not-supported" as const,
+        message: "Your browser does not support camera/microphone access. Please use a modern browser.",
+      };
+      setState(prev => ({ ...prev, mediaError: error, isRequestingMedia: false }));
+      console.error("getUserMedia not supported");
+      return null;
+    }
+
+    // Check if we're in a secure context (HTTPS or localhost)
+    if (!window.isSecureContext && location.protocol !== "https:" && location.hostname !== "localhost") {
+      const error = {
+        type: "not-supported" as const,
+        message: "HTTPS is required for camera/microphone access. Please access this page over HTTPS.",
+      };
+      setState(prev => ({ ...prev, mediaError: error, isRequestingMedia: false }));
+      console.error("Not in secure context");
+      return null;
+    }
+
+    setState(prev => ({ ...prev, isRequestingMedia: true, mediaError: null }));
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
       localStreamRef.current = stream;
-      setState(prev => ({ ...prev, localStream: stream }));
+      setState(prev => ({
+        ...prev,
+        localStream: stream,
+        isRequestingMedia: false,
+        mediaError: null,
+        isAudioEnabled: true,
+        isVideoEnabled: true,
+      }));
       return stream;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error accessing media devices:", error);
+      
+      let errorType: "permission-denied" | "no-device" | "not-supported" | "unknown" = "unknown";
+      let errorMessage = "Failed to access camera/microphone: ";
+
+      if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
+        errorType = "permission-denied";
+        errorMessage = "Permission denied. Please allow camera and microphone access in your browser settings and try again.";
+      } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+        errorType = "no-device";
+        errorMessage = "No camera or microphone found. Please check your devices and try again.";
+      } else if (error.name === "NotSupportedError" || error.name === "ConstraintNotSatisfiedError") {
+        errorType = "not-supported";
+        errorMessage = "Camera/microphone not supported or constraints cannot be satisfied.";
+      } else {
+        errorMessage += error.message || "Unknown error occurred.";
+      }
+
+      setState(prev => ({
+        ...prev,
+        mediaError: { type: errorType, message: errorMessage },
+        isRequestingMedia: false,
+      }));
+
       return null;
     }
   }, []);
