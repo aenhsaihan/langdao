@@ -1,11 +1,11 @@
 "use client";
 
-import { useActiveAccount, useReadContract } from "thirdweb/react";
-import { getContract } from "thirdweb";
-import { formatUnits } from "viem";
-import { CONTRACTS, PYUSD_DECIMALS } from "../../lib/constants/contracts";
 import { client } from "../../client";
 import { activeChain } from "../../lib/chains";
+import { CONTRACTS, PYUSD_DECIMALS } from "../../lib/constants/contracts";
+import { getContract } from "thirdweb";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
+import { formatUnits } from "viem";
 // import { QuickActions } from "../socket/QuickActions";
 // import { StudentSocketEvents } from "../socket/StudentSocketEvents";
 // import { TutorSocketEvents } from "../socket/TutorSocketEvents";
@@ -16,7 +16,7 @@ interface StudentDashboardProps {
   onAddFunds?: () => void;
 }
 
-export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboardProps) => {
+export const StudentDashboard = ({ onAddFunds }: StudentDashboardProps) => {
   const account = useActiveAccount();
 
   // Create contract instance using deployed contract ABI
@@ -24,7 +24,9 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
     client,
     chain: activeChain,
     address: CONTRACTS.LANGDAO,
-    abi: deployedContracts[activeChain.id as keyof typeof deployedContracts]?.LangDAO?.abi || deployedContracts[31337].LangDAO.abi,
+    abi:
+      deployedContracts[activeChain.id as keyof typeof deployedContracts]?.LangDAO?.abi ||
+      deployedContracts[31337].LangDAO.abi,
   });
 
   // Get student info
@@ -40,7 +42,7 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
     method: "studentBalances",
     params: [
       account?.address || "0x0000000000000000000000000000000000000000",
-      CONTRACTS.PYUSD // Use actual PYUSD token address
+      CONTRACTS.PYUSD, // Use actual PYUSD token address
     ],
   });
 
@@ -52,8 +54,16 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
   // Language mapping
   const getLanguageName = (id: number) => {
     const languages = {
-      1: "Spanish", 2: "French", 3: "German", 4: "Italian", 5: "Portuguese",
-      6: "Japanese", 7: "Korean", 8: "Chinese", 9: "Arabic", 10: "Russian"
+      1: "Spanish",
+      2: "French",
+      3: "German",
+      4: "Italian",
+      5: "Portuguese",
+      6: "Japanese",
+      7: "Korean",
+      8: "Chinese",
+      9: "Arabic",
+      10: "Russian",
     };
     return languages[id as keyof typeof languages] || "Unknown";
   };
@@ -63,9 +73,7 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Student Dashboard
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Student Dashboard</h1>
           <p className="text-gray-600 dark:text-gray-300">
             Ready to start learning? Find a tutor and begin your session!
           </p>
@@ -78,15 +86,11 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mb-6">
                 <span className="text-2xl">💰</span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Your Balance
-              </h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Your Balance</h2>
               <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-4">
                 {balanceFormatted.toFixed(4)} PYUSD
               </div>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Available for tutoring sessions
-              </p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">Available for tutoring sessions</p>
             </div>
           </div>
 
@@ -96,15 +100,11 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
                 <span className="text-2xl">🎓</span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Learning Profile
-              </h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Learning Profile</h2>
               <div className="space-y-3 text-left">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">Target Language:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    {getLanguageName(targetLanguage)}
-                  </span>
+                  <span className="font-medium text-gray-900 dark:text-white">{getLanguageName(targetLanguage)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">Budget per Hour:</span>
@@ -114,9 +114,7 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">Status:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">
-                    Ready to Learn
-                  </span>
+                  <span className="font-medium text-green-600 dark:text-green-400">Ready to Learn</span>
                 </div>
               </div>
             </div>
@@ -143,7 +141,7 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
             <span className="mr-2">🚀</span>
             Find a Tutor
           </a>
-          <button 
+          <button
             onClick={onAddFunds}
             className="px-8 py-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-lg"
           >
@@ -156,25 +154,17 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center">
             <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {Math.floor(balanceFormatted * 3600 / (budgetPerHour / Math.pow(10, PYUSD_DECIMALS)))}
+              {Math.floor((balanceFormatted * 3600) / (budgetPerHour / Math.pow(10, PYUSD_DECIMALS)))}
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Hours Available
-            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Hours Available</div>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center">
             <div className="text-2xl font-bold text-gray-900 dark:text-white">0</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Sessions Completed
-            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Sessions Completed</div>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {getLanguageName(targetLanguage)}
-            </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Learning Language
-            </div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{getLanguageName(targetLanguage)}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">Learning Language</div>
           </div>
         </div>
       </div>

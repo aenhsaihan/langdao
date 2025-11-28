@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useWebRTCSession } from '~~/hooks/useWebRTCSession';
-import { useSocket } from '~~/lib/socket/socketContext';
+import React, { useState } from "react";
+import { useWebRTCSession } from "~~/hooks/useWebRTCSession";
+import { useSocket } from "~~/lib/socket/socketContext";
 
 export const WebRTCSessionTest: React.FC = () => {
   const { currentSession, isSessionActive, sessionDuration, startSession, endSession } = useWebRTCSession();
@@ -11,11 +11,11 @@ export const WebRTCSessionTest: React.FC = () => {
 
   const createMockSession = () => {
     setIsCreatingSession(true);
-    
+
     const mockSession = {
       requestId: `test_session_${Date.now()}`,
-      tutorAddress: '0x742d35Cc6634C0532925a3b8D0C9C0E3C5d5c8eA', // Mock address
-      studentAddress: '0x8ba1f109551bD432803012645Hac136c30C6A0', // Mock address
+      tutorAddress: "0x742d35Cc6634C0532925a3b8D0C9C0E3C5d5c8eA", // Mock address
+      studentAddress: "0x8ba1f109551bD432803012645Hac136c30C6A0", // Mock address
       languageId: 1,
     };
 
@@ -25,30 +25,30 @@ export const WebRTCSessionTest: React.FC = () => {
 
   const simulateSessionEnd = () => {
     if (!socket) return;
-    
-    socket.emit('webrtc:session-ended', {
+
+    socket.emit("webrtc:session-ended", {
       sessionId: currentSession?.requestId,
       tutorAddress: currentSession?.tutorAddress,
       studentAddress: currentSession?.studentAddress,
-      endedBy: 'user',
-      reason: 'manual',
+      endedBy: "user",
+      reason: "manual",
     });
   };
 
   const simulateDisconnection = () => {
     if (!socket) return;
-    
-    socket.emit('webrtc:user-disconnected', {
+
+    socket.emit("webrtc:user-disconnected", {
       sessionId: currentSession?.requestId,
       disconnectedUser: currentSession?.studentAddress,
-      reason: 'connection-lost',
+      reason: "connection-lost",
     });
   };
 
   const simulateTimeout = () => {
     if (!socket) return;
-    
-    socket.emit('webrtc:heartbeat-timeout', {
+
+    socket.emit("webrtc:heartbeat-timeout", {
       sessionId: currentSession?.requestId,
       lastHeartbeat: Date.now() - 60000, // 1 minute ago
       timeoutDuration: 30000, // 30 seconds
@@ -63,10 +63,8 @@ export const WebRTCSessionTest: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-        WebRTC Session Test
-      </h2>
-      
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">WebRTC Session Test</h2>
+
       <div className="space-y-4">
         {/* Session Status */}
         <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
@@ -98,14 +96,14 @@ export const WebRTCSessionTest: React.FC = () => {
         {/* Controls */}
         <div className="space-y-3">
           <h3 className="font-medium text-gray-900 dark:text-white">Test Controls</h3>
-          
+
           {!isSessionActive ? (
             <button
               onClick={createMockSession}
               disabled={isCreatingSession}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isCreatingSession ? 'Creating...' : 'Create Mock Session'}
+              {isCreatingSession ? "Creating..." : "Create Mock Session"}
             </button>
           ) : (
             <div className="grid grid-cols-2 gap-2">
@@ -150,7 +148,8 @@ export const WebRTCSessionTest: React.FC = () => {
 
         {/* Socket Status */}
         <div className="text-xs text-gray-500 dark:text-gray-400">
-          Socket Status: {socket?.connected ? (
+          Socket Status:{" "}
+          {socket?.connected ? (
             <span className="text-green-600 dark:text-green-400">Connected</span>
           ) : (
             <span className="text-red-600 dark:text-red-400">Disconnected</span>

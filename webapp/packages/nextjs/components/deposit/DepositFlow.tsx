@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount } from "wagmi";
-import { parseUnits, formatUnits } from "viem";
-import toast from "react-hot-toast";
-import { DepositSlider } from "./DepositSlider";
-
 import { CONTRACTS, PYUSD_DECIMALS } from "../../lib/constants/contracts";
+import { DepositSlider } from "./DepositSlider";
+import toast from "react-hot-toast";
+import { formatUnits, parseUnits } from "viem";
+import { useAccount } from "wagmi";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 interface DepositFlowProps {
@@ -23,20 +22,14 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
   const { address } = useAccount();
 
   // Get PYUSD token balance directly from the PYUSD contract
-  const {
-    data: tokenBalance,
-    isLoading: isTokenBalanceLoading
-  } = useScaffoldReadContract({
+  const { data: tokenBalance, isLoading: isTokenBalanceLoading } = useScaffoldReadContract({
     contractName: "PYUSD",
     functionName: "balanceOf",
     args: [address],
   });
 
   // Get current allowance for LangDAO contract
-  const {
-    data: allowance,
-    isLoading: isAllowanceLoading
-  } = useScaffoldReadContract({
+  const { data: allowance } = useScaffoldReadContract({
     contractName: "PYUSD",
     functionName: "allowance",
     args: [address, CONTRACTS.LANGDAO],
@@ -46,7 +39,7 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
   const {
     data: contractBalance,
     isLoading: isContractBalanceLoading,
-    error: contractBalanceError
+    error: contractBalanceError,
   } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "studentBalances",
@@ -54,10 +47,7 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
   });
 
   // Debug: Check if user is registered as student
-  const {
-    data: studentInfo,
-    isLoading: isStudentInfoLoading
-  } = useScaffoldReadContract({
+  const { data: studentInfo, isLoading: isStudentInfoLoading } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "getStudentInfo",
     args: [address],
@@ -85,8 +75,6 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
   console.log("Debug - Is Student Registered:", isStudentRegistered);
   console.log("Debug - PYUSD Address:", CONTRACTS.PYUSD);
   console.log("Debug - LangDAO Address:", CONTRACTS.LANGDAO);
-
-
 
   const handleInitialDeposit = () => {
     if (depositAmount <= 0) {
@@ -167,21 +155,15 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mb-4">
                 <span className="text-2xl">💰</span>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                Deposit PYUSD
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Add funds to start learning with tutors
-              </p>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Deposit PYUSD</h2>
+              <p className="text-gray-600 dark:text-gray-300">Add funds to start learning with tutors</p>
             </div>
 
             <div className="mb-6">
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 mb-6">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                      Wallet Balance
-                    </span>
+                    <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Wallet Balance</span>
                     {isTokenBalanceLoading ? (
                       <div className="flex items-center">
                         <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -194,9 +176,7 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
                     )}
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                      LangDAO Balance
-                    </span>
+                    <span className="text-sm font-medium text-blue-700 dark:text-blue-300">LangDAO Balance</span>
                     {isContractBalanceLoading ? (
                       <div className="flex items-center">
                         <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -238,17 +218,13 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
                   <div className="flex items-center">
                     <span className="text-orange-600 dark:text-orange-400 mr-2">💡</span>
                     <span className="text-sm text-orange-700 dark:text-orange-300">
-                      You don't have any PYUSD tokens. Use the Mock Token Faucet to get some test tokens first.
+                      You don&apos;t have any PYUSD tokens. Use the Mock Token Faucet to get some test tokens first.
                     </span>
                   </div>
                 </div>
               )}
 
-              <DepositSlider
-                balance={balance}
-                value={depositAmount}
-                onChange={setDepositAmount}
-              />
+              <DepositSlider balance={balance} value={depositAmount} onChange={setDepositAmount} />
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -290,19 +266,13 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center mb-4">
                 <span className="text-2xl">🔐</span>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                Approve Token Access
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Allow LangDAO to access your PYUSD tokens
-              </p>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Approve Token Access</h2>
+              <p className="text-gray-600 dark:text-gray-300">Allow LangDAO to access your PYUSD tokens</p>
             </div>
 
             <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-6 mb-8">
               <div className="text-center space-y-4">
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {depositAmount.toFixed(2)} PYUSD
-                </div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white">{depositAmount.toFixed(2)} PYUSD</div>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   You need to approve LangDAO to spend this amount of PYUSD tokens on your behalf.
                 </p>
@@ -346,19 +316,13 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mb-4">
                 <span className="text-2xl">💰</span>
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                Complete Deposit
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Finalize your PYUSD deposit to LangDAO
-              </p>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Complete Deposit</h2>
+              <p className="text-gray-600 dark:text-gray-300">Finalize your PYUSD deposit to LangDAO</p>
             </div>
 
             <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 mb-8">
               <div className="text-center space-y-4">
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {depositAmount.toFixed(2)} PYUSD
-                </div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white">{depositAmount.toFixed(2)} PYUSD</div>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   This amount will be deposited to your LangDAO account and can be used for tutoring sessions.
                 </p>

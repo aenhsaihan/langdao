@@ -39,13 +39,277 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   });
 
   // Read which languages the tutor offers (check all 38 languages)
-  const tutorLanguageChecks = LANGUAGES.map(lang =>
-    useScaffoldReadContract({
-      contractName: "LangDAO",
-      functionName: "getTutorLanguage",
-      args: [account?.address, lang.id],
-    }),
-  );
+  // All hooks must be called at top level (React rules), but enabled only when account exists
+  const tutorLang0 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 0],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang1 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 1],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang2 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 2],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang3 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 3],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang4 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 4],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang5 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 5],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang6 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 6],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang7 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 7],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang8 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 8],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang9 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 9],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang10 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 10],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang11 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 11],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang12 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 12],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang13 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 13],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang14 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 14],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang15 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 15],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang16 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 16],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang17 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 17],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang18 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 18],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang19 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 19],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang20 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 20],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang21 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 21],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang22 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 22],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang23 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 23],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang24 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 24],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang25 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 25],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang26 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 26],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang27 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 27],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang28 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 28],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang29 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 29],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang30 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 30],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang31 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 31],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang32 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 32],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang33 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 33],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang34 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 34],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang35 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 35],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang36 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 36],
+    query: { enabled: !!account?.address },
+  });
+  const tutorLang37 = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getTutorLanguage",
+    args: [account?.address, 37],
+    query: { enabled: !!account?.address },
+  });
+
+  // Collect all language check results
+  const tutorLanguageChecks = [
+    tutorLang0,
+    tutorLang1,
+    tutorLang2,
+    tutorLang3,
+    tutorLang4,
+    tutorLang5,
+    tutorLang6,
+    tutorLang7,
+    tutorLang8,
+    tutorLang9,
+    tutorLang10,
+    tutorLang11,
+    tutorLang12,
+    tutorLang13,
+    tutorLang14,
+    tutorLang15,
+    tutorLang16,
+    tutorLang17,
+    tutorLang18,
+    tutorLang19,
+    tutorLang20,
+    tutorLang21,
+    tutorLang22,
+    tutorLang23,
+    tutorLang24,
+    tutorLang25,
+    tutorLang26,
+    tutorLang27,
+    tutorLang28,
+    tutorLang29,
+    tutorLang30,
+    tutorLang31,
+    tutorLang32,
+    tutorLang33,
+    tutorLang34,
+    tutorLang35,
+    tutorLang36,
+    tutorLang37,
+  ];
 
   // Get tutor's registered languages
   const tutorLanguages = LANGUAGES.filter((lang, index) => tutorLanguageChecks[index].data === true);
@@ -67,7 +331,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     contractName: "LangDAO",
     functionName: "getStudentInfo",
     args: [currentSession?.studentAddress as `0x${string}`],
-    enabled: !!currentSession?.studentAddress, // Only query if we have a student address
+    query: { enabled: !!currentSession?.studentAddress }, // Only query if we have a student address
   });
 
   // Extract actual budget - prioritize currentSession budgetPerSecond (from socket event, immediate)
@@ -83,7 +347,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     contractName: "LangDAO",
     functionName: "getTutorRate",
     args: [account?.address, selectedLanguageId ?? 0],
-    enabled: !!account?.address && selectedLanguageId !== null, // Only query if we have account and selected language
+    query: { enabled: !!account?.address && selectedLanguageId !== null }, // Only query if we have account and selected language
   });
 
   const isTutorRegistered = tutorInfo ? tutorInfo[2] : false;
@@ -99,13 +363,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   // The tutor enters when student enters the room (via student:in-room event)
   // Blockchain polling is only for detecting existing sessions when navigating away
 
-  // Use LANGUAGES from constants - map to format needed for UI
-  const languages = LANGUAGES.map(lang => ({
-    value: lang.code,
-    label: lang.name,
-    flag: lang.flag,
-    id: lang.id,
-  }));
+  // Note: LANGUAGES constant is used directly, no need to map
 
   // Helper function to convert PYUSD per second to hourly USD for display
   const weiPerSecondToHourlyUsd = (weiPerSecond: number | string | undefined): string => {
@@ -130,7 +388,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     console.log("Socket connected:", socket.connected);
 
     // Debug: Listen for ALL events
-    const originalOn = socket.on.bind(socket);
     socket.onAny((eventName: string, ...args: any[]) => {
       console.log(`🔔 TUTOR RECEIVED EVENT: ${eventName}`, args);
     });
@@ -359,8 +616,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     }
 
     if (activeSessionData) {
-      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
-        activeSessionData;
+      const [student, , , startTime, , , , , sessionId, isActive] = activeSessionData;
 
       // If session is active and has started, redirect (student has confirmed tx and likely entered room)
       if (isActive && startTime && startTime > 0n) {
@@ -726,7 +982,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
               ))}
             </div>
 
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">You're Live! 🎉</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">You&apos;re Live! 🎉</h2>
 
             {/* Connection Status Debug */}
             <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm">
@@ -908,7 +1164,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Waiting for Student to Start 🎓</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-              You've accepted the request. The student is preparing to start the session.
+              You&apos;ve accepted the request. The student is preparing to start the session.
             </p>
 
             <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-6 mb-8">
@@ -1017,7 +1273,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Session in Progress! 🎓</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-              You're currently teaching a student. Earnings are being tracked automatically.
+              You&apos;re currently teaching a student. Earnings are being tracked automatically.
             </p>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 mb-8">

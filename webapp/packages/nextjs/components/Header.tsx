@@ -3,12 +3,12 @@
 import React, { useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline";
-import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { client } from "../client";
-import { wallets } from "../wallets";
 import { activeChain } from "../lib/chains";
+import { wallets } from "../wallets";
 import { SwitchTheme } from "./SwitchTheme";
+import { ConnectButton, useActiveAccount } from "thirdweb/react";
+import { Bars3Icon, BellIcon } from "@heroicons/react/24/outline";
 // import { ConnectionStatus } from "./socket/ConnectionStatus";
 // import { SocketNotifications } from "./socket/SocketNotifications";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
@@ -37,29 +37,20 @@ const connectedMenuLinks: HeaderMenuLink[] = [
     href: "/sessions",
   },
   {
-    label: 'Schedule',
-    href: '/schedule'
+    label: "Schedule",
+    href: "/schedule",
   },
   {
-    label: 'Socket Demo',
-    href: '/socket-demo'
+    label: "Socket Demo",
+    href: "/socket-demo",
   },
   {
-    label: 'Debug',
-    href: '/debug'
-  }
+    label: "Debug",
+    href: "/debug",
+  },
 ];
 
-const disconnectedMenuLinks: HeaderMenuLink[] = [
-  {
-    label: 'Home',
-    href: '/'
-  },
-  {
-    label: 'How it Works',
-    href: '/'
-  }
-];
+// Note: disconnectedMenuLinks reserved for future use
 
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();
@@ -86,8 +77,9 @@ export const HeaderMenuLinks = () => {
             <Link
               key={href}
               href={href}
-              className={`${isActive ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
-                } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
+              className={`${
+                isActive ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
+              } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
             >
               {label}
             </Link>
@@ -102,15 +94,19 @@ export const HeaderMenuLinks = () => {
     <>
       <button
         onClick={handleHomeClick}
-        className={`${currentView === 'home' ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
-          } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
+        className={`${
+          currentView === "home" ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
+        } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
       >
         Home
       </button>
       <button
         onClick={handleHowItWorksClick}
-        className={`${currentView === 'how-it-works' ? "text-gray-900 dark:text-white font-medium" : "text-gray-600 dark:text-gray-300"
-          } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
+        className={`${
+          currentView === "how-it-works"
+            ? "text-gray-900 dark:text-white font-medium"
+            : "text-gray-600 dark:text-gray-300"
+        } hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium`}
       >
         How it Works
       </button>
@@ -125,7 +121,7 @@ export const Header = () => {
   const burgerMenuRef = useRef<HTMLDetailsElement>(null);
   const account = useActiveAccount();
   const { showHome } = usePageView();
-  
+
   useOutsideClick(burgerMenuRef, () => {
     burgerMenuRef?.current?.removeAttribute("open");
   });
@@ -170,12 +166,7 @@ export const Header = () => {
 
             {/* {account && <SocketNotifications />} */}
 
-            <ConnectButton 
-              client={client} 
-              wallets={wallets}
-              chain={activeChain}
-              autoConnect={true}
-            />
+            <ConnectButton client={client} wallets={wallets} chain={activeChain} autoConnect={true} />
           </div>
 
           {/* Mobile menu button */}

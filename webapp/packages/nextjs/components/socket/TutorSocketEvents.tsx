@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSocket } from "../../lib/socket/socketContext";
-import toast from "react-hot-toast";
-import { useActiveAccount } from "thirdweb/react";
 import { LANGUAGES } from "../../lib/constants/contracts";
+import { useSocket } from "../../lib/socket/socketContext";
+import toast, { Toast } from "react-hot-toast";
+import { useActiveAccount } from "thirdweb/react";
 
 interface IncomingRequest {
   requestId: string;
@@ -33,14 +33,15 @@ export const TutorSocketEvents: React.FC<TutorSocketEventsProps> = ({ onRequestR
       onRequestReceived?.(data);
 
       toast(
-        t => (
+        (t: Toast) => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">New Tutoring Request!</div>
             <div className="text-sm text-gray-600">
               Student: {data.studentAddress.slice(0, 6)}...{data.studentAddress.slice(-4)}
             </div>
             <div className="text-sm text-gray-600">
-              Language: {LANGUAGES.find(l => l.code === data.language)?.name || data.language} | Budget: {data.budgetPerSecond} ETH/sec
+              Language: {LANGUAGES.find(l => l.code === data.language)?.name || data.language} | Budget:{" "}
+              {data.budgetPerSecond} ETH/sec
             </div>
             <div className="flex space-x-2">
               <button
@@ -83,13 +84,13 @@ export const TutorSocketEvents: React.FC<TutorSocketEventsProps> = ({ onRequestR
     };
 
     const handleRequestDeclined = (data: any) => {
-      toast.info("Request declined");
+      toast("Request declined");
       // Remove the request from pending list
       setIncomingRequests(prev => prev.filter(req => req.requestId !== data.requestId));
     };
 
     const handleStudentRejected = (data: any) => {
-      toast.info("Student rejected you or selected another tutor");
+      toast("Student rejected you or selected another tutor");
       // Remove the request from pending list
       setIncomingRequests(prev => prev.filter(req => req.requestId !== data.requestId));
       // This should trigger the tutor to go back to waiting state
@@ -166,7 +167,8 @@ export const TutorSocketEvents: React.FC<TutorSocketEventsProps> = ({ onRequestR
                     {request.studentAddress.slice(0, 6)}...{request.studentAddress.slice(-4)}
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400">
-                    {LANGUAGES.find(l => l.code === request.language)?.name || request.language} • {request.budgetPerSecond} ETH/sec
+                    {LANGUAGES.find(l => l.code === request.language)?.name || request.language} •{" "}
+                    {request.budgetPerSecond} ETH/sec
                   </div>
                 </div>
                 <div className="flex space-x-2">

@@ -64,12 +64,15 @@ When a WebRTC session ends (either by user action, disconnection, or timeout), t
 
 ```typescript
 // Session data stored in sessionStorage when session begins
-sessionStorage.setItem('pendingSession', JSON.stringify({
-  requestId: 'session_123',
-  tutorAddress: '0x...',
-  studentAddress: '0x...',
-  languageId: 1,
-}));
+sessionStorage.setItem(
+  "pendingSession",
+  JSON.stringify({
+    requestId: "session_123",
+    tutorAddress: "0x...",
+    studentAddress: "0x...",
+    languageId: 1,
+  }),
+);
 
 // Hook initializes session from storage
 useWebRTCSession(); // Detects pending session and starts tracking
@@ -81,21 +84,21 @@ The hook listens for these socket events:
 
 ```typescript
 // User manually ended the call
-on('webrtc:session-ended', (data) => {
+on("webrtc:session-ended", data => {
   // Shows end session prompt
   setShowEndSessionPrompt(true);
 });
 
 // User disconnected (connection lost)
-on('webrtc:user-disconnected', (data) => {
+on("webrtc:user-disconnected", data => {
   // Shows warning and prompt after grace period
-  if (data.reason === 'connection-lost') {
+  if (data.reason === "connection-lost") {
     setShowEndSessionPrompt(true);
   }
 });
 
 // Heartbeat timeout (session stale)
-on('webrtc:heartbeat-timeout', (data) => {
+on("webrtc:heartbeat-timeout", data => {
   // Shows timeout warning and prompt
   setShowEndSessionPrompt(true);
 });
@@ -114,8 +117,8 @@ const endSession = async () => {
   });
 
   // Notify backend of completion
-  await fetch('/api/webrtc-session-ended', {
-    method: 'POST',
+  await fetch("/api/webrtc-session-ended", {
+    method: "POST",
     body: JSON.stringify({
       sessionId,
       userAddress,
@@ -125,7 +128,7 @@ const endSession = async () => {
 
   // Clean up local state
   setCurrentSession(null);
-  sessionStorage.removeItem('pendingSession');
+  sessionStorage.removeItem("pendingSession");
 };
 ```
 
@@ -147,26 +150,26 @@ const endSession = async () => {
 
 ```javascript
 // Session ended by user or system
-io.emit('webrtc:session-ended', {
+io.emit("webrtc:session-ended", {
   sessionId,
   tutorAddress,
   studentAddress,
   endedBy,
-  reason
+  reason,
 });
 
 // User disconnected
-io.emit('webrtc:user-disconnected', {
+io.emit("webrtc:user-disconnected", {
   sessionId,
   disconnectedUser,
-  reason
+  reason,
 });
 
 // Heartbeat timeout
-io.emit('webrtc:heartbeat-timeout', {
+io.emit("webrtc:heartbeat-timeout", {
   sessionId,
   lastHeartbeat,
-  timeoutDuration
+  timeoutDuration,
 });
 ```
 
@@ -176,14 +179,12 @@ io.emit('webrtc:heartbeat-timeout', {
 
 ```tsx
 // In your main app layout
-import { WebRTCSessionProvider } from '~~/components/webrtc/WebRTCSessionProvider';
+import { WebRTCSessionProvider } from "~~/components/webrtc/WebRTCSessionProvider";
 
 export default function Layout({ children }) {
   return (
     <SocketProvider>
-      <WebRTCSessionProvider>
-        {children}
-      </WebRTCSessionProvider>
+      <WebRTCSessionProvider>{children}</WebRTCSessionProvider>
     </SocketProvider>
   );
 }
@@ -192,7 +193,7 @@ export default function Layout({ children }) {
 ### 2. Use in Components
 
 ```tsx
-import { useWebRTCSession } from '~~/hooks/useWebRTCSession';
+import { useWebRTCSession } from "~~/hooks/useWebRTCSession";
 
 function MyComponent() {
   const { currentSession, isSessionActive, endSession, sessionDuration } = useWebRTCSession();

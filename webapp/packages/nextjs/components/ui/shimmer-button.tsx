@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef, CSSProperties } from "react";
+import React, { CSSProperties, ComponentPropsWithoutRef } from "react";
 import { cn } from "~~/lib/utils";
 
 export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
@@ -23,7 +23,7 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <button
@@ -40,18 +40,13 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
         className={cn(
           "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border border-white/10 px-6 py-3 whitespace-nowrap text-white [background:var(--bg)]",
           "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
-          className
+          className,
         )}
         ref={ref}
         {...props}
       >
         {/* spark container */}
-        <div
-          className={cn(
-            "-z-30 blur-[2px]",
-            "[container-type:size] absolute inset-0 overflow-visible"
-          )}
-        >
+        <div className={cn("-z-30 blur-[2px]", "[container-type:size] absolute inset-0 overflow-visible")}>
           {/* spark */}
           <div className="animate-shimmer-slide absolute inset-0 [aspect-ratio:1] h-[100cqh] [border-radius:0] [mask:none]">
             {/* spark before */}
@@ -71,19 +66,15 @@ export const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonPr
             // on hover
             "group-hover:shadow-[inset_0_-6px_10px_#ffffff3f]",
             // on click
-            "group-active:shadow-[inset_0_-10px_10px_#ffffff3f]"
+            "group-active:shadow-[inset_0_-10px_10px_#ffffff3f]",
           )}
         />
 
         {/* backdrop */}
-        <div
-          className={cn(
-            "absolute [inset:var(--cut)] -z-20 [border-radius:var(--radius)] [background:var(--bg)]"
-          )}
-        />
+        <div className={cn("absolute [inset:var(--cut)] -z-20 [border-radius:var(--radius)] [background:var(--bg)]")} />
       </button>
     );
-  }
+  },
 );
 
 ShimmerButton.displayName = "ShimmerButton";

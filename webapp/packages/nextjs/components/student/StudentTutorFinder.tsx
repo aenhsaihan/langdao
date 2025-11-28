@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { CONTRACTS, LANGUAGES, PYUSD_DECIMALS } from "../../lib/constants/contracts";
 import { useSocket } from "../../lib/socket/socketContext";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useActiveAccount } from "thirdweb/react";
-import { useWalletClient, usePublicClient } from "wagmi";
-import { CONTRACTS, LANGUAGES, PYUSD_DECIMALS } from "../../lib/constants/contracts";
-import { useScaffoldWriteContract, useScaffoldReadContract, useUsdConversion, useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { usePublicClient, useWalletClient } from "wagmi";
+import { useDeployedContractInfo, useScaffoldReadContract, useUsdConversion } from "~~/hooks/scaffold-eth";
 
 interface StudentTutorFinderProps {
   onBack?: () => void;
@@ -24,10 +24,10 @@ interface TutorResponse {
   timestamp: number;
 }
 
-export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, onSessionStart }) => {
+export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack }) => {
   const account = useActiveAccount();
   const [isPreparingTransaction, setIsPreparingTransaction] = useState(false);
-  const { socket, isConnected, on, off, emit } = useSocket();
+  const { socket, isConnected, on, off } = useSocket();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const { data: deployedContractData } = useDeployedContractInfo({ contractName: "LangDAO" });
@@ -36,7 +36,6 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
   const [budgetPerHour, setBudgetPerHour] = useState<string | null>(null); // Initialize to null to prevent flicker
   const { pyusdToUsdFormatted } = useUsdConversion();
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
-  const [availableTutors, setAvailableTutors] = useState<TutorResponse[]>([]);
   const [currentTutor, setCurrentTutor] = useState<TutorResponse | null>(null);
   const [searchStartTime, setSearchStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -53,13 +52,13 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     if (studentInfo) {
       const targetLanguageId = Number(studentInfo[0]);
       const budgetPerSec = Number(studentInfo[1]);
-      
+
       // Find the language code from the ID
       const targetLang = LANGUAGES.find(l => l.id === targetLanguageId);
       if (targetLang) {
         setLanguage(targetLang.code);
       }
-      
+
       // Convert budget per second to per hour and format
       const budgetPerHourValue = (budgetPerSec * 3600) / Math.pow(10, PYUSD_DECIMALS);
       setBudgetPerHour(budgetPerHourValue.toFixed(2));
@@ -67,9 +66,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
   }, [studentInfo]);
 
   // Scaffold-ETH hooks for contract interaction
-  const { writeContractAsync: startSessionWrite, isMining: isStartingSession } = useScaffoldWriteContract({
-    contractName: "LangDAO",
-  });
+  // Note: startSessionWrite and isStartingSession are reserved for future use
 
   // Monitor active session on blockchain (for redirecting when session becomes active)
   // NOTE: activeSessions is keyed by tutor address, not student address!
@@ -79,19 +76,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     args: [currentTutor?.tutorAddress as `0x${string}`],
   });
 
-  // Check student's token balance
-  const { data: studentBalance } = useScaffoldReadContract({
-    contractName: "MockERC20",
-    functionName: "balanceOf",
-    args: [account?.address],
-  });
-
-  // Check student's token allowance for LangDAO contract
-  const { data: tokenAllowance } = useScaffoldReadContract({
-    contractName: "MockERC20",
-    functionName: "allowance",
-    args: [account?.address, CONTRACTS.LANGDAO],
-  });
+  // Note: studentBalance and tokenAllowance checks are reserved for future use
 
   // Check if student can afford the session
   const { data: canAfford } = useScaffoldReadContract({
@@ -107,18 +92,16 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     args: [account?.address, currentTutor?.tutorAddress as `0x${string}`],
   });
 
-  // Get tutor's actual rate from the blockchain
-  const { data: tutorInfoData } = useScaffoldReadContract({
-    contractName: "LangDAO",
-    functionName: "getTutorInfo",
-    args: [currentTutor?.tutorAddress as `0x${string}`],
-  });
+  // Note: tutorInfoData is reserved for future use
+
+  // Find language ID from language code
+  const selectedLanguageId = language ? LANGUAGES.find(l => l.code === language)?.id : undefined;
 
   // Extract the actual rate from contract (ratePerSecond is not in the response, need to get it separately)
   const { data: tutorRatePerSecond } = useScaffoldReadContract({
     contractName: "LangDAO",
-    functionName: "tutorRates",
-    args: [currentTutor?.tutorAddress as `0x${string}`],
+    functionName: "getTutorRate",
+    args: [currentTutor?.tutorAddress as `0x${string}`, selectedLanguageId ?? 0],
   });
 
   // State to store tutor's actual on-chain languages
@@ -155,20 +138,23 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
   useEffect(() => {
     if (currentTutor) {
       const offeredLanguages: number[] = [];
-      
+
       if (tutorLang1.data) offeredLanguages.push(1);
       if (tutorLang2.data) offeredLanguages.push(2);
       if (tutorLang3.data) offeredLanguages.push(3);
       if (tutorLang4.data) offeredLanguages.push(4);
       if (tutorLang5.data) offeredLanguages.push(5);
-      
+
       setTutorOnChainLanguages(offeredLanguages);
-      
+
       console.log("=== TUTOR ON-CHAIN DEBUG ===");
       console.log("Tutor address:", currentTutor.tutorAddress);
       console.log("Language from socket:", currentTutor.language);
       console.log("Languages tutor offers on-chain (IDs):", offeredLanguages);
-      console.log("Language names:", offeredLanguages.map(id => LANGUAGES.find(l => l.id === id)?.name));
+      console.log(
+        "Language names:",
+        offeredLanguages.map(id => LANGUAGES.find(l => l.id === id)?.name),
+      );
       console.log("============================");
     }
   }, [currentTutor, tutorLang1.data, tutorLang2.data, tutorLang3.data, tutorLang4.data, tutorLang5.data]);
@@ -178,11 +164,11 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     value: lang.code,
     label: lang.name,
     flag: lang.flag,
-    id: lang.id
+    id: lang.id,
   }));
 
   // Get the actual rate - prefer blockchain data over socket data
-  const actualTutorRate = tutorRatePerSecond ? Number(tutorRatePerSecond) : (currentTutor?.ratePerSecond || 0);
+  const actualTutorRate = tutorRatePerSecond ? Number(tutorRatePerSecond) : currentTutor?.ratePerSecond || 0;
 
   // Helper function to convert wei per second back to hourly USD for display
   const weiPerSecondToHourlyUsd = (weiPerSecond: number | string | undefined): string => {
@@ -248,7 +234,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
       setFinderState("tutor-found");
 
       toast(
-        (t: any) => (
+        () => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">🎉 Tutor Found!</div>
             <div className="text-sm text-gray-600">
@@ -352,9 +338,9 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
     }
 
     console.log("🔍 Student checking activeSessionData:", activeSessionData);
-    
+
     if (activeSessionData) {
-      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] = activeSessionData;
+      const [student, tutor, , startTime, , , , , sessionId, isActive] = activeSessionData;
 
       console.log("🔍 Student session check:", {
         student,
@@ -383,7 +369,9 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
           console.log("🚀 Student redirecting to:", videoCallUrl);
           window.location.href = videoCallUrl;
         } else {
-          console.log("⚠️ Student: Active session found but student address doesn't match - waiting for correct session");
+          console.log(
+            "⚠️ Student: Active session found but student address doesn't match - waiting for correct session",
+          );
         }
       } else {
         console.log("⏳ Student: Session not yet active or not started:", {
@@ -441,20 +429,20 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
       console.log("Student's selected language:", language);
       console.log("Tutor's on-chain languages:", tutorOnChainLanguages);
       console.log("Available LANGUAGES constant:", LANGUAGES);
-      
+
       // Find language by code (which is what we're using now)
       const languageObj = LANGUAGES.find(l => l.code === language);
-      
+
       if (!languageObj) {
         throw new Error(`Language not found for code: ${language}`);
       }
-      
+
       const languageId = languageObj.id;
-      
-      console.log("✅ Using language:", { 
-        languageId, 
-        languageName: languageObj.name, 
-        languageCode: language 
+
+      console.log("✅ Using language:", {
+        languageId,
+        languageName: languageObj.name,
+        languageCode: language,
       });
       console.log("============================");
 
@@ -483,7 +471,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
       // Write contract (this shows MetaMask popup and waits for user confirmation)
       // This returns the transaction hash immediately after MetaMask confirmation
       const txHash = await walletClient.writeContract(request);
-      
+
       // NOW show "session-starting" screen after MetaMask confirmation
       setFinderState("session-starting");
       toast.success("🎓 Transaction submitted! Waiting for confirmation...");
@@ -500,21 +488,24 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
 
       // Store session info for when student enters room (will be used when blockchain confirms)
       const videoCallUrl = `https://langdao-production.up.railway.app/?student=${account?.address}&tutor=${currentTutor.tutorAddress}&session=${currentRequestId}`;
-      sessionStorage.setItem('pendingSession', JSON.stringify({
-        requestId: currentRequestId,
-        studentAddress: account?.address,
-        tutorAddress: currentTutor.tutorAddress,
-        languageId,
-        videoCallUrl,
-      }));
+      sessionStorage.setItem(
+        "pendingSession",
+        JSON.stringify({
+          requestId: currentRequestId,
+          studentAddress: account?.address,
+          tutorAddress: currentTutor.tutorAddress,
+          languageId,
+          videoCallUrl,
+        }),
+      );
       // Also store in localStorage for ActiveSessionPrompt (more persistent, survives tab closes)
-      localStorage.setItem('activeSessionTutorAddress', currentTutor.tutorAddress);
+      localStorage.setItem("activeSessionTutorAddress", currentTutor.tutorAddress);
 
       // Don't wait for transaction receipt - instead, start polling blockchain for active session
       // This allows both student and tutor to enter at the same time once blockchain confirms
       console.log("🔄 Transaction submitted, now polling blockchain for active session...");
       // The redirect will happen via the useEffect that polls for activeSessionData
-      
+
       // Reset loading state after MetaMask popup appears (transaction submitted)
       setIsPreparingTransaction(false);
     } catch (error: any) {
@@ -531,7 +522,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
           tutorAddress: currentTutor.tutorAddress,
           studentAddress: account?.address,
         });
-        
+
         // Also emit the reject-tutor event as backup
         socket.emit("student:reject-tutor", {
           requestId: currentRequestId,
@@ -548,7 +539,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
         // Return to tutor-found state so user can try again
         setFinderState("tutor-found");
       }
-      
+
       // Reset loading state on error
       setIsPreparingTransaction(false);
     }
@@ -657,7 +648,9 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
                     title={lang.label}
                   >
                     <div className="text-xl">{lang.flag}</div>
-                    <div className="text-xs font-medium text-gray-900 dark:text-white mt-1 truncate w-full text-center">{lang.label}</div>
+                    <div className="text-xs font-medium text-gray-900 dark:text-white mt-1 truncate w-full text-center">
+                      {lang.label}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -685,9 +678,7 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
                   <span className="text-blue-600 dark:text-blue-400 font-medium">
                     ≈ {pyusdToUsdFormatted(budgetPerHour)}/hr
                   </span>
-                  <span className="text-gray-500">
-                    {pyusdToUsdFormatted(parseFloat(budgetPerHour) / 3600, 6)}/sec
-                  </span>
+                  <span className="text-gray-500">{pyusdToUsdFormatted(parseFloat(budgetPerHour) / 3600, 6)}/sec</span>
                 </div>
               )}
             </div>
@@ -812,7 +803,10 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
               Searching for <span className="font-semibold text-purple-600">{selectedLanguageData?.label}</span> tutors
               <br />
-              Budget: <span className="font-semibold">{budgetPerHour ? pyusdToUsdFormatted(budgetPerHour) : 'Loading...'}/hr</span>
+              Budget:{" "}
+              <span className="font-semibold">
+                {budgetPerHour ? pyusdToUsdFormatted(budgetPerHour) : "Loading..."}/hr
+              </span>
             </p>
 
             {/* Search Progress */}
@@ -954,16 +948,16 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
                 <div className="flex items-start space-x-3">
                   <span className="text-2xl">⚠️</span>
                   <div className="flex-1 text-left">
-                    <h3 className="font-bold text-red-700 dark:text-red-300 mb-2">
-                      Insufficient Balance
-                    </h3>
+                    <h3 className="font-bold text-red-700 dark:text-red-300 mb-2">Insufficient Balance</h3>
                     <p className="text-sm text-red-600 dark:text-red-400 mb-2">
                       You need to deposit at least <strong>10 minutes worth of PYUSD</strong> to start a session.
                     </p>
                     <p className="text-sm text-red-600 dark:text-red-400">
                       Required: ~{((currentTutor.ratePerSecond * 600) / Math.pow(10, PYUSD_DECIMALS)).toFixed(2)} PYUSD
                       <br />
-                      <span className="text-xs">(10 minutes at {weiPerSecondToHourlyUsd(currentTutor.ratePerSecond)}/hour)</span>
+                      <span className="text-xs">
+                        (10 minutes at {weiPerSecondToHourlyUsd(currentTutor.ratePerSecond)}/hour)
+                      </span>
                     </p>
                     <a
                       href="/onboarding?step=deposit"
@@ -981,11 +975,10 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
                 <div className="flex items-start space-x-3">
                   <span className="text-2xl">💰</span>
                   <div className="flex-1 text-left">
-                    <h3 className="font-bold text-yellow-700 dark:text-yellow-300 mb-2">
-                      Budget Too Low
-                    </h3>
+                    <h3 className="font-bold text-yellow-700 dark:text-yellow-300 mb-2">Budget Too Low</h3>
                     <p className="text-sm text-yellow-600 dark:text-yellow-400">
-                      Your budget ({budgetPerHour ? pyusdToUsdFormatted(budgetPerHour) : 'N/A'}/hr) is lower than this tutor's rate ({weiPerSecondToHourlyUsd(currentTutor.ratePerSecond)}/hr).
+                      Your budget ({budgetPerHour ? pyusdToUsdFormatted(budgetPerHour) : "N/A"}/hr) is lower than this
+                      tutor&apos;s rate ({weiPerSecondToHourlyUsd(currentTutor.ratePerSecond)}/hr).
                       <br />
                       Please increase your budget or find another tutor.
                     </p>
@@ -1010,21 +1003,40 @@ export const StudentTutorFinder: React.FC<StudentTutorFinderProps> = ({ onBack, 
               >
                 {isPreparingTransaction ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Waiting for Wallet...
                   </>
                 ) : (
                   <>
                     <span className="mr-2">🚀</span>
-                    {hasSufficientBalance === false ? "Insufficient Balance" : canAfford === false ? "Budget Too Low" : "Start Session Now"}
+                    {hasSufficientBalance === false
+                      ? "Insufficient Balance"
+                      : canAfford === false
+                        ? "Budget Too Low"
+                        : "Start Session Now"}
                   </>
                 )}
               </button>
             </div>
-
           </div>
         </motion.div>
       </div>

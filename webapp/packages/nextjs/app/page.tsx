@@ -1,21 +1,18 @@
-
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useActiveAccount } from "thirdweb/react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import type { NextPage } from "next";
-import { usePageView } from "~~/hooks/usePageView";
+import { useActiveAccount } from "thirdweb/react";
 import { Globe } from "~~/components/Globe";
+import { OnboardingFlow } from "~~/components/onboarding/OnboardingFlow";
 import { TestimonialsSection } from "~~/components/testimonials";
 import { AuroraText } from "~~/components/ui/aurora-text";
-import { WordRotate } from "~~/components/ui/word-rotate";
-import { ShimmerButton } from "~~/components/ui/shimmer-button";
 import { InteractiveGridPattern } from "~~/components/ui/interactive-grid-pattern";
+import { ShimmerButton } from "~~/components/ui/shimmer-button";
 import { TextAnimate } from "~~/components/ui/text-animate";
-import { OnboardingFlow } from "~~/components/onboarding/OnboardingFlow";
-
-
+import { WordRotate } from "~~/components/ui/word-rotate";
+import { usePageView } from "~~/hooks/usePageView";
 
 const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
   return (
@@ -38,7 +35,7 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
                   Talk. Learn.
                 </h1>
                 <div className="min-w-[180px] lg:min-w-[280px]">
-                  <WordRotate 
+                  <WordRotate
                     words={["Earn.", "Teach.", "Practice.", "Connect."]}
                     className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent"
                   />
@@ -55,7 +52,8 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
                   startOnView={false}
                   once={false}
                 >
-                  Skip the apps, skip the subscriptions. Jump on a call with a native speaker right now. Pay by the second. Learn by doing.
+                  Skip the apps, skip the subscriptions. Jump on a call with a native speaker right now. Pay by the
+                  second. Learn by doing.
                 </TextAnimate>
               </div>
 
@@ -144,8 +142,8 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
                 </div>
 
                 {/* Draggable Language Icons */}
-                <motion.div 
-                  drag 
+                <motion.div
+                  drag
                   whileDrag={{ scale: 1.2, rotate: 5 }}
                   whileHover={{ scale: 1.1 }}
                   dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
@@ -153,8 +151,8 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
                 >
                   EN
                 </motion.div>
-                <motion.div 
-                  drag 
+                <motion.div
+                  drag
                   whileDrag={{ scale: 1.2, rotate: -5 }}
                   whileHover={{ scale: 1.1 }}
                   dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
@@ -162,8 +160,8 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
                 >
                   ES
                 </motion.div>
-                <motion.div 
-                  drag 
+                <motion.div
+                  drag
                   whileDrag={{ scale: 1.3, rotate: 10 }}
                   whileHover={{ scale: 1.1 }}
                   dragConstraints={{ left: -80, right: 80, top: -80, bottom: 80 }}
@@ -171,8 +169,8 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
                 >
                   FR
                 </motion.div>
-                <motion.div 
-                  drag 
+                <motion.div
+                  drag
                   whileDrag={{ scale: 1.3, rotate: -10 }}
                   whileHover={{ scale: 1.1 }}
                   dragConstraints={{ left: -80, right: 80, top: -80, bottom: 80 }}
@@ -180,8 +178,8 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
                 >
                   中
                 </motion.div>
-                <motion.div 
-                  drag 
+                <motion.div
+                  drag
                   whileDrag={{ scale: 1.4, rotate: 15 }}
                   whileHover={{ scale: 1.1 }}
                   dragConstraints={{ left: -60, right: 60, top: -60, bottom: 60 }}
@@ -201,7 +199,7 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
   );
 };
 
-const HowItWorksView = ({ onBackToHome }: { onBackToHome: () => void }) => {
+const HowItWorksView = () => {
   return (
     <div className="relative min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
       <InteractiveGridPattern
@@ -214,9 +212,7 @@ const HowItWorksView = ({ onBackToHome }: { onBackToHome: () => void }) => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6">
-            How It Works
-          </h1>
+          <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6">How It Works</h1>
           <TextAnimate
             className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
             animation="blurInUp"
@@ -465,13 +461,11 @@ const ConnectedDashboard = () => {
     console.log("Onboarding completed!");
   };
 
-  return (
-    <OnboardingFlow onComplete={handleOnboardingComplete} />
-  );
+  return <OnboardingFlow onComplete={handleOnboardingComplete} />;
 };
 
 const HomeContent = () => {
-  const { currentView, showHowItWorks, showHome } = usePageView();
+  const { currentView, showHowItWorks } = usePageView();
   const account = useActiveAccount();
   const [isInitializing, setIsInitializing] = useState(true);
   const [hasCheckedAccount, setHasCheckedAccount] = useState(false);
@@ -481,7 +475,7 @@ const HomeContent = () => {
   useEffect(() => {
     // Mark that we've checked account state
     setHasCheckedAccount(true);
-    
+
     // Give a small delay to allow account state to settle
     // This prevents the flicker from showing landing page then switching to dashboard
     const timer = setTimeout(() => {
@@ -507,12 +501,8 @@ const HomeContent = () => {
           <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-6 animate-pulse">
             <span className="text-2xl">🔍</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Loading...
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Checking your connection...
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Loading...</h2>
+          <p className="text-gray-600 dark:text-gray-300">Checking your connection...</p>
         </div>
       </div>
     );
@@ -532,11 +522,7 @@ const HomeContent = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {currentView === 'home' ? (
-          <HomeView onHowItWorksClick={showHowItWorks} />
-        ) : (
-          <HowItWorksView onBackToHome={showHome} />
-        )}
+        {currentView === "home" ? <HomeView onHowItWorksClick={showHowItWorks} /> : <HowItWorksView />}
       </motion.div>
     </AnimatePresence>
   );

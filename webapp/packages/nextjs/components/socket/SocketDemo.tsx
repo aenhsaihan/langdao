@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useActiveAccount } from 'thirdweb/react';
-import { useSocket } from '../../lib/socket/socketContext';
-import { TutorSocketEvents } from './TutorSocketEvents';
-import { StudentSocketEvents } from './StudentSocketEvents';
-import { LANGUAGES } from '../../lib/constants/contracts';
+import React, { useState } from "react";
+import { LANGUAGES } from "../../lib/constants/contracts";
+import { useSocket } from "../../lib/socket/socketContext";
+import { StudentSocketEvents } from "./StudentSocketEvents";
+import { TutorSocketEvents } from "./TutorSocketEvents";
+import { useActiveAccount } from "thirdweb/react";
 
 export const SocketDemo: React.FC = () => {
   const account = useActiveAccount();
   const { isConnected, emit } = useSocket();
-  const [userRole, setUserRole] = useState<'tutor' | 'student' | null>(null);
-  const [language, setLanguage] = useState('en'); // Use language code
+  const [userRole, setUserRole] = useState<"tutor" | "student" | null>(null);
+  const [language, setLanguage] = useState("en"); // Use language code
   const [rate, setRate] = useState(0.001);
   const [budget, setBudget] = useState(0.002);
 
@@ -19,34 +19,32 @@ export const SocketDemo: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border">
         <h2 className="text-xl font-bold mb-4">Socket Demo</h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Please connect your wallet to test socket functionality.
-        </p>
+        <p className="text-gray-600 dark:text-gray-400">Please connect your wallet to test socket functionality.</p>
       </div>
     );
   }
 
   const setTutorAvailable = () => {
-    emit('tutor:set-available', {
+    emit("tutor:set-available", {
       address: account.address,
       language,
-      ratePerSecond: rate
+      ratePerSecond: rate,
     });
   };
 
   const setTutorUnavailable = () => {
-    emit('tutor:set-unavailable', {
-      address: account.address
+    emit("tutor:set-unavailable", {
+      address: account.address,
     });
   };
 
   const requestTutor = () => {
     const requestId = `req_${Math.random().toString(36).substr(2, 9)}`;
-    emit('student:request-tutor', {
+    emit("student:request-tutor", {
       requestId,
       studentAddress: account.address,
       language,
-      budgetPerSecond: budget
+      budgetPerSecond: budget,
     });
   };
 
@@ -54,12 +52,12 @@ export const SocketDemo: React.FC = () => {
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border">
         <h2 className="text-xl font-bold mb-4">Socket Demo</h2>
-        
+
         <div className="mb-4">
           <div className="flex items-center space-x-2 mb-2">
             <span className="text-sm font-medium">Connection Status:</span>
-            <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
-            <span className="text-sm">{isConnected ? 'Connected' : 'Disconnected'}</span>
+            <div className={`w-3 h-3 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`}></div>
+            <span className="text-sm">{isConnected ? "Connected" : "Disconnected"}</span>
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400">
             Wallet: {account.address.slice(0, 6)}...{account.address.slice(-4)}
@@ -71,21 +69,21 @@ export const SocketDemo: React.FC = () => {
           <h3 className="font-medium mb-2">Select Role for Testing:</h3>
           <div className="flex space-x-4">
             <button
-              onClick={() => setUserRole('tutor')}
+              onClick={() => setUserRole("tutor")}
               className={`px-4 py-2 rounded ${
-                userRole === 'tutor' 
-                  ? 'bg-blue-500 text-white' 
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                userRole === "tutor"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
               }`}
             >
               Tutor
             </button>
             <button
-              onClick={() => setUserRole('student')}
+              onClick={() => setUserRole("student")}
               className={`px-4 py-2 rounded ${
-                userRole === 'student' 
-                  ? 'bg-blue-500 text-white' 
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                userRole === "student"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
               }`}
             >
               Student
@@ -101,7 +99,7 @@ export const SocketDemo: React.FC = () => {
               <label className="block text-sm font-medium mb-1">Language</label>
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                onChange={e => setLanguage(e.target.value)}
                 className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
               >
                 {LANGUAGES.map(lang => (
@@ -111,27 +109,27 @@ export const SocketDemo: React.FC = () => {
                 ))}
               </select>
             </div>
-            {userRole === 'tutor' && (
+            {userRole === "tutor" && (
               <div>
                 <label className="block text-sm font-medium mb-1">Rate (PYUSD/sec)</label>
                 <input
                   type="number"
                   step="0.001"
                   value={rate}
-                  onChange={(e) => setRate(parseFloat(e.target.value))}
+                  onChange={e => setRate(parseFloat(e.target.value))}
                   className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
                 />
                 <div className="text-xs text-gray-500 mt-1">≈ ${(rate * 3600).toFixed(2)}/hr</div>
               </div>
             )}
-            {userRole === 'student' && (
+            {userRole === "student" && (
               <div>
                 <label className="block text-sm font-medium mb-1">Budget (PYUSD/sec)</label>
                 <input
                   type="number"
                   step="0.001"
                   value={budget}
-                  onChange={(e) => setBudget(parseFloat(e.target.value))}
+                  onChange={e => setBudget(parseFloat(e.target.value))}
                   className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
                 />
                 <div className="text-xs text-gray-500 mt-1">≈ ${(budget * 3600).toFixed(2)}/hr</div>
@@ -141,7 +139,7 @@ export const SocketDemo: React.FC = () => {
         </div>
 
         {/* Role-specific Actions */}
-        {userRole === 'tutor' && (
+        {userRole === "tutor" && (
           <div className="mb-6">
             <h3 className="font-medium mb-2">Tutor Actions:</h3>
             <div className="flex space-x-4">
@@ -163,7 +161,7 @@ export const SocketDemo: React.FC = () => {
           </div>
         )}
 
-        {userRole === 'student' && (
+        {userRole === "student" && (
           <div className="mb-6">
             <h3 className="font-medium mb-2">Student Actions:</h3>
             <button
@@ -178,8 +176,8 @@ export const SocketDemo: React.FC = () => {
       </div>
 
       {/* Socket Event Components */}
-      {userRole === 'tutor' && <TutorSocketEvents />}
-      {userRole === 'student' && <StudentSocketEvents />}
+      {userRole === "tutor" && <TutorSocketEvents />}
+      {userRole === "student" && <StudentSocketEvents />}
     </div>
   );
 };

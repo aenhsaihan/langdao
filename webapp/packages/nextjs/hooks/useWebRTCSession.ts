@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useSocket } from '~~/lib/socket/socketContext';
-import { useScaffoldWriteContract } from '~~/hooks/scaffold-eth';
+import { useCallback, useEffect, useState } from "react";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useSocket } from "~~/lib/socket/socketContext";
 
 interface SessionData {
   requestId: string;
@@ -32,28 +32,28 @@ export const useWebRTCSession = () => {
 
   // Initialize session from sessionStorage on mount
   useEffect(() => {
-    const pendingSession = sessionStorage.getItem('pendingSession');
+    const pendingSession = sessionStorage.getItem("pendingSession");
     if (pendingSession) {
       try {
         const sessionData = JSON.parse(pendingSession);
         // Check if session is too old (more than 2 hours)
         const sessionAge = Date.now() - (sessionData.startTime || 0);
         const TWO_HOURS = 2 * 60 * 60 * 1000;
-        
+
         if (sessionAge > TWO_HOURS) {
-          console.log('Session too old, clearing...');
-          sessionStorage.removeItem('pendingSession');
+          console.log("Session too old, clearing...");
+          sessionStorage.removeItem("pendingSession");
           return;
         }
-        
+
         setState(prev => ({
           ...prev,
           currentSession: { ...sessionData, startTime: sessionData.startTime || Date.now() },
           isSessionActive: true,
         }));
       } catch (error) {
-        console.error('Failed to parse pending session:', error);
-        sessionStorage.removeItem('pendingSession');
+        console.error("Failed to parse pending session:", error);
+        sessionStorage.removeItem("pendingSession");
       }
     }
   }, []);
@@ -61,7 +61,7 @@ export const useWebRTCSession = () => {
   // Session duration timer
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    
+
     if (state.isSessionActive && state.currentSession?.startTime) {
       interval = setInterval(() => {
         setState(prev => ({
@@ -81,7 +81,7 @@ export const useWebRTCSession = () => {
     if (!socket) return;
 
     const handleSessionEnded = (data: any) => {
-      console.log('WebRTC session ended:', data);
+      console.log("WebRTC session ended:", data);
       setState(prev => ({
         ...prev,
         showEndSessionPrompt: true,
@@ -89,8 +89,8 @@ export const useWebRTCSession = () => {
     };
 
     const handleUserDisconnected = (data: any) => {
-      console.log('User disconnected:', data);
-      if (data.reason === 'connection-lost') {
+      console.log("User disconnected:", data);
+      if (data.reason === "connection-lost") {
         // Grace period for reconnection
         setTimeout(() => {
           setState(prev => ({
@@ -107,21 +107,21 @@ export const useWebRTCSession = () => {
     };
 
     const handleHeartbeatTimeout = (data: any) => {
-      console.log('Heartbeat timeout:', data);
+      console.log("Heartbeat timeout:", data);
       setState(prev => ({
         ...prev,
         showEndSessionPrompt: true,
       }));
     };
 
-    socket.on('webrtc:session-ended', handleSessionEnded);
-    socket.on('webrtc:user-disconnected', handleUserDisconnected);
-    socket.on('webrtc:heartbeat-timeout', handleHeartbeatTimeout);
+    socket.on("webrtc:session-ended", handleSessionEnded);
+    socket.on("webrtc:user-disconnected", handleUserDisconnected);
+    socket.on("webrtc:heartbeat-timeout", handleHeartbeatTimeout);
 
     return () => {
-      socket.off('webrtc:session-ended', handleSessionEnded);
-      socket.off('webrtc:user-disconnected', handleUserDisconnected);
-      socket.off('webrtc:heartbeat-timeout', handleHeartbeatTimeout);
+      socket.off("webrtc:session-ended", handleSessionEnded);
+      socket.off("webrtc:user-disconnected", handleUserDisconnected);
+      socket.off("webrtc:heartbeat-timeout", handleHeartbeatTimeout);
     };
   }, [socket]);
 
@@ -139,9 +139,9 @@ export const useWebRTCSession = () => {
 
       // Notify backend of completion
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/webrtc-session-ended`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           sessionId: state.currentSession.requestId,
@@ -151,7 +151,7 @@ export const useWebRTCSession = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to notify backend');
+        throw new Error("Failed to notify backend");
       }
 
       // Clean up local state
@@ -164,12 +164,12 @@ export const useWebRTCSession = () => {
         isEndingSession: false,
       }));
 
-      sessionStorage.removeItem('pendingSession');
-      localStorage.removeItem('activeSessionTutorAddress');
-      
-      console.log('Session ended successfully');
+      sessionStorage.removeItem("pendingSession");
+      localStorage.removeItem("activeSessionTutorAddress");
+
+      console.log("Session ended successfully");
     } catch (error) {
-      console.error('Failed to end session:', error);
+      console.error("Failed to end session:", error);
       setState(prev => ({ ...prev, isEndingSession: false }));
       throw error;
     }
@@ -181,7 +181,7 @@ export const useWebRTCSession = () => {
 
   const startSession = useCallback((sessionData: SessionData) => {
     const sessionWithTime = { ...sessionData, startTime: Date.now() };
-    sessionStorage.setItem('pendingSession', JSON.stringify(sessionWithTime));
+    sessionStorage.setItem("pendingSession", JSON.stringify(sessionWithTime));
     setState(prev => ({
       ...prev,
       currentSession: sessionWithTime,
