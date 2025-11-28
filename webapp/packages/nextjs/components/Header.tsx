@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { client } from "../client";
@@ -119,17 +120,103 @@ export const HeaderMenuLinks = () => {
   );
 };
 
+const MobileMenuLinks = ({ onLinkClick }: { onLinkClick: () => void }) => {
+  const pathname = usePathname();
+  const account = useActiveAccount();
+  const { currentView, showHowItWorks, showHome } = usePageView();
+
+  const handleHowItWorksClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    showHowItWorks();
+    onLinkClick();
+  };
+
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    showHome();
+    onLinkClick();
+  };
+
+  if (account) {
+    // Connected state - show regular navigation
+    return (
+      <>
+        {connectedMenuLinks.map(({ label, href }) => {
+          const isActive = pathname === href;
+          return (
+            <li key={href} className="mb-1 last:mb-0">
+              <Link
+                href={href}
+                className={`${
+                  isActive
+                    ? "text-white bg-white/10 font-semibold"
+                    : "text-white/70 hover:text-white hover:bg-white/5"
+                } block px-4 py-2.5 rounded-xl transition-all text-sm`}
+                onClick={onLinkClick}
+              >
+                {label}
+              </Link>
+            </li>
+          );
+        })}
+      </>
+    );
+  }
+
+  // Disconnected state - show custom navigation
+  return (
+    <>
+      <li className="mb-1 last:mb-0">
+        <button
+          onClick={handleHomeClick}
+          className={`${
+            currentView === "home"
+              ? "text-white bg-white/10 font-semibold"
+              : "text-white/70 hover:text-white hover:bg-white/5"
+          } block w-full text-left px-4 py-2.5 rounded-xl transition-all text-sm`}
+        >
+          Home
+        </button>
+      </li>
+      <li className="mb-1 last:mb-0">
+        <button
+          onClick={handleHowItWorksClick}
+          className={`${
+            currentView === "how-it-works"
+              ? "text-white bg-white/10 font-semibold"
+              : "text-white/70 hover:text-white hover:bg-white/5"
+          } block w-full text-left px-4 py-2.5 rounded-xl transition-all text-sm`}
+        >
+          How it Works
+        </button>
+      </li>
+    </>
+  );
+};
+
 /**
  * Site header
  */
 export const Header = () => {
-  const burgerMenuRef = useRef<HTMLDetailsElement>(null);
+  const burgerMenuRef = useRef<HTMLDivElement>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 80, right: 0 });
   const account = useActiveAccount();
   const { showHome } = usePageView();
 
   useOutsideClick(burgerMenuRef, () => {
-    burgerMenuRef?.current?.removeAttribute("open");
+    setIsMenuOpen(false);
   });
+
+  useEffect(() => {
+    if (isMenuOpen && burgerMenuRef.current) {
+      const rect = burgerMenuRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + 12,
+        right: window.innerWidth - rect.right
+      });
+    }
+  }, [isMenuOpen]);
 
   const handleLogoClick = (e: React.MouseEvent) => {
     if (!account) {
@@ -138,13 +225,28 @@ export const Header = () => {
     }
   };
 
+  const toggleMenu = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setIsMenuOpen((prev) => {
+      console.log("Menu toggle:", !prev);
+      return !prev;
+    });
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <header className="relative bg-gradient-to-r from-[#1A0B2E] via-[#2D1B4E] to-[#1A0B2E] border-b border-white/10 backdrop-blur-xl">
+    <header className="relative bg-gradient-to-r from-[#1A0B2E] via-[#2D1B4E] to-[#1A0B2E] border-b border-white/10 backdrop-blur-xl" style={{ overflow: 'visible' }}>
       {/* Subtle glow effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 to-transparent pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex justify-between items-center h-20">
+      <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12" style={{ overflow: 'visible' }}>
+        <div className="flex justify-between items-center h-20" style={{ overflow: 'visible' }}>
           {/* Logo and Navigation */}
           <div className="flex items-center gap-8 xl:gap-12">
             <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3 group flex-shrink-0">
@@ -160,8 +262,8 @@ export const Header = () => {
             </nav>
           </div>
 
-          {/* Right side - Theme, Notifications and Connect Button */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Right side - Theme, Notifications, Connect Button and Mobile Menu */}
+          <div className="flex items-center gap-2 sm:gap-3" style={{ overflow: 'visible' }}>
             <div className="hidden md:block">
               <SwitchTheme />
             </div>
@@ -176,17 +278,45 @@ export const Header = () => {
             <div className="[&_button]:!bg-gradient-to-r [&_button]:!from-amber-400 [&_button]:!to-orange-500 [&_button]:!text-gray-900 [&_button]:!font-bold [&_button]:!px-5 [&_button]:sm:!px-6 [&_button]:!py-2.5 [&_button]:!rounded-xl [&_button]:hover:!scale-105 [&_button]:!transition-all [&_button]:!shadow-lg [&_button]:!shadow-amber-500/20 [&_button]:!text-sm [&_button]:sm:!text-base">
               <ConnectButton client={client} wallets={wallets} chain={activeChain} autoConnect={true} />
             </div>
-          </div>
 
-          {/* Mobile menu button */}
-          <details className="dropdown lg:hidden" ref={burgerMenuRef}>
-            <summary className="btn btn-ghost text-white hover:bg-white/10">
-              <Bars3Icon className="h-6 w-6" />
-            </summary>
-            <ul className="menu dropdown-content mt-3 p-3 shadow-2xl bg-[#1A0B2E] border border-white/10 rounded-2xl w-56 right-0 backdrop-blur-xl">
-              <HeaderMenuLinks />
-            </ul>
-          </details>
+            {/* Mobile menu button */}
+            <div className="relative lg:hidden" ref={burgerMenuRef} style={{ zIndex: 1000, overflow: 'visible' }}>
+              <button
+                type="button"
+                onClick={toggleMenu}
+                className="btn btn-ghost text-white hover:bg-white/10 active:bg-white/20 cursor-pointer p-2.5 relative"
+                style={{ zIndex: 1001 }}
+                aria-label="Toggle menu"
+                aria-expanded={isMenuOpen}
+              >
+                <Bars3Icon className="h-6 w-6 pointer-events-none" />
+              </button>
+              {isMenuOpen &&
+                typeof window !== "undefined" &&
+                createPortal(
+                  <>
+                    {/* Backdrop - click outside to close */}
+                    <div
+                      className="fixed inset-0"
+                      style={{ zIndex: 9999 }}
+                      onClick={closeMenu}
+                    />
+                    {/* Menu dropdown */}
+                    <ul
+                      className="fixed py-2 px-1 shadow-2xl bg-[#1A0B2E] border border-white/10 rounded-2xl w-56 backdrop-blur-xl min-w-[14rem]"
+                      style={{
+                        zIndex: 10000,
+                        top: `${menuPosition.top}px`,
+                        right: `${menuPosition.right}px`,
+                      }}
+                    >
+                      <MobileMenuLinks onLinkClick={closeMenu} />
+                    </ul>
+                  </>,
+                  document.body
+                )}
+            </div>
+          </div>
         </div>
       </div>
     </header>
