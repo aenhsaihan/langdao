@@ -8,9 +8,5 @@ export default function FindTutorPage() {
     // Here you would navigate to the actual video call interface
   };
 
-  return (
-    <StudentTutorFinder 
-      onSessionStart={handleSessionStart}
-    />
-  );
+  return <StudentTutorFinder onSessionStart={handleSessionStart} />;
 }

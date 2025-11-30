@@ -5,8 +5,9 @@ This directory contains the frontend components for the LangDAO language learnin
 ## 🚀 Features Implemented
 
 ### 1. Role Selection Page
+
 - **Component**: `onboarding/RoleSelection.tsx`
-- **Features**: 
+- **Features**:
   - Two-card interface for Student/Tutor selection
   - Responsive design with hover effects
   - Visual feedback on selection
@@ -14,6 +15,7 @@ This directory contains the frontend components for the LangDAO language learnin
 ### 2. Registration Forms
 
 #### Student Registration
+
 - **Component**: `onboarding/StudentRegistration.tsx`
 - **Features**:
   - Target language dropdown with 10+ languages
@@ -22,6 +24,7 @@ This directory contains the frontend components for the LangDAO language learnin
   - Transaction status handling
 
 #### Tutor Registration
+
 - **Component**: `onboarding/TutorRegistration.tsx`
 - **Features**:
   - Multi-select language interface
@@ -30,6 +33,7 @@ This directory contains the frontend components for the LangDAO language learnin
   - Visual language selection feedback
 
 ### 3. Deposit Flow
+
 - **Components**: `deposit/DepositFlow.tsx`, `deposit/DepositSlider.tsx`
 - **Features**:
   - Three-step process: Initial → Approval → Deposit
@@ -41,6 +45,7 @@ This directory contains the frontend components for the LangDAO language learnin
   - Integration with LangDAO contract `depositFunds` function
 
 ### 4. Onboarding Orchestration
+
 - **Component**: `onboarding/OnboardingFlow.tsx`
 - **Features**:
   - Progress bar with step indicators
@@ -51,6 +56,7 @@ This directory contains the frontend components for the LangDAO language learnin
 ## 🛠 Technical Implementation
 
 ### Dependencies Used
+
 - **thirdweb**: Wallet connection and contract interactions
 - **wagmi**: React hooks for Ethereum
 - **viem**: Ethereum utilities
@@ -59,10 +65,12 @@ This directory contains the frontend components for the LangDAO language learnin
 - **daisyui**: UI components
 
 ### Contract Integration
+
 - **PYUSD Token**: `0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9`
 - **LangDAO Contract**: Configurable in `lib/constants/contracts.ts`
 
 ### Key Features
+
 - **Responsive Design**: Works on mobile and desktop
 - **Dark Mode Support**: Full dark/light theme compatibility
 - **Transaction Handling**: Loading states, error handling, success feedback
@@ -89,6 +97,7 @@ components/
 ## 🔧 Configuration
 
 ### Contract Addresses
+
 Update `lib/constants/contracts.ts` with your deployed contract addresses:
 
 ```typescript
@@ -99,6 +108,7 @@ export const CONTRACTS = {
 ```
 
 ### Language Support
+
 Currently supports 10 languages. Add more in `lib/constants/contracts.ts`:
 
 ```typescript
@@ -111,6 +121,7 @@ export const LANGUAGES = [
 ## 🚀 Usage
 
 ### Basic Implementation
+
 ```tsx
 import { OnboardingFlow } from "./components/onboarding";
 
@@ -125,9 +136,10 @@ function App() {
 ```
 
 ### Individual Components
+
 ```tsx
-import { RoleSelection, StudentRegistration } from "./components/onboarding";
 import { DepositFlow } from "./components/deposit";
+import { RoleSelection, StudentRegistration } from "./components/onboarding";
 
 // Use components individually for custom flows
 ```
@@ -135,6 +147,7 @@ import { DepositFlow } from "./components/deposit";
 ## 🎨 Styling
 
 The components use Tailwind CSS with:
+
 - **Color Scheme**: Blue for students, Purple for tutors, Green for deposits
 - **Animations**: Smooth transitions and hover effects
 - **Responsive**: Mobile-first design
@@ -150,6 +163,7 @@ The components use Tailwind CSS with:
 ## 📱 Mobile Responsiveness
 
 All components are fully responsive:
+
 - **Breakpoints**: `sm:`, `md:`, `lg:` for different screen sizes
 - **Touch Friendly**: Large tap targets and proper spacing
 - **Orientation**: Works in both portrait and landscape
@@ -157,6 +171,7 @@ All components are fully responsive:
 ## 🧪 Testing
 
 To test the components:
+
 1. Deploy your LangDAO contract
 2. Update contract address in `lib/constants/contracts.ts`
 3. Connect wallet with PYUSD balance
@@ -165,6 +180,7 @@ To test the components:
 ## 🔄 Future Enhancements
 
 Potential improvements:
+
 - **Multi-language UI**: i18n support
 - **Advanced Validation**: Real-time form validation
 - **Progress Persistence**: Save progress in localStorage

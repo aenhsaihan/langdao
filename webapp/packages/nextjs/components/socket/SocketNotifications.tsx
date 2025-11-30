@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { useSocket } from '../../lib/socket/socketContext';
-import { useActiveAccount } from 'thirdweb/react';
-import { BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { LANGUAGES } from '../../lib/constants/contracts';
+import React, { useEffect, useState } from "react";
+import { LANGUAGES } from "../../lib/constants/contracts";
+import { useSocket } from "../../lib/socket/socketContext";
+import { useActiveAccount } from "thirdweb/react";
+import { BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 interface Notification {
   id: string;
-  type: 'tutor-request' | 'tutor-response' | 'session-start' | 'info';
+  type: "tutor-request" | "tutor-response" | "session-start" | "info";
   title: string;
   message: string;
   timestamp: number;
@@ -16,7 +16,7 @@ interface Notification {
   actions?: Array<{
     label: string;
     action: () => void;
-    variant: 'primary' | 'secondary' | 'danger';
+    variant: "primary" | "secondary" | "danger";
   }>;
 }
 
@@ -26,15 +26,15 @@ export const SocketNotifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp'>) => {
+  const addNotification = (notification: Omit<Notification, "id" | "timestamp">) => {
     const newNotification: Notification = {
       ...notification,
       id: Math.random().toString(36).substr(2, 9),
       timestamp: Date.now(),
     };
-    
+
     setNotifications(prev => [newNotification, ...prev.slice(0, 9)]); // Keep only 10 notifications
-    
+
     // Auto-remove after 30 seconds if no actions
     if (!notification.actions) {
       setTimeout(() => {
@@ -53,98 +53,98 @@ export const SocketNotifications: React.FC = () => {
     // Tutor notifications
     const handleIncomingRequest = (data: any) => {
       addNotification({
-        type: 'tutor-request',
-        title: 'New Tutoring Request',
+        type: "tutor-request",
+        title: "New Tutoring Request",
         message: `Student ${data.studentAddress.slice(0, 6)}...${data.studentAddress.slice(-4)} wants to learn ${LANGUAGES.find(l => l.code === data.language)?.name || data.language}`,
         data,
         actions: [
           {
-            label: 'Accept',
-            variant: 'primary',
+            label: "Accept",
+            variant: "primary",
             action: () => {
-              emit('tutor:accept-request', {
+              emit("tutor:accept-request", {
                 requestId: data.requestId,
-                tutorAddress: account?.address
+                tutorAddress: account?.address,
               });
               removeNotification(data.requestId);
-            }
+            },
           },
           {
-            label: 'Decline',
-            variant: 'danger',
+            label: "Decline",
+            variant: "danger",
             action: () => {
-              emit('tutor:decline-request', { requestId: data.requestId });
+              emit("tutor:decline-request", { requestId: data.requestId });
               removeNotification(data.requestId);
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
     // Student notifications
     const handleTutorAccepted = (data: any) => {
       addNotification({
-        type: 'tutor-response',
-        title: 'Tutor Accepted!',
+        type: "tutor-response",
+        title: "Tutor Accepted!",
         message: `Tutor ${data.tutorAddress.slice(0, 6)}...${data.tutorAddress.slice(-4)} accepted your request`,
         data,
         actions: [
           {
-            label: 'Start Session',
-            variant: 'primary',
+            label: "Start Session",
+            variant: "primary",
             action: () => {
-              emit('student:accept-tutor', {
+              emit("student:accept-tutor", {
                 requestId: data.requestId,
                 tutorAddress: data.tutorAddress,
-                studentAddress: account?.address
+                studentAddress: account?.address,
               });
               removeNotification(data.requestId);
-            }
+            },
           },
           {
-            label: 'Reject',
-            variant: 'secondary',
+            label: "Reject",
+            variant: "secondary",
             action: () => {
-              emit('student:reject-tutor', {
+              emit("student:reject-tutor", {
                 requestId: data.requestId,
                 tutorAddress: data.tutorAddress,
-                studentAddress: account?.address
+                studentAddress: account?.address,
               });
               removeNotification(data.requestId);
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
     };
 
     const handleSessionStart = (data: any) => {
       addNotification({
-        type: 'session-start',
-        title: 'Session Starting!',
-        message: 'Your language learning session is about to begin',
-        data
+        type: "session-start",
+        title: "Session Starting!",
+        message: "Your language learning session is about to begin",
+        data,
       });
     };
 
     const handleNoTutorsAvailable = () => {
       addNotification({
-        type: 'info',
-        title: 'No Tutors Available',
-        message: 'No tutors are currently available for your request. Try again later.'
+        type: "info",
+        title: "No Tutors Available",
+        message: "No tutors are currently available for your request. Try again later.",
       });
     };
 
     // Register listeners
-    on('tutor:incoming-request', handleIncomingRequest);
-    on('student:tutor-accepted', handleTutorAccepted);
-    on('session:starting', handleSessionStart);
-    on('student:no-tutors-available', handleNoTutorsAvailable);
+    on("tutor:incoming-request", handleIncomingRequest);
+    on("student:tutor-accepted", handleTutorAccepted);
+    on("session:starting", handleSessionStart);
+    on("student:no-tutors-available", handleNoTutorsAvailable);
 
     return () => {
-      off('tutor:incoming-request', handleIncomingRequest);
-      off('student:tutor-accepted', handleTutorAccepted);
-      off('session:starting', handleSessionStart);
-      off('student:no-tutors-available', handleNoTutorsAvailable);
+      off("tutor:incoming-request", handleIncomingRequest);
+      off("student:tutor-accepted", handleTutorAccepted);
+      off("session:starting", handleSessionStart);
+      off("student:no-tutors-available", handleNoTutorsAvailable);
     };
   }, [socket]); // Simplified deps
 
@@ -170,9 +170,7 @@ export const SocketNotifications: React.FC = () => {
         <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Notifications
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Notifications</h3>
               <button
                 onClick={() => setShowNotifications(false)}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -184,23 +182,17 @@ export const SocketNotifications: React.FC = () => {
 
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                No notifications
-              </div>
+              <div className="p-4 text-center text-gray-500 dark:text-gray-400">No notifications</div>
             ) : (
-              notifications.map((notification) => (
+              notifications.map(notification => (
                 <div
                   key={notification.id}
                   className="p-4 border-b border-gray-100 dark:border-gray-700 last:border-b-0"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className="text-sm font-medium text-gray-900 dark:text-white">
-                        {notification.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        {notification.message}
-                      </p>
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-white">{notification.title}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{notification.message}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
                         {new Date(notification.timestamp).toLocaleTimeString()}
                       </p>
@@ -222,11 +214,11 @@ export const SocketNotifications: React.FC = () => {
                           key={index}
                           onClick={action.action}
                           className={`px-3 py-1 text-sm rounded ${
-                            action.variant === 'primary'
-                              ? 'bg-blue-500 text-white hover:bg-blue-600'
-                              : action.variant === 'danger'
-                              ? 'bg-red-500 text-white hover:bg-red-600'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500'
+                            action.variant === "primary"
+                              ? "bg-blue-500 text-white hover:bg-blue-600"
+                              : action.variant === "danger"
+                                ? "bg-red-500 text-white hover:bg-red-600"
+                                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
                           }`}
                         >
                           {action.label}

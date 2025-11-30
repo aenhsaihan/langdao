@@ -30,7 +30,6 @@ redisClient.on("connect", () => console.log("Connected to Redis"));
 const tutorRoutes = require("./routes/tutors");
 const studentRoutes = require("./routes/students");
 const matchingRoutes = require("./routes/matching");
-const webrtcRoutes = require("./routes/webrtc");
 const sessionRoutes = require("./routes/sessions");
 const matchingService = require("./services/matchingService");
 
@@ -113,8 +112,9 @@ app.get("/health", async (req, res) => {
 app.use("/api/tutors", tutorRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/matching", matchingRoutes);
-app.use("/api", webrtcRoutes); // WebRTC events endpoint
 app.use("/api", sessionRoutes);
+
+// WebRTC routes will be initialized after socket setup (see below)
 
 // 404 handler
 app.use("*", (req, res) => {
@@ -884,38 +884,115 @@ io.on("connection", (socket) => {
       console.log(`🚀 Session started on blockchain for request ${data.requestId}`);
       console.log(`Looking for tutor: ${data.tutorAddress.toLowerCase()}`);
 
-      // Store session mapping for webRTC end session handling
+      // CRITICAL: Get languageId from blockchain, not from frontend data
+      // This ensures consistency - blockchain is the source of truth
+      let languageId = null;
+      const contractService = require('./services/contractService');
+      try {
+        const activeSessionOnChain = await contractService.getActiveSession(data.tutorAddress);
+        if (activeSessionOnChain && activeSessionOnChain.language !== undefined && activeSessionOnChain.language !== null) {
+          languageId = activeSessionOnChain.language;
+          console.log(`✅ Got languageId ${languageId} from blockchain for session ${data.requestId}`);
+        } else {
+          console.warn(`⚠️ Could not get languageId from blockchain, using fallback: ${data.languageId || 1}`);
+          languageId = data.languageId || 1;
+        }
+      } catch (error) {
+        console.warn(`⚠️ Error getting languageId from blockchain:`, error.message);
+        console.warn(`⚠️ Using fallback: ${data.languageId || 1}`);
+        languageId = data.languageId || 1;
+      }
+
+      // Generate WebRTC URLs for both student and tutor
+      const sessionId = data.requestId; // Use requestId as sessionId
+      const studentUrl = `/session/${sessionId}?role=student&tutor=${data.tutorAddress}&student=${data.studentAddress}`;
+      const tutorUrl = `/session/${sessionId}?role=tutor&tutor=${data.tutorAddress}&student=${data.studentAddress}`;
+
+      // Store session mapping for webRTC end session handling (with URLs)
+      // Use languageId from blockchain (source of truth)
       const sessionService = require('./services/sessionService');
       await sessionService.storeSessionMapping(
         data.requestId,
         data.studentAddress,
         data.tutorAddress,
-        data.languageId || 1
+        languageId, // Use blockchain languageId, not frontend data
+        studentUrl,
+        tutorUrl
       );
 
-      // Notify the tutor that the session has started
+      // Find tutor socket
       const tutorHash = await redisClient.hGetAll(`tutor:${data.tutorAddress.toLowerCase()}`);
-      const tutorSocketId = tutorHash?.socketId;
+      let tutorSocketId = tutorHash?.socketId;
 
-      console.log(`Tutor hash from Redis:`, tutorHash);
-      console.log(`Tutor socket ID:`, tutorSocketId);
-      console.log(`Socket exists:`, tutorSocketId ? !!io.sockets.sockets.get(tutorSocketId) : false);
-      console.log(`All connected sockets:`, Array.from(io.sockets.sockets.keys()));
+      // If tutor socket not found in Redis, search by address
+      if (!tutorSocketId || !io.sockets.sockets.get(tutorSocketId)) {
+        const allSockets = Array.from(io.sockets.sockets.values());
+        for (const s of allSockets) {
+          const socketAddress = await redisClient.hGet("socket_to_address", s.id);
+          if (socketAddress && socketAddress.toLowerCase() === data.tutorAddress.toLowerCase()) {
+            tutorSocketId = s.id;
+            // Update Redis with the socket ID
+            await redisClient.hSet(`tutor:${data.tutorAddress.toLowerCase()}`, { socketId: s.id });
+            break;
+          }
+        }
+      }
 
+      // Find student socket
+      let studentSocketId = socket.id; // Current socket is likely the student
+      // Verify by checking socket_to_address
+      const currentSocketAddress = await redisClient.hGet("socket_to_address", socket.id);
+      if (currentSocketAddress && currentSocketAddress.toLowerCase() !== data.studentAddress.toLowerCase()) {
+        // If current socket is not student, search for student socket
+        const allSockets = Array.from(io.sockets.sockets.values());
+        for (const s of allSockets) {
+          const socketAddress = await redisClient.hGet("socket_to_address", s.id);
+          if (socketAddress && socketAddress.toLowerCase() === data.studentAddress.toLowerCase()) {
+            studentSocketId = s.id;
+            break;
+          }
+        }
+      }
+
+      // Prepare session:ready event data
+      const sessionReadyData = {
+        requestId: data.requestId,
+        sessionId: sessionId,
+        studentAddress: data.studentAddress,
+        tutorAddress: data.tutorAddress,
+        studentUrl: studentUrl,
+        tutorUrl: tutorUrl,
+        languageId: languageId, // Use blockchain languageId (already fetched above)
+      };
+
+      // Send session:ready to tutor
       if (tutorSocketId && io.sockets.sockets.get(tutorSocketId)) {
-        console.log(`✅ Emitting session:started to tutor socket ${tutorSocketId}`);
+        console.log(`✅ Emitting session:ready to tutor socket ${tutorSocketId}`);
+        io.to(tutorSocketId).emit("session:ready", sessionReadyData);
+        console.log(`✅ Notified tutor ${data.tutorAddress} that session is ready`);
+      } else {
+        console.log(`⚠️ Could not find tutor socket, but will broadcast session:ready`);
+      }
+
+      // Send session:ready to student
+      if (studentSocketId && io.sockets.sockets.get(studentSocketId)) {
+        console.log(`✅ Emitting session:ready to student socket ${studentSocketId}`);
+        io.to(studentSocketId).emit("session:ready", sessionReadyData);
+        console.log(`✅ Notified student ${data.studentAddress} that session is ready`);
+      }
+
+      // Also broadcast session:ready as backup (both will filter by address if needed)
+      console.log(`📢 Broadcasting session:ready to all sockets (as backup)`);
+      io.emit("session:ready", sessionReadyData);
+
+      // Keep backward compatibility: also emit session:started to tutor
+      if (tutorSocketId && io.sockets.sockets.get(tutorSocketId)) {
         io.to(tutorSocketId).emit("session:started", {
           requestId: data.requestId,
           studentAddress: data.studentAddress,
-          videoCallUrl: data.videoCallUrl,
+          videoCallUrl: tutorUrl,
           message: "Session confirmed on blockchain! Redirecting to video call...",
         });
-        console.log(`✅ Notified tutor ${data.tutorAddress} that session started`);
-      } else {
-        console.log(`❌ Could not notify tutor - socket not found or not connected`);
-        console.log(`   Tutor address: ${data.tutorAddress}`);
-        console.log(`   Socket ID from Redis: ${tutorSocketId}`);
-        console.log(`   Socket connected: ${tutorSocketId ? !!io.sockets.sockets.get(tutorSocketId) : 'N/A'}`);
       }
 
       // Confirm to student
@@ -1100,6 +1177,166 @@ io.on("connection", (socket) => {
     }
   });
 
+  // WebRTC Signaling Events
+  
+  // Relay Offer
+  socket.on("webrtc:offer", async (data) => {
+    try {
+      if (!(await checkSocketRateLimit(socket.id))) {
+        socket.emit("error", { message: "Rate limit exceeded" });
+        return;
+      }
+
+      console.log(`📡 Relay Offer from ${data.senderAddress} to ${data.targetAddress}`);
+      
+      // Find target socket
+      const targetHash = await redisClient.hGetAll(`tutor:${data.targetAddress.toLowerCase()}`);
+      let targetSocketId = targetHash?.socketId;
+
+      // If not found in hash, try reverse lookup or broadcast (as fallback)
+      if (!targetSocketId) {
+         // Try to find by iterating (expensive but safe fallback)
+         const allSockets = Array.from(io.sockets.sockets.values());
+         for (const s of allSockets) {
+             const addr = await redisClient.hGet("socket_to_address", s.id);
+             if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+                 targetSocketId = s.id;
+                 break;
+             }
+         }
+      }
+
+      // If still not found, check if target is a student (who might not be in tutor hash)
+      if (!targetSocketId) {
+          // For students, we might need to look up via request ID or just iterate all sockets
+          // Since we don't have a "student:address" hash, we rely on socket_to_address
+          const allSockets = Array.from(io.sockets.sockets.values());
+          for (const s of allSockets) {
+              const addr = await redisClient.hGet("socket_to_address", s.id);
+              if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+                  targetSocketId = s.id;
+                  break;
+              }
+          }
+      }
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("webrtc:offer", data);
+      } else {
+        console.warn(`⚠️ Target ${data.targetAddress} not found for offer`);
+      }
+    } catch (error) {
+      console.error("Error relaying offer:", error);
+    }
+  });
+
+  // Relay Answer
+  socket.on("webrtc:answer", async (data) => {
+    try {
+      if (!(await checkSocketRateLimit(socket.id))) {
+        socket.emit("error", { message: "Rate limit exceeded" });
+        return;
+      }
+
+      console.log(`📡 Relay Answer from ${data.senderAddress} to ${data.targetAddress}`);
+      
+      // Find target socket (similar logic to offer)
+      let targetSocketId;
+      const allSockets = Array.from(io.sockets.sockets.values());
+      for (const s of allSockets) {
+          const addr = await redisClient.hGet("socket_to_address", s.id);
+          if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+              targetSocketId = s.id;
+              break;
+          }
+      }
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("webrtc:answer", data);
+      } else {
+         console.warn(`⚠️ Target ${data.targetAddress} not found for answer`);
+      }
+    } catch (error) {
+      console.error("Error relaying answer:", error);
+    }
+  });
+
+  // Handle chat messages
+  socket.on("chat:message", async (data) => {
+    try {
+      if (!(await checkSocketRateLimit(socket.id))) {
+        socket.emit("error", { message: "Rate limit exceeded" });
+        return;
+      }
+
+      // Validate required fields
+      if (!data.sessionId || !data.senderAddress || !data.message) {
+        socket.emit("error", { message: "Invalid chat message data" });
+        return;
+      }
+
+      // Find target socket by address
+      let targetSocketId = null;
+      if (data.targetAddress) {
+        const allSockets = Array.from(io.sockets.sockets.values());
+        for (const s of allSockets) {
+          const addr = await redisClient.hGet("socket_to_address", s.id);
+          if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+            targetSocketId = s.id;
+            break;
+          }
+        }
+      }
+
+      // Broadcast to target if found, otherwise broadcast to all sockets in session
+      const messageData = {
+        sessionId: data.sessionId,
+        senderAddress: data.senderAddress,
+        message: data.message,
+        timestamp: data.timestamp || Date.now(),
+      };
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("chat:message", messageData);
+      } else {
+        // Fallback: broadcast to all connected sockets (they can filter by sessionId)
+        io.emit("chat:message", messageData);
+      }
+    } catch (error) {
+      console.error("Error handling chat message:", error);
+      socket.emit("error", { message: "Failed to send chat message" });
+    }
+  });
+
+  // Relay ICE Candidate
+  socket.on("webrtc:ice-candidate", async (data) => {
+    try {
+      // Higher rate limit for ICE candidates? For now using standard
+      if (!(await checkSocketRateLimit(socket.id))) {
+        // Silent fail for ICE to avoid spamming errors
+        return;
+      }
+
+      // console.log(`📡 Relay ICE from ${data.senderAddress} to ${data.targetAddress}`);
+      
+      let targetSocketId;
+      const allSockets = Array.from(io.sockets.sockets.values());
+      for (const s of allSockets) {
+          const addr = await redisClient.hGet("socket_to_address", s.id);
+          if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+              targetSocketId = s.id;
+              break;
+          }
+      }
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("webrtc:ice-candidate", data);
+      }
+    } catch (error) {
+      console.error("Error relaying ICE candidate:", error);
+    }
+  });
+
   // Handle disconnection
   socket.on("disconnect", async (reason) => {
     console.log("Client disconnected:", socket.id, "Reason:", reason);
@@ -1125,6 +1362,13 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+// Initialize WebRTC routes with io instance (after socket setup)
+// Note: Express will still match these routes even though 404 is registered first
+// because route matching is done in order and specific paths are checked before catch-all
+const webrtcRoutes = require("./routes/webrtc")(io, redisClient);
+app.use("/api", webrtcRoutes);
+console.log("✅ WebRTC routes initialized with socket.io support");
 
 // Graceful shutdown
 const gracefulShutdown = async (signal) => {

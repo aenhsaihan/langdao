@@ -54,7 +54,32 @@ async function setTutorAvailable(address, language, ratePerSecond) {
       };
     }
 
-    // Store in Redis
+    const isMock = tutorInfo && tutorInfo.mockData === true;
+
+    const tutorHash = {
+      address,
+      language,
+      ratePerSecond: String(ratePerSecond),
+      isAvailable: 'true',
+      lastSeen: new Date().toISOString(),
+      socketId: ''
+    };
+
+    if (!isMock) {
+      tutorHash.contractData = JSON.stringify(tutorInfo);
+    } else {
+      tutorHash.contractData = JSON.stringify({ mockData: true });
+      tutorHash.mockData = 'true';
+    }
+
+    await redisClient.hSet(`tutor:${address}`, tutorHash);
+    await redisClient.sAdd('available_tutors', address);
+    await redisClient.sAdd(`tutors:${language}`, address);
+
+    // Set TTL for availability
+    await redisClient.expire(`tutor:${address}`, TUTOR_AVAILABILITY_TTL);
+
+    // Store in return object for compatibility
     const tutorData = {
       address,
       language,
@@ -64,21 +89,6 @@ async function setTutorAvailable(address, language, ratePerSecond) {
       contractData: JSON.stringify(tutorInfo),
       socketId: null
     };
-
-    await redisClient.hSet(`tutor:${address}`, {
-  address,
-  language,
-  ratePerSecond: String(ratePerSecond),
-  isAvailable: 'true',
-  lastSeen: new Date().toISOString(),
-  contractData: JSON.stringify(tutorInfo),
-  socketId: ''
-});
-    await redisClient.sAdd('available_tutors', address);
-    await redisClient.sAdd(`tutors:${language}`, address);
-
-    // Set TTL for availability
-    await redisClient.expire(`tutor:${address}`, TUTOR_AVAILABILITY_TTL);
 
     console.log(`✅ Tutor ${address} set as available`);
     return { success: true, tutor: tutorData };

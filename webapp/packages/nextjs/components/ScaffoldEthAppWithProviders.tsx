@@ -1,25 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
-import { WagmiProvider } from "wagmi";
 import { ThirdwebProvider } from "thirdweb/react";
-import { SocketProvider } from "~~/lib/socket/socketContext";
-import { WebRTCSessionProvider } from "~~/components/webrtc/WebRTCSessionProvider";
-import { ActiveSessionPrompt } from "~~/components/session/ActiveSessionPrompt";
+import { WagmiProvider } from "wagmi";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
+import { ActiveSessionPrompt } from "~~/components/session/ActiveSessionPrompt";
+import { WebRTCSessionProvider } from "~~/components/webrtc/WebRTCSessionProvider";
 import { useInitializeNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
+import { SocketProvider } from "~~/lib/socket/socketContext";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
-
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   useInitializeNativeCurrencyPrice();
+  const pathname = usePathname();
+  const isSessionPage = pathname?.startsWith("/session/");
 
   return (
     <>
@@ -27,7 +29,7 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
         <Header />
         <ActiveSessionPrompt />
         <main className="relative flex flex-col flex-1">{children}</main>
-        <Footer />
+        {!isSessionPage && <Footer />}
       </div>
       <Toaster />
     </>
@@ -53,18 +55,21 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
 
   return (
     <WagmiProvider config={wagmiConfig}>
-    <QueryClientProvider client={queryClient}>
-    <RainbowKitProvider avatar={BlockieAvatar} theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}>
-      <ThirdwebProvider>
-        <SocketProvider>
-          <WebRTCSessionProvider>
-            <ProgressBar height="3px" color="#2299dd" />
-            <ScaffoldEthApp>{children}</ScaffoldEthApp>
-          </WebRTCSessionProvider>
-        </SocketProvider>
-      </ThirdwebProvider>
-    </RainbowKitProvider>
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider
+          avatar={BlockieAvatar}
+          theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
+        >
+          <ThirdwebProvider>
+            <SocketProvider>
+              <WebRTCSessionProvider>
+                <ProgressBar height="3px" color="#2299dd" />
+                <ScaffoldEthApp>{children}</ScaffoldEthApp>
+              </WebRTCSessionProvider>
+            </SocketProvider>
+          </ThirdwebProvider>
+        </RainbowKitProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 };

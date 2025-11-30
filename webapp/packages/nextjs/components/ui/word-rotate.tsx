@@ -1,6 +1,7 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, MotionProps } from "framer-motion";
+import { AnimatePresence, MotionProps, motion } from "framer-motion";
 import { cn } from "~~/lib/utils";
 
 interface WordRotateProps {
@@ -25,7 +26,7 @@ export function WordRotate({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prevIndex) => (prevIndex + 1) % words.length);
+      setIndex(prevIndex => (prevIndex + 1) % words.length);
     }, duration);
 
     // Clean up interval on unmount
@@ -35,11 +36,7 @@ export function WordRotate({
   return (
     <span className="overflow-hidden inline-block">
       <AnimatePresence mode="wait">
-        <motion.span
-          key={words[index]}
-          className={cn("inline-block", className)}
-          {...motionProps}
-        >
+        <motion.span key={words[index]} className={cn("inline-block", className)} {...motionProps}>
           {words[index]}
         </motion.span>
       </AnimatePresence>

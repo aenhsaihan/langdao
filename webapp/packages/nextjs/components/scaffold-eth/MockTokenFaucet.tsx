@@ -1,17 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Address as AddressType, createWalletClient, http, parseEther } from "viem";
+import { useState } from "react";
+import { Address as AddressType, parseEther } from "viem";
 import { hardhat } from "viem/chains";
 import { useAccount } from "wagmi";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
 import { Address, AddressInput } from "~~/components/scaffold-eth";
 import { useDeployedContractInfo, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-
-const localWalletClient = createWalletClient({
-  chain: hardhat,
-  transport: http(),
-});
 
 /**
  * MockTokenFaucet component which lets you send mock tokens to any address.
@@ -40,15 +35,6 @@ export const MockTokenFaucet = () => {
   });
 
   const { chain: ConnectedChain } = useAccount();
-
-  useEffect(() => {
-    const getMockTokenAddress = async () => {
-      try {
-      } catch (error) {
-        console.error("⚡️ ~ file: MockTokenFaucet.tsx:getMockTokenAddress ~ error", error);
-      }
-    };
-  });
 
   const mintMockTokens = async () => {
     if (!inputAddress) {
@@ -107,7 +93,7 @@ export const MockTokenFaucet = () => {
             </div>
             <div className="flex flex-col space-y-3">
               <AddressInput
-                placeHolder="Destination Address"
+                placeholder="Destination Address"
                 value={inputAddress ?? ""}
                 onChange={value => setInputAddress(value as AddressType)}
               />
