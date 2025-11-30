@@ -1,237 +1,279 @@
 # Project Structure
 
-## Repository Layout
+## Repository Organization
 
 ```
 langdao-ethonline2025/
-├── .kiro/                    # Kiro AI assistant configuration
-├── backend/                  # Express + Socket.io backend
-├── docs/                     # MkDocs documentation
-├── ops/                      # Deployment and operations
-└── webapp/                   # Scaffold-ETH 2 monorepo
+├── .kiro/                          # Kiro AI assistant configuration
+│   ├── hooks/                      # Agent hooks for automation
+│   ├── settings/                   # MCP and other settings
+│   └── specs/                      # Feature specifications
+│       └── langdao-platform/       # Main platform spec
+│           ├── requirements.md     # Acceptance criteria
+│           ├── design.md          # Architecture & properties
+│           └── tasks.md           # Implementation tasks
+├── backend/                        # Express + Socket.io backend
+│   ├── src/
+│   │   ├── server.js              # Main server entry point
+│   │   ├── routes/                # HTTP routes
+│   │   └── services/              # Business logic
+│   │       ├── contractService.js # Smart contract interactions
+│   │       ├── matchingService.js # Tutor-student matching
+│   │       ├── sessionService.js  # Session lifecycle
+│   │       └── sessionTerminationService.js
+│   ├── webRTC-implementation-LangDAO/  # Custom WebRTC server
+│   │   ├── server.js              # WebRTC signaling server
+│   │   ├── public/                # WebRTC client UI
+│   │   └── docs/                  # Integration guides
+│   ├── .env                       # Backend environment variables
+│   └── package.json
+├── webapp/                         # Scaffold-ETH 2 monorepo
+│   ├── packages/
+│   │   ├── hardhat/               # Smart contracts
+│   │   │   ├── contracts/         # Solidity contracts
+│   │   │   │   └── LangDAO.sol   # Main platform contract
+│   │   │   ├── deploy/            # Deployment scripts
+│   │   │   ├── test/              # Contract tests
+│   │   │   └── hardhat.config.ts
+│   │   └── nextjs/                # Next.js frontend
+│   │       ├── app/               # Next.js App Router pages
+│   │       │   ├── page.tsx       # Landing page
+│   │       │   ├── debug/         # Contract debugging UI
+│   │       │   └── blockexplorer/ # Block explorer
+│   │       ├── components/        # React components
+│   │       │   ├── deposit/       # PYUSD deposit flow
+│   │       │   ├── onboarding/    # Registration components
+│   │       │   ├── student/       # Student-specific UI
+│   │       │   ├── tutor/         # Tutor-specific UI
+│   │       │   ├── session/       # Session management
+│   │       │   ├── dashboard/     # User dashboards
+│   │       │   ├── webrtc/        # WebRTC integration
+│   │       │   ├── Header.tsx     # Navigation header
+│   │       │   └── Footer.tsx     # Page footer
+│   │       ├── contracts/         # Contract ABIs & addresses
+│   │       │   └── deployedContracts.ts
+│   │       ├── hooks/             # Custom React hooks
+│   │       │   └── useWebRTCSession.ts
+│   │       ├── utils/             # Utility functions
+│   │       │   └── scaffold-eth/  # Scaffold-ETH utilities
+│   │       ├── styles/            # Global styles
+│   │       │   └── globals.css
+│   │       ├── .env.local         # Frontend environment variables
+│   │       └── package.json
+│   ├── .yarn/                     # Yarn 3 cache & plugins
+│   └── package.json               # Workspace root
+├── docs/                          # Project documentation
+│   ├── architecture/              # Architecture docs
+│   │   └── overview.md           # Actual implementation overview
+│   ├── guides/                    # How-to guides
+│   ├── product/                   # Product documentation
+│   ├── tech/                      # Technical documentation
+│   ├── bug-reports/               # Bug tracking
+│   └── index.md                   # Documentation index
+├── ops/                           # Operations & deployment
+│   ├── deployment-notes.md
+│   └── env.example
+├── .nvmrc                         # Node version specification
+├── README.md                      # Main project README
+└── package.json                   # Root package.json
 ```
 
-## Backend Structure
+## Key Directories Explained
 
+### `/backend`
+Express.js server handling real-time matching and session coordination.
+
+**Important Files**:
+- `src/server.js` - Main entry point, Socket.io setup
+- `src/services/matchingService.js` - Redis-based tutor/student matching
+- `src/services/contractService.js` - Smart contract interaction layer
+- `src/services/sessionService.js` - Session state management
+
+### `/backend/webRTC-implementation-LangDAO`
+Standalone WebRTC signaling server for video calls.
+
+**Important Files**:
+- `server.js` - WebSocket server for WebRTC signaling
+- `public/index.html` - WebRTC client interface
+- `docs/BACKEND_INTEGRATION_GUIDE.md` - Integration documentation
+
+### `/webapp/packages/hardhat`
+Smart contract development environment.
+
+**Important Files**:
+- `contracts/LangDAO.sol` - Main platform contract
+- `deploy/` - Hardhat deployment scripts
+- `test/` - Contract unit tests
+- `hardhat.config.ts` - Hardhat configuration
+
+### `/webapp/packages/nextjs`
+Next.js frontend application.
+
+**Important Directories**:
+- `app/` - Next.js pages (App Router)
+- `components/` - React components organized by feature
+- `hooks/` - Custom React hooks
+- `contracts/` - Contract ABIs and deployed addresses
+- `utils/` - Helper functions and utilities
+
+**Component Organization**:
+- `components/deposit/` - PYUSD deposit and balance management
+- `components/onboarding/` - Student/tutor registration flows
+- `components/student/` - Student-specific features (tutor finder)
+- `components/tutor/` - Tutor-specific features (availability)
+- `components/session/` - Active session UI
+- `components/dashboard/` - User dashboards
+- `components/webrtc/` - WebRTC integration components
+
+### `/docs`
+MkDocs-based documentation site.
+
+**Structure**:
+- `architecture/` - System architecture documentation
+- `guides/` - Step-by-step guides
+- `product/` - Product specs and roadmap
+- `tech/` - Technical reference
+- `bug-reports/` - Bug tracking and templates
+
+### `/.kiro`
+Kiro AI assistant configuration and specifications.
+
+**Structure**:
+- `specs/langdao-platform/` - Main feature specification
+  - `requirements.md` - User stories and acceptance criteria
+  - `design.md` - Architecture and correctness properties
+  - `tasks.md` - Implementation task breakdown
+- `hooks/` - Automated agent hooks
+- `settings/` - MCP and other configurations
+
+## File Naming Conventions
+
+**React Components**: PascalCase
+- `StudentDashboard.tsx`
+- `TutorRegistration.tsx`
+- `WebRTCSessionProvider.tsx`
+
+**Utilities & Services**: camelCase
+- `contractService.js`
+- `matchingService.js`
+- `useWebRTCSession.ts`
+
+**Configuration Files**: kebab-case or standard names
+- `hardhat.config.ts`
+- `next.config.js`
+- `.env.local`
+
+**Documentation**: kebab-case with .md extension
+- `deployment-notes.md`
+- `language-matching-fix.md`
+
+## Import Conventions
+
+**Frontend Imports** (organized by @trivago/prettier-plugin-sort-imports):
+1. React and Next.js imports
+2. Third-party libraries
+3. Scaffold-ETH components and hooks
+4. Local components
+5. Types and utilities
+6. Styles
+
+Example:
+```typescript
+import { useState } from "react";
+import { useAccount } from "wagmi";
+import { useScaffoldContract } from "~~/hooks/scaffold-eth";
+import { StudentDashboard } from "~~/components/dashboard/StudentDashboard";
+import type { Session } from "~~/types/session";
 ```
-backend/
-├── src/
-│   ├── server.js                    # Main Express + Socket.io server
-│   ├── routes/                      # HTTP API routes
-│   │   └── webrtc.js               # WebRTC event endpoints
-│   ├── services/                    # Business logic
-│   │   ├── contractService.js      # Smart contract interactions
-│   │   ├── matchingService.js      # Student/tutor matching
-│   │   ├── sessionService.js       # Session lifecycle
-│   │   └── sessionTerminationService.js
-│   └── config/                      # Configuration files
-├── webRTC-implementation-LangDAO/   # Custom WebRTC server
-│   ├── server.js                    # WebRTC signaling server
-│   ├── public/
-│   │   ├── index.html              # WebRTC client UI
-│   │   └── langdao-integration.js  # Integration code
-│   └── docs/                        # WebRTC documentation
-├── .env                             # Backend environment variables
-├── env.example                      # Environment template
-└── package.json
-```
 
-### Backend Key Files
+**Backend Imports**:
+```javascript
+// Node built-ins first
+const path = require('path');
 
-- **`src/server.js`**: Main entry point, Socket.io event handlers, Redis connection
-- **`src/services/contractService.js`**: Ethers.js contract interactions
-- **`src/services/matchingService.js`**: Tutor/student pairing logic
-- **`webRTC-implementation-LangDAO/server.js`**: Separate WebRTC signaling server
+// Third-party packages
+const express = require('express');
+const { Server } = require('socket.io');
 
-## Webapp Structure (Scaffold-ETH 2)
-
-```
-webapp/
-├── packages/
-│   ├── hardhat/                     # Smart contracts
-│   │   ├── contracts/
-│   │   │   └── LangDAO.sol         # Main contract
-│   │   ├── deploy/                  # Deployment scripts
-│   │   ├── scripts/                 # Utility scripts
-│   │   └── test/                    # Contract tests
-│   │
-│   └── nextjs/                      # Next.js frontend
-│       ├── app/                     # Next.js App Router
-│       │   ├── page.tsx            # Landing page
-│       │   ├── find-tutor/         # Student flow
-│       │   ├── tutor/              # Tutor flow
-│       │   ├── dashboard/          # User dashboard
-│       │   └── debug/              # Contract debugging
-│       │
-│       ├── components/              # React components
-│       │   ├── Header.tsx
-│       │   ├── Footer.tsx
-│       │   ├── ScaffoldEthAppWithProviders.tsx
-│       │   ├── onboarding/         # Registration flows
-│       │   │   ├── StudentRegistration.tsx
-│       │   │   └── TutorRegistration.tsx
-│       │   ├── dashboard/          # Dashboard components
-│       │   │   ├── StudentDashboard.tsx
-│       │   │   └── TutorDashboard.tsx
-│       │   ├── student/            # Student-specific
-│       │   │   └── StudentTutorFinder.tsx
-│       │   ├── tutor/              # Tutor-specific
-│       │   │   └── TutorAvailabilityFlow.tsx
-│       │   ├── session/            # Session management
-│       │   │   └── ActiveSessionPrompt.tsx
-│       │   ├── deposit/            # Payment flows
-│       │   │   └── DepositFlow.tsx
-│       │   └── webrtc/             # WebRTC integration
-│       │       ├── WebRTCSessionProvider.tsx
-│       │       ├── WebRTCSessionStatus.tsx
-│       │       ├── WebRTCSessionEndPrompt.tsx
-│       │       └── WebRTCSessionTest.tsx
-│       │
-│       ├── hooks/                   # Custom React hooks
-│       │   ├── scaffold-eth/       # Scaffold-ETH hooks
-│       │   └── useWebRTCSession.ts # WebRTC session hook
-│       │
-│       ├── contracts/               # Contract ABIs & addresses
-│       │   └── deployedContracts.ts
-│       │
-│       ├── utils/                   # Utility functions
-│       │   └── scaffold-eth/
-│       │       └── contract.ts     # Contract helpers
-│       │
-│       ├── styles/
-│       │   └── globals.css         # Global styles
-│       │
-│       ├── .env.local              # Frontend environment
-│       └── package.json
-│
-├── .nvmrc                           # Node version
-├── package.json                     # Root package.json
-└── yarn.lock
-```
-
-### Frontend Key Files
-
-**Pages (App Router)**:
-- `app/page.tsx` - Landing page with hero section
-- `app/find-tutor/page.tsx` - Student matching flow
-- `app/tutor/page.tsx` - Tutor availability and matching
-- `app/dashboard/page.tsx` - User dashboard (sessions, earnings)
-- `app/debug/page.tsx` - Contract debugging interface
-
-**Core Components**:
-- `components/ScaffoldEthAppWithProviders.tsx` - Root provider wrapper (wagmi, RainbowKit, etc.)
-- `components/Header.tsx` - Navigation with wallet connection
-- `components/onboarding/` - Registration flows for students and tutors
-- `components/webrtc/` - WebRTC session management components
-
-**Hooks**:
-- `hooks/scaffold-eth/` - Scaffold-ETH provided hooks (useScaffoldContract, etc.)
-- `hooks/useWebRTCSession.ts` - Custom hook for WebRTC session state
-
-**Smart Contracts**:
-- `packages/hardhat/contracts/LangDAO.sol` - Main contract with registration, sessions, payments
-- `packages/hardhat/deploy/` - Hardhat deploy scripts
-- `packages/nextjs/contracts/deployedContracts.ts` - Auto-generated contract addresses and ABIs
-
-## Documentation Structure
-
-```
-docs/
-├── adr/                             # Architecture Decision Records
-│   └── 0001-huddle01.md
-├── architecture/
-│   └── overview.md                  # Actual implemented architecture
-├── bug-reports/                     # Bug tracking
-│   ├── README.md
-│   └── bug-report-*.md
-├── guides/                          # How-to guides
-│   ├── language-matching-fix.md
-│   ├── student-tutor-pairing-flow.md
-│   └── webrtc-integration.md
-├── ops/                             # Operations
-│   └── environment-variables.md
-├── product/                         # Product documentation
-│   ├── overview.md
-│   ├── roadmap.md
-│   ├── scope-mvp.md
-│   └── testbed-latam.md
-├── project/                         # Project management
-│   ├── audit.md
-│   ├── cleanup-summary.md
-│   └── todo.md
-├── research/
-│   └── assumptions.md
-├── tech/                            # Technical documentation
-│   ├── api-reference.md
-│   ├── architecture.md             # Original planned architecture
-│   ├── dao-vetting.md
-│   ├── integrations.md
-│   └── socket-events.md
-└── index.md                         # Documentation home
+// Local modules
+const matchingService = require('./services/matchingService');
 ```
 
 ## Configuration Files
 
 **Root Level**:
-- `.nvmrc` - Node version specification (20.18.3)
+- `.nvmrc` - Node version (20.18.3)
 - `package.json` - Workspace configuration
-- `mkdocs.yml` - Documentation site configuration
+- `.gitignore` - Git ignore rules
 
 **Frontend**:
 - `webapp/packages/nextjs/.env.local` - Frontend environment variables
 - `webapp/packages/nextjs/next.config.js` - Next.js configuration
 - `webapp/packages/nextjs/tailwind.config.ts` - TailwindCSS configuration
-- `webapp/packages/nextjs/scaffold.config.ts` - Scaffold-ETH configuration
 
 **Backend**:
 - `backend/.env` - Backend environment variables
-- `backend/env.example` - Environment template
+- `backend/package.json` - Backend dependencies
 
 **Smart Contracts**:
 - `webapp/packages/hardhat/hardhat.config.ts` - Hardhat configuration
 - `webapp/packages/hardhat/.env` - Contract deployment keys
 
-## Important Conventions
+## State Management Patterns
 
-### File Naming
-- React components: PascalCase (e.g., `StudentDashboard.tsx`)
-- Hooks: camelCase with `use` prefix (e.g., `useWebRTCSession.ts`)
-- Utilities: camelCase (e.g., `contractService.js`)
-- Smart contracts: PascalCase (e.g., `LangDAO.sol`)
+**Frontend State**:
+- **Global State**: Zustand stores in `webapp/packages/nextjs/store/`
+- **Server State**: React Query for contract reads
+- **Local State**: React useState/useReducer
 
-### Component Organization
-- Group by feature/domain (e.g., `components/student/`, `components/tutor/`)
-- Shared components at root level (e.g., `components/Header.tsx`)
-- WebRTC components isolated in `components/webrtc/`
+**Backend State**:
+- **Persistent**: Redis (tutor availability, pending requests, sessions)
+- **Transient**: In-memory (socket connections, rate limiting)
 
-### Smart Contract Organization
-- One main contract: `LangDAO.sol`
-- Deployment scripts in `deploy/` directory
-- Tests in `test/` directory
+**Smart Contract State**:
+- **On-chain**: User registrations, sessions, balances
+- **Events**: SessionStarted, SessionEnded for indexing
 
-### Documentation Organization
-- Product docs in `docs/product/`
-- Technical docs in `docs/tech/`
-- Architecture decisions in `docs/adr/`
-- Bug reports in `docs/bug-reports/`
-- How-to guides in `docs/guides/`
+## Testing Organization
 
-## Key Directories to Know
+**Smart Contracts**: `webapp/packages/hardhat/test/`
+- Unit tests for each contract function
+- Integration tests for full flows
 
-**When working on frontend features**: `webapp/packages/nextjs/components/` and `webapp/packages/nextjs/app/`
+**Backend**: `backend/test/` (planned)
+- Service unit tests
+- Socket.io integration tests
+- Redis mocking
 
-**When working on smart contracts**: `webapp/packages/hardhat/contracts/` and `webapp/packages/hardhat/deploy/`
+**Frontend**: `webapp/packages/nextjs/__tests__/` (planned)
+- Component tests
+- Hook tests
+- E2E tests
 
-**When working on backend logic**: `backend/src/services/` and `backend/src/routes/`
+## Environment-Specific Files
 
-**When working on WebRTC**: `backend/webRTC-implementation-LangDAO/` and `webapp/packages/nextjs/components/webrtc/`
+**Development**:
+- Local Hardhat blockchain
+- Local Redis instance
+- `.env.local` with localhost URLs
 
-**When updating documentation**: `docs/` (MkDocs format)
+**Production**:
+- Sepolia testnet
+- Managed Redis (Redis Cloud)
+- `.env.production` with production URLs
 
-## Monorepo Workspaces
+## Documentation Standards
 
-The project uses Yarn workspaces:
-- `@se-2/hardhat` - Smart contracts package
-- `@se-2/nextjs` - Frontend package
+**Code Comments**:
+- JSDoc for functions and components
+- Inline comments for complex logic
+- TODO/FIXME tags for technical debt
 
-Commands run from root (`webapp/`) are proxied to the appropriate workspace (e.g., `yarn start` runs `@se-2/nextjs dev`).
+**README Files**:
+- Each major directory should have a README.md
+- Include setup instructions and examples
+
+**Specification Files**:
+- Requirements use "WHEN/THEN/SHALL" format
+- Design includes correctness properties
+- Tasks reference requirements and properties

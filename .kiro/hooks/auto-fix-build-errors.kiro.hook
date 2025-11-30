@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Auto-fix Build Errors",
+  "description": "Automatically fix build errors and warnings when detected",
+  "version": "1",
+  "when": {
+    "type": "manual"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run the build command in webapp/packages/nextjs and analyze any errors or warnings. Then:\n\n1. Identify all build errors and warnings\n2. Fix TypeScript errors (missing types, incorrect types, etc.)\n3. Fix ESLint warnings (unused variables, missing dependencies, etc.)\n4. Fix import errors (missing imports, incorrect paths)\n5. Fix any other build issues\n\nAfter fixing, run the build again to verify all issues are resolved. Continue fixing until the build succeeds with no errors."
+  }
+}

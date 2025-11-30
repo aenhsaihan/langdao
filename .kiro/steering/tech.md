@@ -1,92 +1,93 @@
 # Technology Stack
 
-## Architecture Overview
+## Build System
 
-LangDAO uses a monorepo structure with separate frontend (Next.js), backend (Express), smart contracts (Hardhat), and WebRTC server.
+- **Package Manager**: Yarn 3.2.3 (workspaces enabled)
+- **Node Version**: >= 20.18.3 (specified in `.nvmrc`)
+- **Monorepo Structure**: Yarn workspaces with `packages/hardhat` and `packages/nextjs`
 
 ## Frontend Stack
 
-**Framework**: Next.js 15 (App Router) + React 19
+**Framework**: Next.js 15.2.5 (App Router)
+- React 19.0.0
+- TypeScript 5.8.2
+- TailwindCSS 4.1.3 + DaisyUI 5.0.9
+- Framer Motion 11.18.2 for animations
 
 **Web3 Libraries**:
-- `wagmi` (2.16.4) - React hooks for Ethereum
-- `viem` (2.34.0) - TypeScript Ethereum library
-- `@rainbow-me/rainbowkit` (2.2.8) - Wallet connection UI
-- `thirdweb` (5.109.0) - Additional Web3 utilities
+- wagmi 2.16.4 + viem 2.34.0 (Ethereum interactions)
+- RainbowKit 2.2.8 (wallet connection)
+- Thirdweb 5.109.0 (additional Web3 utilities)
+- ethers.js 6.13.7 (contract interactions)
 
 **Real-time Communication**:
-- `socket.io-client` (4.8.1) - WebSocket client for matching
-
-**UI/Styling**:
-- TailwindCSS (4.1.3) - Utility-first CSS
-- DaisyUI (5.0.9) - Component library
-- Framer Motion (11.11.17) - Animations
-- `next-themes` (0.3.0) - Dark mode support
+- Socket.io-client 4.8.1 (matching system)
+- Custom WebRTC implementation (video calls)
 
 **State Management**:
-- `zustand` (5.0.0) - Lightweight state management
-- `@tanstack/react-query` (5.59.15) - Server state management
+- Zustand 5.0.0 (global state)
+- @tanstack/react-query 5.59.15 (async state)
+- usehooks-ts 3.1.0 (React hooks)
 
 ## Backend Stack
 
-**Framework**: Express.js (4.18.2)
+**Server**: Express.js 4.18.2
+- Socket.io 4.7.4 (real-time events)
+- CORS 2.8.5
+- Helmet 7.1.0 (security headers)
+- Morgan 1.10.0 (logging)
+- express-rate-limit 7.1.5
 
-**Real-time**: Socket.io (4.7.4)
+**Database**: Redis 4.6.10 (in-memory state management)
 
-**Blockchain**: ethers.js (6.8.1)
+**Blockchain**: ethers.js 6.8.1
 
-**Database**: Redis (4.6.10) - In-memory state management
+**Environment**: Node.js 20.18.3+
 
-**Security**:
-- `helmet` (7.1.0) - Security headers
-- `cors` (2.8.5) - CORS configuration
-- `express-rate-limit` (7.1.5) - Rate limiting
+## Smart Contract Stack
 
-## Smart Contracts
+**Framework**: Hardhat 2.22.19
+- Solidity (latest stable)
+- OpenZeppelin Contracts 5.0.2
+- Hardhat plugins: ethers, verify, deploy
 
-**Framework**: Hardhat (2.22.10)
+**Testing**: Mocha + Chai
 
-**Language**: Solidity (via OpenZeppelin 5.0.2)
-
-**Testing**: Chai (4.5.0) + Hardhat Network
-
-**Deployment**: hardhat-deploy (1.0.4)
-
-**Payment Token**: PYUSD (PayPal USD) on Sepolia testnet
-- Address: `0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9`
+**Network**: Ethereum Sepolia testnet (current), local Hardhat network (dev)
 
 ## WebRTC Server
 
-**Framework**: Custom Node.js implementation
+**Custom Implementation**: Node.js WebSocket server
+- Location: `backend/webRTC-implementation-LangDAO/`
+- Peer-to-peer video/audio connections
+- Heartbeat monitoring and disconnect detection
 
-**Location**: `backend/webRTC-implementation-LangDAO/`
+## Key Libraries & Frameworks
 
-**Purpose**: Peer-to-peer video/audio calls with disconnect detection
+**Scaffold-ETH 2**: Base framework providing:
+- Hot contract reloading
+- Custom React hooks for Web3
+- Burner wallet for testing
+- Debug contracts UI
 
-## Build System
-
-**Package Manager**: Yarn 3.2.3 (workspaces)
-
-**Node Version**: >= 20.18.3 (specified in `.nvmrc`)
-
-**TypeScript**: 5.8.2
-
-**Linting**: ESLint 9.23.0 + Prettier 3.5.3
+**Payment Token**: PYUSD (PayPal USD) ERC-20 on Sepolia
+- Address: `0xCaC524BcA292aaade2DF8A05cC58F0a65B1B3bB9`
+- 6 decimal places
 
 ## Common Commands
 
 ### Development Setup
 
 ```bash
-# Install correct Node version
+# Use correct Node version
 nvm use
 
-# Install dependencies (from root)
+# Install dependencies (use npm, not yarn for initial setup due to SSL issues)
 cd webapp
-yarn install
+npm install --legacy-peer-deps
 ```
 
-### Running Locally
+### Local Development
 
 ```bash
 # Terminal 1: Start local blockchain
@@ -97,56 +98,91 @@ yarn chain
 cd webapp/packages/hardhat
 yarn deploy
 
-# Terminal 3: Start backend
-cd backend
-npm start  # or yarn dev
+# Terminal 3: Start Redis
+redis-server
 
-# Terminal 4: Start WebRTC server
+# Terminal 4: Start backend
+cd backend
+yarn dev
+
+# Terminal 5: Start WebRTC server
 cd backend/webRTC-implementation-LangDAO
 npm start
 
-# Terminal 5: Start frontend
+# Terminal 6: Start frontend
 cd webapp/packages/nextjs
 yarn dev
+# or from root: yarn start
 ```
 
 ### Smart Contract Commands
 
 ```bash
-# From webapp/ root
-yarn compile          # Compile contracts
-yarn deploy           # Deploy to local network
-yarn test             # Run contract tests
-yarn hardhat:verify   # Verify on Etherscan
+# Compile contracts
+yarn hardhat:compile
+
+# Run tests
+yarn hardhat:test
+
+# Deploy to network
+yarn hardhat:deploy
+
+# Verify on Etherscan
+yarn hardhat:verify
+
+# Clean artifacts
+yarn hardhat:clean
 ```
 
 ### Frontend Commands
 
 ```bash
-# From webapp/ root
-yarn start            # Start Next.js dev server
-yarn build            # Build for production
-yarn lint             # Run ESLint
-yarn format           # Format with Prettier
-yarn check-types      # TypeScript type checking
+# Development server (port 3002)
+yarn next:dev
+
+# Production build
+yarn next:build
+
+# Type checking
+yarn next:check-types
+
+# Linting
+yarn next:lint
+
+# Format code
+yarn next:format
 ```
 
 ### Backend Commands
 
 ```bash
-# From backend/
-npm start             # Start Express server
-npm run dev           # Start with nodemon (auto-reload)
-npm test              # Run tests (if configured)
+# Development with nodemon
+npm run dev
+
+# Production
+npm start
+
+# Run tests
+npm test
+```
+
+### Workspace Commands (from root)
+
+```bash
+# Run all linters
+yarn lint
+
+# Format all code
+yarn format
+
+# Run all tests
+yarn test
+
+# Generate new account
+yarn generate
 ```
 
 ## Environment Variables
-
-### Frontend (`.env.local`)
-```bash
-NEXT_PUBLIC_SOCKET_URL=http://localhost:4000
-NEXT_PUBLIC_WEBRTC_URL=http://localhost:3000
-```
 
 ### Backend (`.env`)
 ```bash
@@ -154,48 +190,62 @@ PORT=4000
 NODE_ENV=development
 CORS_ORIGIN=http://localhost:3000
 RPC_URL=http://localhost:8545
-BACKEND_PRIVATE_KEY=your_private_key_here
+BACKEND_PRIVATE_KEY=your_private_key
 REDIS_URL=redis://localhost:6379
 ```
 
-### Hardhat (`.env`)
+### Frontend (`.env.local`)
 ```bash
-DEPLOYER_PRIVATE_KEY=your_private_key_here
-ALCHEMY_API_KEY=your_alchemy_key
-ETHERSCAN_API_KEY=your_etherscan_key
+NEXT_PUBLIC_SOCKET_URL=http://localhost:4000
+NEXT_PUBLIC_WEBRTC_URL=http://localhost:3000
 ```
 
-## Key Dependencies to Know
-
-- **Scaffold-ETH 2**: Base template for the dApp structure
-- **PYUSD**: ERC-20 stablecoin used for payments (6 decimals)
-- **Redis**: Required for backend matching state
-- **Socket.io**: Powers real-time tutor/student matching
-
-## Testing
-
-### Smart Contracts
+### WebRTC Server (`.env`)
 ```bash
-cd webapp/packages/hardhat
-yarn test
+PORT=3000
+BACKEND_URL=http://localhost:4000/api/webrtc-events
 ```
 
-### Frontend (manual testing)
-- Use Hardhat local network
-- Import test accounts into MetaMask
-- Test full flow: register → match → session → payment
+## Code Style & Conventions
+
+**Formatting**: Prettier 3.5.3
+- Import sorting via @trivago/prettier-plugin-sort-imports
+- Consistent across frontend and backend
+
+**Linting**: ESLint 9.23.0
+- Next.js config
+- Prettier integration
+- TypeScript rules
+
+**TypeScript**: Strict mode enabled
+- Type safety enforced
+- No implicit any
+- Incremental compilation
+
+## Testing Strategy
+
+**Smart Contracts**: Hardhat + Chai (unit tests)
+
+**Backend**: Jest 29.7.0 (planned, not fully implemented)
+
+**Frontend**: React Testing Library (planned)
+
+**E2E**: Manual testing currently, Playwright planned
 
 ## Deployment
 
-**Frontend**: Vercel (configured with `vercel` command)
+**Frontend**: Vercel (configured with custom build env)
 
-**Backend**: Railway/Render (planned)
+**Backend**: Railway/Render (Docker-ready)
 
-**Contracts**: Sepolia testnet (current), mainnet (future)
+**Smart Contracts**: Sepolia testnet (current), Ethereum mainnet (future)
 
-## Known Issues
+**Redis**: Managed Redis instance (production)
 
-- Language ID mapping inconsistency between frontend/backend/contract
-- Socket binding race conditions in matching flow
-- No automated E2E tests yet
-- SSL certificate issues with Yarn (use npm as workaround)
+## Known Technical Debt
+
+- Language ID mapping inconsistency (frontend uses strings, contract uses uint8)
+- Socket authentication not implemented (anyone can emit events)
+- No reentrancy guard on smart contract
+- Limited automated test coverage
+- Backend private key in .env (should use secrets manager)

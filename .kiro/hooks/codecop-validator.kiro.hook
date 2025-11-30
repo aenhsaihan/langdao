@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Code Cop - Auto Validator",
+  "description": "Automatically validates imports, ensures correct Node version via nvm, and removes unused dependencies when code files are edited",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.js",
+      "**/*.ts",
+      "**/*.jsx",
+      "**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the edited code file and perform the following checks:\n\n1. **Validate Imports**: Check all import statements for:\n   - Missing or incorrect module paths\n   - Unused imports that should be removed\n   - Imports that could be optimized or consolidated\n\n2. **Node Version Check**: \n   - Check if the project has a .nvmrc file\n   - Verify the current Node version matches the required version\n   - If there's a mismatch, suggest running `nvm use` or provide the correct nvm command\n\n3. **Dependency Cleanup**:\n   - Analyze if any dependencies in package.json are no longer used\n   - Check for duplicate or redundant dependencies\n   - Suggest removing unused dependencies with appropriate package manager commands\n\nProvide a concise report with:\n- Any import issues found and fixes\n- Node version status and required actions\n- List of unused dependencies to remove\n- Specific commands to run if fixes are needed\n\nIf everything is clean, confirm that all checks passed."
+  }
+}
