@@ -1,1 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run build and lint in nextjs package before commit
+echo "Running build and lint checks..."
+cd packages/nextjs
+npm run build
+npm run lint
+cd ../..
+
+# Run lint-staged for final checks
 yarn lint-staged --verbose

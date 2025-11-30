@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Pre-Deployment Build & Lint",
+  "description": "Run linting across the entire codebase",
+  "version": "1",
+  "when": {
+    "type": "manual"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "yarn lint"
+  }
+}

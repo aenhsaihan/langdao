@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Deploy Reminder",
+  "description": "Remind to test on Sepolia after completing tasks",
+  "version": "1",
+  "when": {
+    "type": "agentExecutionComplete"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Don't forget to test the changes on Sepolia testnet before considering this complete."
+  }
+}
