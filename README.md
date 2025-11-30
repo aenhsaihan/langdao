@@ -80,12 +80,23 @@ Millions have skills but no clear path to earn in Web3. Learning is scattered, i
    cd webapp/packages/hardhat
    npm run deploy
 
-   # Terminal 3: Start frontend
+   # Terminal 3: Start backend server (required for registration status check)
+   cd backend
+   npm install
+   # Copy env.example to .env and configure if needed
+   npm start
+   # Or for development with auto-reload:
+   npm run dev
+
+   # Terminal 4: Start frontend
    cd webapp/packages/nextjs
    npm run dev
    ```
 
-   **Note**: If you encounter SSL certificate issues with Yarn, the project is configured to work with npm instead.
+   **Note**: 
+   - If you encounter SSL certificate issues with Yarn, the project is configured to work with npm instead.
+   - The backend server (Terminal 3) is **required** for registration status checking with Redis caching. If the backend is not running, the frontend will automatically fall back to direct on-chain queries (slower but still functional).
+   - Make sure Redis is running if you want to use caching. You can install Redis locally or use a cloud service.
 
 ### Project Structure
 

@@ -1,47 +1,31 @@
 "use client";
 
-import { useActiveAccount, useReadContract } from "thirdweb/react";
-import { getContract } from "thirdweb";
+import { CONTRACTS, PYUSD_DECIMALS, getLanguageById } from "../../lib/constants/contracts";
+import { useActiveAccount } from "thirdweb/react";
 import { formatUnits } from "viem";
-import { CONTRACTS, PYUSD_DECIMALS } from "../../lib/constants/contracts";
-import { client } from "../../client";
-import { activeChain } from "../../lib/chains";
-// import { QuickActions } from "../socket/QuickActions";
-// import { StudentSocketEvents } from "../socket/StudentSocketEvents";
-// import { TutorSocketEvents } from "../socket/TutorSocketEvents";
-import deployedContracts from "~~/contracts/deployedContracts";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 interface StudentDashboardProps {
   onStartLearning?: () => void;
   onAddFunds?: () => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboardProps) => {
   const account = useActiveAccount();
 
-  // Create contract instance using deployed contract ABI
-  const contract = getContract({
-    client,
-    chain: activeChain,
-    address: CONTRACTS.LANGDAO,
-    abi: deployedContracts[activeChain.id as keyof typeof deployedContracts]?.LangDAO?.abi || deployedContracts[31337].LangDAO.abi,
-  });
-
-  // Get student info
-  const { data: studentInfo } = useReadContract({
-    contract,
-    method: "getStudentInfo",
-    params: [account?.address || "0x0000000000000000000000000000000000000000"],
+  // Get student info using scaffold hook for consistency
+  const { data: studentInfo } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "getStudentInfo",
+    args: [account?.address],
   });
 
   // Get student balance from LangDAO contract
-  const { data: balance } = useReadContract({
-    contract,
-    method: "studentBalances",
-    params: [
-      account?.address || "0x0000000000000000000000000000000000000000",
-      CONTRACTS.PYUSD // Use actual PYUSD token address
-    ],
+  const { data: balance } = useScaffoldReadContract({
+    contractName: "LangDAO",
+    functionName: "studentBalances",
+    args: [account?.address, CONTRACTS.PYUSD],
   });
 
   const balanceFormatted = balance ? parseFloat(formatUnits(balance, PYUSD_DECIMALS)) : 0;
@@ -49,133 +33,113 @@ export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboa
   const budgetPerSec = studentInfo ? Number(studentInfo[1]) : 0;
   const budgetPerHour = budgetPerSec * 3600;
 
-  // Language mapping
-  const getLanguageName = (id: number) => {
-    const languages = {
-      1: "Spanish", 2: "French", 3: "German", 4: "Italian", 5: "Portuguese",
-      6: "Japanese", 7: "Korean", 8: "Chinese", 9: "Arabic", 10: "Russian"
-    };
-    return languages[id as keyof typeof languages] || "Unknown";
-  };
+  // Get language data using the shared helper function
+  const languageData = getLanguageById(targetLanguage) || { name: "Unknown", flag: "🌍", id: 0, code: "unknown" };
+
+  // Calculate hours available: balance / (budget per hour in PYUSD)
+  const budgetPerHourPYUSD = budgetPerHour / Math.pow(10, PYUSD_DECIMALS);
+  const hoursAvailable = budgetPerHourPYUSD > 0 ? Math.floor(balanceFormatted / budgetPerHourPYUSD) : 0;
 
   return (
-    <div className="min-h-[calc(100vh-8rem)] bg-gray-50 dark:bg-gray-900 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-[calc(100vh-8rem)] bg-gradient-to-br from-[#0F0520] via-[#1A0B2E] to-[#0F0520] p-6 sm:p-8">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Student Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Ready to start learning? Find a tutor and begin your session!
-          </p>
+        <div className="mb-8">
+          <h1 className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">Dashboard</h1>
+          <p className="text-base text-white/60 font-light">Your learning command center</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Balance Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-700">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mb-6">
-                <span className="text-2xl">💰</span>
+        {/* Main Stats Grid */}
+        <div className="grid lg:grid-cols-3 gap-4 mb-6">
+          {/* Balance - Hero Card */}
+          <div className="lg:col-span-2 relative bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-6 overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
+            <div className="relative">
+              <div className="text-white/80 text-xs font-medium uppercase tracking-wider mb-1">Available Balance</div>
+              <div
+                className="text-5xl sm:text-6xl font-black text-white mb-1"
+                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              >
+                ${balanceFormatted.toFixed(2)}
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Your Balance
-              </h2>
-              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-4">
-                {balanceFormatted.toFixed(4)} PYUSD
+              <div className="text-white/80 text-sm font-light mb-4">PYUSD</div>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <button
+                  onClick={onAddFunds}
+                  className="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-sm rounded-lg font-semibold transition-all"
+                >
+                  + Add Funds
+                </button>
+                <div className="text-white/60 text-xs">≈ {hoursAvailable}h of learning time</div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Available for tutoring sessions
-              </p>
             </div>
           </div>
 
-          {/* Profile Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-700">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mb-6">
-                <span className="text-2xl">🎓</span>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Learning Profile
-              </h2>
-              <div className="space-y-3 text-left">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Target Language:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    {getLanguageName(targetLanguage)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Budget per Hour:</span>
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    {(budgetPerHour / Math.pow(10, PYUSD_DECIMALS)).toFixed(4)} PYUSD
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">Status:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">
-                    Ready to Learn
-                  </span>
-                </div>
-              </div>
+          {/* Language Card */}
+          <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 overflow-hidden">
+            <div className="absolute -top-6 -right-6 text-7xl opacity-10">{languageData.flag}</div>
+            <div className="relative">
+              <div className="text-white/60 text-xs font-medium uppercase tracking-wider mb-3">Learning</div>
+              <div className="text-4xl mb-2">{languageData.flag}</div>
+              <div className="text-xl font-bold text-white mb-1">{languageData.name}</div>
+              <div className="text-white/60 text-xs">Target language</div>
             </div>
           </div>
         </div>
 
-        {/* Socket Integration - Temporarily Disabled */}
-        {/* 
-        <div className="mt-8">
-          <QuickActions />
-        </div>
-        <div className="mt-8 grid md:grid-cols-2 gap-6">
-          <StudentSocketEvents />
-          <TutorSocketEvents />
-        </div>
-        */}
+        {/* Secondary Stats */}
+        <div className="grid sm:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+            <div className="text-white/60 text-xs font-medium uppercase tracking-wider mb-2">Sessions</div>
+            <div className="text-3xl font-black text-white mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              0
+            </div>
+            <div className="text-white/60 text-xs">Completed</div>
+          </div>
 
-        {/* Action Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+            <div className="text-white/60 text-xs font-medium uppercase tracking-wider mb-2">Budget</div>
+            <div className="text-3xl font-black text-white mb-1" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              ${(budgetPerHour / Math.pow(10, PYUSD_DECIMALS)).toFixed(2)}
+            </div>
+            <div className="text-white/60 text-xs">Per hour</div>
+          </div>
+
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+            <div className="text-white/60 text-xs font-medium uppercase tracking-wider mb-2">Status</div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="text-lg font-bold text-emerald-400">Active</div>
+            </div>
+            <div className="text-white/60 text-xs">Ready to learn</div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid sm:grid-cols-2 gap-4">
           <a
             href="/find-tutor"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 text-lg text-center"
+            className="group relative bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl p-6 overflow-hidden hover:scale-105 transition-all"
           >
-            <span className="mr-2">🚀</span>
-            Find a Tutor
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
+            <div className="relative">
+              <div className="text-4xl mb-3">🎯</div>
+              <div className="text-2xl font-black text-white mb-1">Find Tutor</div>
+              <div className="text-white/80 text-xs">Start learning right now</div>
+            </div>
           </a>
-          <button 
-            onClick={onAddFunds}
-            className="px-8 py-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 text-lg"
-          >
-            <span className="mr-2">💰</span>
-            Add More Funds
-          </button>
-        </div>
 
-        {/* Quick Stats */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {Math.floor(balanceFormatted * 3600 / (budgetPerHour / Math.pow(10, PYUSD_DECIMALS)))}
+          <a
+            href="/tutor"
+            className="group relative bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-6 overflow-hidden hover:scale-105 transition-all"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
+            <div className="relative">
+              <div className="text-4xl mb-3">👨‍🏫</div>
+              <div className="text-2xl font-black text-white mb-1">Teach</div>
+              <div className="text-white/80 text-xs">Become a tutor and earn</div>
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Hours Available
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">0</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Sessions Completed
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 text-center">
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">
-              {getLanguageName(targetLanguage)}
-            </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Learning Language
-            </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>

@@ -39,7 +39,9 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   });
 
   // Read which languages the tutor offers (check all 38 languages)
+  // Note: LANGUAGES is a constant array, so the hook count is always the same
   const tutorLanguageChecks = LANGUAGES.map(lang =>
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useScaffoldReadContract({
       contractName: "LangDAO",
       functionName: "getTutorLanguage",
@@ -67,7 +69,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     contractName: "LangDAO",
     functionName: "getStudentInfo",
     args: [currentSession?.studentAddress as `0x${string}`],
-    enabled: !!currentSession?.studentAddress, // Only query if we have a student address
   });
 
   // Extract actual budget - prioritize currentSession budgetPerSecond (from socket event, immediate)
@@ -83,7 +84,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     contractName: "LangDAO",
     functionName: "getTutorRate",
     args: [account?.address, selectedLanguageId ?? 0],
-    enabled: !!account?.address && selectedLanguageId !== null, // Only query if we have account and selected language
   });
 
   const isTutorRegistered = tutorInfo ? tutorInfo[2] : false;
@@ -99,13 +99,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
   // The tutor enters when student enters the room (via student:in-room event)
   // Blockchain polling is only for detecting existing sessions when navigating away
 
-  // Use LANGUAGES from constants - map to format needed for UI
-  const languages = LANGUAGES.map(lang => ({
-    value: lang.code,
-    label: lang.name,
-    flag: lang.flag,
-    id: lang.id,
-  }));
+  // Note: UI language mapping removed - using LANGUAGES directly from constants
 
   // Helper function to convert PYUSD per second to hourly USD for display
   const weiPerSecondToHourlyUsd = (weiPerSecond: number | string | undefined): string => {
@@ -130,7 +124,6 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     console.log("Socket connected:", socket.connected);
 
     // Debug: Listen for ALL events
-    const originalOn = socket.on.bind(socket);
     socket.onAny((eventName: string, ...args: any[]) => {
       console.log(`🔔 TUTOR RECEIVED EVENT: ${eventName}`, args);
     });
@@ -287,15 +280,16 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
       // Student has entered the room (after waiting for blockchain confirmation)
       // Now tutor should enter immediately - student already confirmed blockchain tx
-      const videoCallUrl =
-        data.videoCallUrl ||
-        `https://langdao-production.up.railway.app/?student=${data.studentAddress}&tutor=${account?.address}&session=${data.requestId}`;
-      console.log("✅ Student entered room! Tutor redirecting to:", videoCallUrl);
+      // Redirect to internal session page with language info
+      const langInfo = selectedLanguageId !== null ? LANGUAGES.find(l => l.id === selectedLanguageId) : null;
+      const langParam = langInfo ? `&language=${encodeURIComponent(langInfo.name)}` : "";
+      const webRTCUrl = `/session/${data.requestId}?role=tutor&tutor=${account?.address}&student=${data.studentAddress}${langParam}&level=Intermediate&focus=Conversation`;
 
+      console.log("Redirecting to WebRTC:", webRTCUrl);
       toast.success("Student is in the room! Joining now...");
 
       // Redirect immediately - student already waited for blockchain confirmation
-      window.location.href = videoCallUrl;
+      window.location.href = webRTCUrl;
     };
 
     const handleStudentRejectedTransaction = (data: any) => {
@@ -308,6 +302,32 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       });
     };
 
+    const handleSessionReady = (data: any) => {
+      console.log("🎉 TUTOR RECEIVED session:ready EVENT:", data);
+
+      // Verify this session is for this tutor
+      if (data.tutorAddress && account?.address) {
+        if (data.tutorAddress.toLowerCase() !== account.address.toLowerCase()) {
+          console.log("⚠️ Ignoring session:ready - not for this tutor");
+          return;
+        }
+      }
+
+      // Only redirect if we're in session-starting state
+      if (availabilityState !== "session-starting") {
+        console.log("⚠️ Ignoring session:ready - not in session-starting state");
+        return;
+      }
+
+      if (data.tutorUrl) {
+        console.log("✅ Session ready! Redirecting tutor to:", data.tutorUrl);
+        toast.success("Session ready! Redirecting...");
+        window.location.href = data.tutorUrl;
+      } else {
+        console.log("⚠️ session:ready event missing tutorUrl");
+      }
+    };
+
     // Register event listeners
     on("tutor:availability-set", handleAvailabilitySet);
     on("tutor:availability-removed", handleAvailabilityRemoved);
@@ -318,6 +338,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     on("session:started", handleSessionStarted);
     on("student:in-room", handleStudentInRoom);
     on("tutor:student-rejected-transaction", handleStudentRejectedTransaction);
+    on("session:ready", handleSessionReady);
 
     return () => {
       off("tutor:availability-set", handleAvailabilitySet);
@@ -329,6 +350,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
       off("session:started", handleSessionStarted);
       off("student:in-room", handleStudentInRoom);
       off("tutor:student-rejected-transaction", handleStudentRejectedTransaction);
+      off("session:ready", handleSessionReady);
     };
   }, [socket, account?.address, availabilityState, activeSessionData]); // Added activeSessionData for fallback check in handleStudentInRoom
 
@@ -359,13 +381,15 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     }
 
     if (activeSessionData) {
-      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
-        activeSessionData;
+      const [student, , , startTime, , , , , sessionId, isActive] = activeSessionData;
 
       // If session is active and has started, redirect (student has confirmed tx and likely entered room)
       if (isActive && startTime && startTime > 0n) {
         console.log("✅ Blockchain fallback: Active session detected! Redirecting tutor to WebRTC...");
-        const videoCallUrl = `https://langdao-production.up.railway.app/?student=${student}&tutor=${account.address}&session=${sessionId}`;
+        // Use internal Next.js route with language info
+        const langInfo = selectedLanguageId !== null ? LANGUAGES.find(l => l.id === selectedLanguageId) : null;
+        const langParam = langInfo ? `&language=${encodeURIComponent(langInfo.name)}` : "";
+        const videoCallUrl = `/session/${sessionId}?role=tutor&tutor=${account.address}&student=${student}${langParam}&level=Intermediate&focus=Conversation`;
         toast.success("Session active on blockchain! Redirecting...");
         console.log("🚀 Tutor redirecting to (blockchain fallback):", videoCallUrl);
         window.location.href = videoCallUrl;
@@ -530,7 +554,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
     const selectedLang = selectedLanguageData;
 
     return (
-      <div className="min-h-[calc(100vh-8rem)] bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 flex items-center justify-center p-4">
+      <div className="min-h-[calc(100vh-8rem)] bg-gradient-to-br from-[#0F0520] via-[#1A0B2E] to-[#0F0520] flex items-center justify-center p-6">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl w-full">
           <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-700 shadow-xl">
             {/* Header */}
@@ -726,7 +750,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
               ))}
             </div>
 
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">You're Live! 🎉</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">You&apos;re Live! 🎉</h2>
 
             {/* Connection Status Debug */}
             <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm">
@@ -832,7 +856,8 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
                         <div>
                           <div className="font-medium text-gray-900 dark:text-white">Student Request</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            Budget: {weiPerSecondToHourlyUsd(request.budgetPerSecond)}/hr
+                            Budget:{" "}
+                            {weiPerSecondToHourlyUsd(request.student?.budgetPerSecond || request.budgetPerSecond)}/hr
                           </div>
                         </div>
                         <div className="flex space-x-2">
@@ -908,7 +933,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Waiting for Student to Start 🎓</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-              You've accepted the request. The student is preparing to start the session.
+              You&apos;ve accepted the request. The student is preparing to start the session.
             </p>
 
             <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-6 mb-8">
@@ -1017,7 +1042,7 @@ export const TutorAvailabilityFlow: React.FC<TutorAvailabilityFlowProps> = ({ on
 
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Session in Progress! 🎓</h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-              You're currently teaching a student. Earnings are being tracked automatically.
+              You&apos;re currently teaching a student. Earnings are being tracked automatically.
             </p>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 mb-8">

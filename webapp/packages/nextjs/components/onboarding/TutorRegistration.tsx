@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import toast from "react-hot-toast";
-
 import { LANGUAGES } from "../../lib/constants/contracts";
+import toast from "react-hot-toast";
 import { useScaffoldWriteContract, useUsdConversion } from "~~/hooks/scaffold-eth";
 
 interface TutorRegistrationProps {
   onComplete: () => void;
   onBack: () => void;
+  onRegistrationSuccess?: () => void;
 }
 
-export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps) => {
+export const TutorRegistration = ({ onComplete, onBack, onRegistrationSuccess }: TutorRegistrationProps) => {
   const [selectedLanguages, setSelectedLanguages] = useState<number[]>([]);
   const [ratePerHour, setRatePerHour] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,9 +24,7 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
 
   const toggleLanguage = (languageId: number) => {
     setSelectedLanguages(prev =>
-      prev.includes(languageId)
-        ? prev.filter(id => id !== languageId)
-        : [...prev, languageId]
+      prev.includes(languageId) ? prev.filter(id => id !== languageId) : [...prev, languageId],
     );
   };
 
@@ -48,10 +46,16 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
       // Call the registerTutor function from LangDAO contract
       await writeContractAsync({
         functionName: "registerTutor",
-        args: [selectedLanguages.map(id => BigInt(id)), BigInt(ratePerSecond)],
+        args: [selectedLanguages, BigInt(ratePerSecond)],
       });
 
       toast.success("Registration successful!");
+
+      // Notify parent component to invalidate cache
+      if (onRegistrationSuccess) {
+        onRegistrationSuccess();
+      }
+
       onComplete();
     } catch (err) {
       console.error("Registration error:", err);
@@ -60,8 +64,6 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
       setIsSubmitting(false);
     }
   };
-
-
 
   const selectedLanguageObjects = LANGUAGES.filter(lang => selectedLanguages.includes(lang.id));
 
@@ -73,12 +75,8 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
             <div className="w-16 h-16 mx-auto bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center mb-4">
               <span className="text-2xl">👨‍🏫</span>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Tutor Registration
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300">
-              Tell us what languages you can teach
-            </p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Tutor Registration</h2>
+            <p className="text-gray-600 dark:text-gray-300">Tell us what languages you can teach</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -88,16 +86,17 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
                 Languages You Can Teach (Select multiple)
               </label>
               <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 max-h-64 overflow-y-auto p-2 border border-gray-200 dark:border-gray-600 rounded-lg">
-                {LANGUAGES.map((language) => (
+                {LANGUAGES.map(language => (
                   <button
                     key={language.id}
                     type="button"
                     onClick={() => toggleLanguage(language.id)}
                     className={`
                       p-2 rounded-lg border-2 transition-all duration-200 flex flex-col items-center relative
-                      ${selectedLanguages.includes(language.id)
-                        ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
-                        : "border-gray-200 dark:border-gray-600 hover:border-purple-300"
+                      ${
+                        selectedLanguages.includes(language.id)
+                          ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
+                          : "border-gray-200 dark:border-gray-600 hover:border-purple-300"
                       }
                     `}
                     title={language.name}
@@ -107,7 +106,9 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
                       {language.name}
                     </span>
                     {selectedLanguages.includes(language.id) && (
-                      <span className="absolute -top-1 -right-1 text-purple-500 bg-white dark:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</span>
+                      <span className="absolute -top-1 -right-1 text-purple-500 bg-white dark:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                        ✓
+                      </span>
                     )}
                   </button>
                 ))}
@@ -118,7 +119,7 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
                     Selected languages ({selectedLanguageObjects.length}):
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {selectedLanguageObjects.map((lang) => (
+                    {selectedLanguageObjects.map(lang => (
                       <span
                         key={lang.id}
                         className="inline-flex items-center px-2 py-1 bg-purple-100 dark:bg-purple-800 text-purple-700 dark:text-purple-300 rounded-md text-xs"
@@ -133,22 +134,18 @@ export const TutorRegistration = ({ onComplete, onBack }: TutorRegistrationProps
 
             {/* Rate Per Hour */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Rate per Hour
-              </label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rate per Hour</label>
               <div className="relative">
                 <input
                   type="number"
                   step="0.01"
                   min="0"
                   value={ratePerHour}
-                  onChange={(e) => setRatePerHour(e.target.value)}
+                  onChange={e => setRatePerHour(e.target.value)}
                   placeholder="15.00"
                   className="w-full px-4 py-3 pr-24 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
-                <div className="absolute right-3 top-3 text-gray-500 dark:text-gray-400">
-                  PYUSD
-                </div>
+                <div className="absolute right-3 top-3 text-gray-500 dark:text-gray-400">PYUSD</div>
               </div>
               {ratePerHour && parseFloat(ratePerHour) > 0 && (
                 <div className="mt-2 flex items-center justify-between text-sm">

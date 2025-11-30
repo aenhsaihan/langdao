@@ -1,4 +1,4 @@
-import { PYUSD_DECIMALS } from '../constants/contracts';
+import { PYUSD_DECIMALS } from "../constants/contracts";
 
 /**
  * Format PYUSD amount from wei (6 decimals) to human-readable string
@@ -7,14 +7,14 @@ import { PYUSD_DECIMALS } from '../constants/contracts';
  * @returns Formatted string
  */
 export function formatPYUSD(amount: bigint | string | number, decimals: number = 4): string {
-  const amountBigInt = typeof amount === 'bigint' ? amount : BigInt(amount);
+  const amountBigInt = typeof amount === "bigint" ? amount : BigInt(amount);
   const divisor = BigInt(10 ** PYUSD_DECIMALS);
   const wholePart = amountBigInt / divisor;
   const fractionalPart = amountBigInt % divisor;
-  
-  const fractionalStr = fractionalPart.toString().padStart(PYUSD_DECIMALS, '0');
+
+  const fractionalStr = fractionalPart.toString().padStart(PYUSD_DECIMALS, "0");
   const result = `${wholePart}.${fractionalStr}`;
-  
+
   return parseFloat(result).toFixed(decimals);
 }
 
@@ -24,15 +24,15 @@ export function formatPYUSD(amount: bigint | string | number, decimals: number =
  * @returns Amount in smallest unit (6 decimals)
  */
 export function parsePYUSD(amount: string | number): bigint {
-  const amountStr = typeof amount === 'number' ? amount.toString() : amount;
-  const [whole = '0', fractional = '0'] = amountStr.split('.');
-  
+  const amountStr = typeof amount === "number" ? amount.toString() : amount;
+  const [whole = "0", fractional = "0"] = amountStr.split(".");
+
   // Pad or trim fractional part to exactly PYUSD_DECIMALS
-  const fractionalPadded = fractional.padEnd(PYUSD_DECIMALS, '0').slice(0, PYUSD_DECIMALS);
-  
+  const fractionalPadded = fractional.padEnd(PYUSD_DECIMALS, "0").slice(0, PYUSD_DECIMALS);
+
   const wholeBigInt = BigInt(whole) * BigInt(10 ** PYUSD_DECIMALS);
   const fractionalBigInt = BigInt(fractionalPadded);
-  
+
   return wholeBigInt + fractionalBigInt;
 }
 

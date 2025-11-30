@@ -1,6 +1,6 @@
 import { DebugContracts } from "./_components/DebugContracts";
-import { WebRTCSessionTest } from "~~/components/webrtc/WebRTCSessionTest";
 import type { NextPage } from "next";
+import { WebRTCSessionTest } from "~~/components/webrtc/WebRTCSessionTest";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
 export const metadata = getMetadata({

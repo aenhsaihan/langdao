@@ -1,9 +1,9 @@
 "use client";
 
-import React from 'react';
-import { useWebRTCSession } from '~~/hooks/useWebRTCSession';
-import { WebRTCSessionStatus } from './WebRTCSessionStatus';
-import { WebRTCSessionEndPrompt } from './WebRTCSessionEndPrompt';
+import React from "react";
+import { WebRTCSessionEndPrompt } from "./WebRTCSessionEndPrompt";
+import { WebRTCSessionStatus } from "./WebRTCSessionStatus";
+import { useWebRTCSession } from "~~/hooks/useWebRTCSession";
 
 interface WebRTCSessionProviderProps {
   children: React.ReactNode;
@@ -16,10 +16,7 @@ export const WebRTCSessionProvider: React.FC<WebRTCSessionProviderProps> = ({ ch
     <>
       {children}
       <WebRTCSessionStatus />
-      <WebRTCSessionEndPrompt 
-        isOpen={showEndSessionPrompt} 
-        onClose={dismissPrompt} 
-      />
+      <WebRTCSessionEndPrompt isOpen={showEndSessionPrompt} onClose={dismissPrompt} />
     </>
   );
 };

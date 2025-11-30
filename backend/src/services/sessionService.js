@@ -24,8 +24,10 @@ redisClient.on('error', (err) => console.error('SessionService Redis error:', er
  * @param {string} studentAddress - Student's wallet address
  * @param {string} tutorAddress - Tutor's wallet address
  * @param {number} languageId - Language ID
+ * @param {string} studentUrl - Optional: Student's WebRTC URL
+ * @param {string} tutorUrl - Optional: Tutor's WebRTC URL
  */
-async function storeSessionMapping(sessionId, studentAddress, tutorAddress, languageId) {
+async function storeSessionMapping(sessionId, studentAddress, tutorAddress, languageId, studentUrl = null, tutorUrl = null) {
   try {
     const sessionData = {
       sessionId,
@@ -34,6 +36,14 @@ async function storeSessionMapping(sessionId, studentAddress, tutorAddress, lang
       languageId: languageId.toString(),
       startTime: Date.now().toString(),
     };
+
+    // Add URLs if provided
+    if (studentUrl) {
+      sessionData.studentUrl = studentUrl;
+    }
+    if (tutorUrl) {
+      sessionData.tutorUrl = tutorUrl;
+    }
 
     await redisClient.hSet(`session:${sessionId}`, sessionData);
     await redisClient.expire(`session:${sessionId}`, 86400); // 24 hours TTL
@@ -67,6 +77,8 @@ async function getSessionMapping(sessionId) {
         tutorAddress: sessionData.tutorAddress,
         languageId: parseInt(sessionData.languageId),
         startTime: parseInt(sessionData.startTime),
+        studentUrl: sessionData.studentUrl || null,
+        tutorUrl: sessionData.tutorUrl || null,
       },
     };
   } catch (error) {
