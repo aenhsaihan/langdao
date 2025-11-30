@@ -1,4 +1,3 @@
-import { InteractiveGridPattern } from "./ui/interactive-grid-pattern";
 import Marquee from "./ui/marquee";
 import { cn } from "~~/lib/utils";
 
@@ -67,7 +66,7 @@ const ReviewCard = ({ img, name, username, body }: { img: string; name: string; 
           <p className="text-sm font-medium text-white/50">{username}</p>
         </div>
       </div>
-      <blockquote className="text-base text-white/80 leading-relaxed font-light">"{body}"</blockquote>
+      <blockquote className="text-base text-white/80 leading-relaxed font-light">&quot;{body}&quot;</blockquote>
     </figure>
   );
 };

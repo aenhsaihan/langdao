@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -15,6 +15,10 @@ export const ActiveSessionPrompt = () => {
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
   const [tutorAddressFromStorage, setTutorAddressFromStorage] = useState<string | null>(null);
   const [sessionFromStorage, setSessionFromStorage] = useState<any>(null);
+  const [userRole, setUserRole] = useState<"student" | "tutor" | null>(null);
+  const [storedSessionId, setStoredSessionId] = useState<string | null>(null);
+  const [studentAddress, setStudentAddress] = useState<string | null>(null);
+  const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Read sessionStorage and localStorage reactively
   // This ensures we can detect when storage changes and update queries accordingly
@@ -93,7 +97,9 @@ export const ActiveSessionPrompt = () => {
   } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "activeSessions",
+    // @ts-expect-error - Type system doesn't handle conditional args well, but enabled flag prevents execution
     args: tutorAddressFromStorage ? [tutorAddressFromStorage as `0x${string}`] : undefined,
+    enabled: !!tutorAddressFromStorage,
   });
 
   // Debug: Log when student session query state changes
@@ -285,8 +291,7 @@ export const ActiveSessionPrompt = () => {
     }
 
     if (activeSessionData) {
-      const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
-        activeSessionData;
+      const [student, tutor, , startTime, , , , , sessionId, isActive] = activeSessionData;
 
       // Validate session data - check if it's a real session (not a zero struct)
       // Zero structs have zero addresses, so we check if student and tutor are non-zero
@@ -310,6 +315,15 @@ export const ActiveSessionPrompt = () => {
       // For students: verify the session belongs to them
       // For tutors: they're the key, so it's always their session
       const sessionBelongsToUser = isTutor || (isStudent && student?.toLowerCase() === account?.address?.toLowerCase());
+
+      // Store session info for "Jump back to call" button
+      if (sessionBelongsToUser) {
+        setUserRole(isTutor ? "tutor" : "student");
+        setStoredSessionId(sessionId ? sessionId.toString() : null);
+        setStudentAddress(student);
+        // For tutors, we also need to store the tutor address (their own address)
+        // For students, tutorAddressFromStorage is already set from storage
+      }
 
       console.log("ActiveSessionPrompt session check:", {
         isTutor,
@@ -373,28 +387,194 @@ export const ActiveSessionPrompt = () => {
     }
   }, [activeSessionData, pathname, currentTime, sessionFromStorage, account?.address, isStudying, tutorSessionData]);
 
+  // Handle dismiss - actually dismiss, then auto-show again after 15 seconds (only if not in session flow)
+  const handleDismiss = () => {
+    setShowPrompt(false);
+
+    // Clear any existing timer
+    if (dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = null;
+    }
+
+    // Check if user is in session flow
+    const isInSessionFlow =
+      pathname === "/tutor" ||
+      pathname === "/find-tutor" ||
+      pathname?.startsWith("/tutor/") ||
+      pathname?.startsWith("/find-tutor/") ||
+      pathname?.includes("/tutor") ||
+      pathname?.includes("/find-tutor") ||
+      pathname?.startsWith("/session") ||
+      pathname?.includes("/session") ||
+      pathname?.startsWith("/call") ||
+      pathname?.includes("/call");
+
+    // Only set up auto-show if user is NOT in session flow
+    if (!isInSessionFlow) {
+      // Auto-show again after 15 seconds (for both students and tutors)
+      console.log("ActiveSessionPrompt: Dismissed, will auto-show again in 15 seconds");
+      dismissTimerRef.current = setTimeout(() => {
+        // Double-check pathname before showing (user might have navigated to session page)
+        const stillInSessionFlow =
+          pathname === "/tutor" ||
+          pathname === "/find-tutor" ||
+          pathname?.startsWith("/tutor/") ||
+          pathname?.startsWith("/find-tutor/") ||
+          pathname?.includes("/tutor") ||
+          pathname?.includes("/find-tutor") ||
+          pathname?.startsWith("/session") ||
+          pathname?.includes("/session") ||
+          pathname?.startsWith("/call") ||
+          pathname?.includes("/call");
+
+        if (!stillInSessionFlow) {
+          console.log("ActiveSessionPrompt: Auto-showing notification after 15 seconds");
+          setShowPrompt(true);
+        } else {
+          console.log("ActiveSessionPrompt: Skipping auto-show (user navigated to session page)");
+        }
+      }, 15000); // 15 seconds
+    } else {
+      console.log("ActiveSessionPrompt: Dismissed but not setting auto-show (user is in session flow)");
+    }
+  };
+
+  // Auto-show timer - when session is active but prompt is dismissed, show again after 15 seconds
+  // BUT only if user is NOT in the session flow (not on session page)
+  useEffect(() => {
+    // Check if user is in session flow
+    const isInSessionFlow =
+      pathname === "/tutor" ||
+      pathname === "/find-tutor" ||
+      pathname?.startsWith("/tutor/") ||
+      pathname?.startsWith("/find-tutor/") ||
+      pathname?.includes("/tutor") ||
+      pathname?.includes("/find-tutor") ||
+      pathname?.startsWith("/session") ||
+      pathname?.includes("/session") ||
+      pathname?.startsWith("/call") ||
+      pathname?.includes("/call");
+
+    // Only set up auto-show if:
+    // 1. Prompt is not showing
+    // 2. We have an active session
+    // 3. User role is set
+    // 4. User is NOT in session flow (not on session page)
+    // 5. No existing timer (to avoid conflicts with handleDismiss)
+    if (!showPrompt && activeSessionData && userRole && !isInSessionFlow && !dismissTimerRef.current) {
+      // Set up auto-show after 15 seconds
+      dismissTimerRef.current = setTimeout(() => {
+        // Double-check pathname before showing (user might have navigated to session page)
+        const stillInSessionFlow =
+          pathname === "/tutor" ||
+          pathname === "/find-tutor" ||
+          pathname?.startsWith("/tutor/") ||
+          pathname?.startsWith("/find-tutor/") ||
+          pathname?.includes("/tutor") ||
+          pathname?.includes("/find-tutor") ||
+          pathname?.startsWith("/session") ||
+          pathname?.includes("/session") ||
+          pathname?.startsWith("/call") ||
+          pathname?.includes("/call");
+
+        if (!stillInSessionFlow) {
+          console.log("ActiveSessionPrompt: Auto-showing notification after 15 seconds");
+          setShowPrompt(true);
+        } else {
+          console.log("ActiveSessionPrompt: Skipping auto-show (user is in session flow)");
+        }
+      }, 15000);
+
+      return () => {
+        if (dismissTimerRef.current) {
+          clearTimeout(dismissTimerRef.current);
+          dismissTimerRef.current = null;
+        }
+      };
+    } else if (isInSessionFlow && dismissTimerRef.current) {
+      // If user is in session flow, clear any existing timer
+      clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = null;
+    }
+  }, [showPrompt, activeSessionData, userRole, pathname]);
+
+  // Cleanup dismiss timer on unmount
+  useEffect(() => {
+    return () => {
+      if (dismissTimerRef.current) {
+        clearTimeout(dismissTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Clear auto-show timer when prompt is shown (user can interact with it)
+  useEffect(() => {
+    if (showPrompt && dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = null;
+    }
+  }, [showPrompt]);
+
   const handleEndSession = async () => {
     if (!activeSessionData) return;
 
-    const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
-      activeSessionData;
+    const [student, tutor, , , , , , , sessionId] = activeSessionData;
+
+    // Clear dismiss timer
+    if (dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = null;
+    }
 
     try {
       toast.loading("Ending session...");
 
-      await writeContractAsync({
+      const tx = await writeContractAsync({
         functionName: "endSession",
         args: [tutor],
       });
 
+      const transactionHash = typeof tx === "string" ? tx : (tx as any)?.hash || undefined;
+
+      // Notify backend so both parties get socket event
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/webrtc-session-ended`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sessionId: sessionId?.toString() || "unknown",
+            userAddress: account?.address || (userRole === "tutor" ? tutor : student),
+            transactionHash: transactionHash,
+          }),
+        });
+
+        if (!response.ok) {
+          console.warn("Failed to notify backend of session end, but session was ended on blockchain");
+        }
+      } catch (notifyError) {
+        console.warn("Error notifying backend:", notifyError);
+        // Continue anyway - session was ended on blockchain
+      }
+
       toast.dismiss();
-      toast.success("Session ended successfully!");
+      toast.success("Session ended successfully! Redirecting...");
       setShowPrompt(false);
+
       // Clean up storage
       if (typeof window !== "undefined") {
         sessionStorage.removeItem("pendingSession");
         localStorage.removeItem("activeSessionTutorAddress");
       }
+
+      // Wait a moment for socket event, then redirect if socket event doesn't come
+      setTimeout(() => {
+        const targetUrl = userRole === "tutor" ? "/tutor" : "/dashboard";
+        window.location.href = targetUrl;
+      }, 1000);
+
       refetch();
     } catch (error) {
       console.error("Error ending session:", error);
@@ -403,10 +583,25 @@ export const ActiveSessionPrompt = () => {
     }
   };
 
+  const handleJumpBackToCall = () => {
+    // For tutors, use account address; for students, use tutorAddressFromStorage
+    const tutorAddress = userRole === "tutor" ? account?.address : tutorAddressFromStorage;
+
+    if (!storedSessionId || !tutorAddress || !studentAddress || !userRole) {
+      toast.error("Unable to determine session details. Please end the session.");
+      return;
+    }
+
+    // Construct session URL
+    const sessionUrl = `/session/${storedSessionId}?role=${userRole}&tutor=${tutorAddress}&student=${studentAddress}&level=Intermediate&focus=Conversation`;
+    console.log("ActiveSessionPrompt: Jumping back to call:", sessionUrl);
+    // Use window.location.href for reliable navigation (consistent with other session navigation)
+    window.location.href = sessionUrl;
+  };
+
   if (!showPrompt || !activeSessionData) return null;
 
-  const [student, tutor, token, startTime, endTime, ratePerSecond, totalPaid, languageId, sessionId, isActive] =
-    activeSessionData;
+  const [, , , startTime] = activeSessionData;
 
   // Calculate session duration using current time state for live updates
   const duration = startTime ? currentTime - Number(startTime) : 0;
@@ -416,63 +611,105 @@ export const ActiveSessionPrompt = () => {
 
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md px-4"
-      >
-        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl p-6 shadow-2xl border-2 border-white">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center"
-              >
-                <span className="text-2xl">⚠️</span>
-              </motion.div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold mb-2">Active Session Detected!</h3>
-              <p className="text-sm text-white/90 mb-3">
-                You have an ongoing tutoring session. Please end it to avoid unnecessary charges.
-              </p>
-              <div className="bg-white/20 rounded-lg p-3 mb-4">
-                <div className="text-xs text-white/80 mb-1">Session Duration</div>
-                <div className="text-2xl font-bold font-mono">
-                  {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+      {showPrompt && (
+        <>
+          {/* Backdrop overlay that blocks all interactions */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm"
+            onClick={e => {
+              // Prevent clicking through the backdrop
+              e.stopPropagation();
+            }}
+          />
+
+          {/* Notification - slides down from top */}
+          <motion.div
+            initial={{ opacity: 0, y: -100, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -100, scale: 0.95 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] w-full max-w-md px-4"
+            onClick={e => {
+              // Prevent clicks on notification from propagating
+              e.stopPropagation();
+            }}
+          >
+            <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-2xl p-6 shadow-2xl border-2 border-white">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center"
+                  >
+                    <span className="text-2xl">⚠️</span>
+                  </motion.div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2">Active Session Detected!</h3>
+                  <p className="text-sm text-white/90 mb-3">
+                    You have an ongoing tutoring session. Please end it to avoid unnecessary charges.
+                  </p>
+                  <div className="bg-white/20 rounded-lg p-3 mb-4">
+                    <div className="text-xs text-white/80 mb-1">Session Duration</div>
+                    <div className="text-2xl font-bold font-mono">
+                      {String(hours).padStart(2, "0")}:{String(minutes).padStart(2, "0")}:
+                      {String(seconds).padStart(2, "0")}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={handleEndSession}
+                        disabled={isMining}
+                        className="flex-1 px-4 py-2 bg-white text-red-600 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isMining ? (
+                          <div className="flex items-center justify-center">
+                            <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                            Ending...
+                          </div>
+                        ) : (
+                          <>
+                            <span className="mr-1">🛑</span>
+                            End Session Now
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={handleDismiss}
+                        className="px-4 py-2 bg-white/20 text-white rounded-lg font-medium hover:bg-white/30 transition-all duration-200"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                    {/* Jump back to call button - only show if we have session info */}
+                    {/* For tutors, use account address; for students, use tutorAddressFromStorage */}
+                    {storedSessionId &&
+                      studentAddress &&
+                      userRole &&
+                      (userRole === "tutor" ? account?.address : tutorAddressFromStorage) && (
+                        <button
+                          onClick={handleJumpBackToCall}
+                          className="w-full px-4 py-2 bg-blue-500/80 text-white rounded-lg font-medium hover:bg-blue-500 transition-all duration-200 flex items-center justify-center"
+                        >
+                          <span className="mr-2">📞</span>
+                          Jump Back to Call
+                        </button>
+                      )}
+                    <p className="text-xs text-white/70 text-center mt-2">
+                      This notification will appear again in 15 seconds if the session is still active
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={handleEndSession}
-                  disabled={isMining}
-                  className="flex-1 px-4 py-2 bg-white text-red-600 rounded-lg font-medium hover:bg-gray-100 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isMining ? (
-                    <div className="flex items-center justify-center">
-                      <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin mr-2"></div>
-                      Ending...
-                    </div>
-                  ) : (
-                    <>
-                      <span className="mr-1">🛑</span>
-                      End Session Now
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => setShowPrompt(false)}
-                  className="px-4 py-2 bg-white/20 text-white rounded-lg font-medium hover:bg-white/30 transition-all duration-200"
-                >
-                  Dismiss
-                </button>
-              </div>
             </div>
-          </div>
-        </div>
-      </motion.div>
+          </motion.div>
+        </>
+      )}
     </AnimatePresence>
   );
 };

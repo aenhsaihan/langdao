@@ -33,7 +33,7 @@ export const TutorSocketEvents: React.FC<TutorSocketEventsProps> = ({ onRequestR
       onRequestReceived?.(data);
 
       toast(
-        t => (
+        (t: { id: string }) => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">New Tutoring Request!</div>
             <div className="text-sm text-gray-600">
@@ -84,13 +84,13 @@ export const TutorSocketEvents: React.FC<TutorSocketEventsProps> = ({ onRequestR
     };
 
     const handleRequestDeclined = (data: any) => {
-      toast.info("Request declined");
+      toast("Request declined");
       // Remove the request from pending list
       setIncomingRequests(prev => prev.filter(req => req.requestId !== data.requestId));
     };
 
     const handleStudentRejected = (data: any) => {
-      toast.info("Student rejected you or selected another tutor");
+      toast("Student rejected you or selected another tutor");
       // Remove the request from pending list
       setIncomingRequests(prev => prev.filter(req => req.requestId !== data.requestId));
       // This should trigger the tutor to go back to waiting state

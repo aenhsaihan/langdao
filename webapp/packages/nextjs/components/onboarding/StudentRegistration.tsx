@@ -42,12 +42,12 @@ export const StudentRegistration = ({ onComplete, onBack, onRegistrationSuccess 
       });
 
       toast.success("Registration successful!");
-      
+
       // Notify parent component to invalidate cache
       if (onRegistrationSuccess) {
         onRegistrationSuccess();
       }
-      
+
       onComplete();
     } catch (err) {
       console.error("Registration error:", err);
@@ -131,7 +131,7 @@ export const StudentRegistration = ({ onComplete, onBack, onRegistrationSuccess 
                 </div>
               )}
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                This is your maximum budget per hour. You'll only pay for actual session time.
+                This is your maximum budget per hour. You&apos;ll only pay for actual session time.
               </p>
             </div>
 

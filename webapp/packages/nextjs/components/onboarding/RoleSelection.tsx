@@ -19,7 +19,7 @@ export const RoleSelection = ({ onRoleSelect }: RoleSelectionProps) => {
       <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
           <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">Choose your role</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">Select how you'd like to use LangDAO</p>
+          <p className="text-lg text-gray-600 dark:text-gray-300">Select how you&apos;d like to use LangDAO</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">

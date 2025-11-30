@@ -29,7 +29,7 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
   });
 
   // Get current allowance for LangDAO contract
-  const { data: allowance, isLoading: isAllowanceLoading } = useScaffoldReadContract({
+  const { data: allowance } = useScaffoldReadContract({
     contractName: "PYUSD",
     functionName: "allowance",
     args: [address, CONTRACTS.LANGDAO],
@@ -218,7 +218,7 @@ export const DepositFlow = ({ onComplete, onBack }: DepositFlowProps) => {
                   <div className="flex items-center">
                     <span className="text-orange-600 dark:text-orange-400 mr-2">💡</span>
                     <span className="text-sm text-orange-700 dark:text-orange-300">
-                      You don't have any PYUSD tokens. Use the Mock Token Faucet to get some test tokens first.
+                      You don&apos;t have any PYUSD tokens. Use the Mock Token Faucet to get some test tokens first.
                     </span>
                   </div>
                 </div>

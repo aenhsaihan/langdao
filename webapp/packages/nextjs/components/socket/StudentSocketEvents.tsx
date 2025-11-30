@@ -41,7 +41,7 @@ export const StudentSocketEvents: React.FC<StudentSocketEventsProps> = ({ onTuto
       onTutorResponse?.({ ...data, accepted: true });
 
       toast(
-        t => (
+        (t: { id: string }) => (
           <div className="flex flex-col space-y-2">
             <div className="font-medium">Tutor Accepted Your Request!</div>
             <div className="text-sm text-gray-600">
@@ -77,7 +77,7 @@ export const StudentSocketEvents: React.FC<StudentSocketEventsProps> = ({ onTuto
     };
 
     const handleTutorDeclined = () => {
-      toast.info("A tutor declined your request");
+      toast("A tutor declined your request");
       // Keep the request active for other tutors
     };
 
@@ -95,7 +95,7 @@ export const StudentSocketEvents: React.FC<StudentSocketEventsProps> = ({ onTuto
           tutorResponses.length === 1 &&
           tutorResponses[0].tutorAddress.toLowerCase() === data.tutor.address.toLowerCase()
         ) {
-          toast.info("Tutor became unavailable, waiting for other responses...");
+          toast("Tutor became unavailable, waiting for other responses...");
         }
       }
     };
@@ -142,7 +142,7 @@ export const StudentSocketEvents: React.FC<StudentSocketEventsProps> = ({ onTuto
       prev.filter(resp => !(resp.requestId === requestId && resp.tutorAddress === tutorAddress)),
     );
 
-    toast.info("Tutor rejected. Waiting for other responses...");
+    toast("Tutor rejected. Waiting for other responses...");
   };
 
   const cancelRequest = (requestId: string) => {
@@ -154,7 +154,7 @@ export const StudentSocketEvents: React.FC<StudentSocketEventsProps> = ({ onTuto
     setPendingRequests(prev => prev.filter(id => id !== requestId));
     setTutorResponses(prev => prev.filter(resp => resp.requestId !== requestId));
 
-    toast.info("Request cancelled");
+    toast("Request cancelled");
   };
 
   return (

@@ -11,8 +11,6 @@ interface SessionControlsProps {
   isAudioEnabled: boolean;
   isVideoEnabled: boolean;
   isEndingSession?: boolean;
-  balance?: number; // Optional for tutor role
-  initialBalance?: number; // Optional for tutor role
   onToggleAudio: () => void;
   onToggleVideo: () => void;
   onScreenShare: () => void;
@@ -23,19 +21,11 @@ export const SessionControls = ({
   isAudioEnabled,
   isVideoEnabled,
   isEndingSession = false,
-  balance,
-  initialBalance,
   onToggleAudio,
   onToggleVideo,
   onScreenShare,
   onEndSession,
 }: SessionControlsProps) => {
-  // Only show balance meter for students (when balance and initialBalance are provided)
-  const showBalanceMeter = balance !== undefined && initialBalance !== undefined && initialBalance > 0;
-  const percentage = showBalanceMeter
-    ? Math.max(0, Math.min(100, (balance! / initialBalance!) * 100))
-    : 0;
-
   const circleButton =
     "flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300";
 
@@ -65,8 +55,6 @@ export const SessionControls = ({
         </button>
       </div>
 
-      <div className="h-10 w-px bg-white/5" />
-
       <button
         type="button"
         onClick={onEndSession}
@@ -76,15 +64,6 @@ export const SessionControls = ({
         <PhoneXMarkIcon className="h-5 w-5" />
         {isEndingSession ? "Ending…" : "End session"}
       </button>
-
-      {showBalanceMeter && (
-        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-xs uppercase tracking-[0.3em] text-white/70">
-          <span className="relative block h-2 w-16 overflow-hidden rounded-full bg-white/10">
-            <span className="absolute inset-y-0 left-0 rounded-full bg-cyan-300" style={{ width: `${percentage}%` }} />
-          </span>
-          ${balance!.toFixed(2)}
-        </div>
-      )}
     </div>
   );
 };

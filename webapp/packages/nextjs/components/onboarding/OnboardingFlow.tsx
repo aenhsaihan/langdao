@@ -11,8 +11,8 @@ import { TutorAvailabilityFlow } from "../tutor/TutorAvailabilityFlow";
 import { RoleSelection } from "./RoleSelection";
 import { StudentRegistration } from "./StudentRegistration";
 import { TutorRegistration } from "./TutorRegistration";
-import { useActiveAccount, useReadContract } from "thirdweb/react";
 import { getContract } from "thirdweb";
+import { useActiveAccount, useReadContract } from "thirdweb/react";
 import deployedContracts from "~~/contracts/deployedContracts";
 
 type OnboardingStep = "role" | "registration" | "deposit" | "dashboard" | "tutor-availability" | "complete";
@@ -62,21 +62,13 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
   });
 
   // Fallback: Direct on-chain queries (used when backend is unavailable)
-  const {
-    data: studentInfoOnChain,
-    isLoading: isLoadingStudentOnChain,
-    error: studentErrorOnChain,
-  } = useReadContract({
+  const { data: studentInfoOnChain, isLoading: isLoadingStudentOnChain } = useReadContract({
     contract,
     method: "getStudentInfo",
     params: [account?.address || "0x0000000000000000000000000000000000000000"],
   });
 
-  const {
-    data: tutorInfoOnChain,
-    isLoading: isLoadingTutorOnChain,
-    error: tutorErrorOnChain,
-  } = useReadContract({
+  const { data: tutorInfoOnChain, isLoading: isLoadingTutorOnChain } = useReadContract({
     contract,
     method: "getTutorInfo",
     params: [account?.address || "0x0000000000000000000000000000000000000000"],
@@ -138,7 +130,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
           }
         } catch (fetchError: any) {
           clearTimeout(timeoutId);
-          if (fetchError.name === 'AbortError') {
+          if (fetchError.name === "AbortError") {
             console.warn("⏱️ Backend API request timed out, falling back to on-chain query");
           } else {
             console.warn("⚠️ Backend API request failed, falling back to on-chain query:", fetchError.message);
@@ -153,7 +145,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       // Fallback to on-chain query if backend is unavailable
       if (useFallback || (!studentData && !tutorData)) {
         console.log("⛓️ Using on-chain fallback for registration check");
-        
+
         // Wait for on-chain queries to complete
         if (isLoadingStudentOnChain || isLoadingTutorOnChain) {
           return; // Will re-run when loading completes
@@ -177,7 +169,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
             address: account.address,
             name: `Tutor_${account.address.slice(-4)}`,
             languages: [], // Not available from getTutorInfo
-            ratePerSecond: '0', // Not available from getTutorInfo
+            ratePerSecond: "0", // Not available from getTutorInfo
             totalSessions: Number(tutorInfoOnChain[1] || 0), // sessionCount is the 2nd element (index 1)
             rating: 0, // Not available from getTutorInfo
             isRegistered: Boolean(tutorInfoOnChain[2]), // isRegistered is the 3rd element (index 2)
@@ -289,7 +281,7 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Checking Registration Status</h2>
             <p className="text-gray-600 dark:text-gray-300">
-              Please wait while we check if you're already registered...
+              Please wait while we check if you&apos;re already registered...
             </p>
           </div>
         </div>
@@ -347,8 +339,8 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
         {currentStep === "role" && <RoleSelection onRoleSelect={handleRoleSelect} />}
 
         {currentStep === "registration" && selectedRole === "student" && (
-          <StudentRegistration 
-            onComplete={handleRegistrationComplete} 
+          <StudentRegistration
+            onComplete={handleRegistrationComplete}
             onBack={handleBack}
             onRegistrationSuccess={() => {
               // Invalidate cache and refresh registration status
@@ -378,8 +370,8 @@ export const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
         )}
 
         {currentStep === "registration" && selectedRole === "tutor" && (
-          <TutorRegistration 
-            onComplete={handleRegistrationComplete} 
+          <TutorRegistration
+            onComplete={handleRegistrationComplete}
             onBack={handleBack}
             onRegistrationSuccess={() => {
               // Invalidate cache and refresh registration status

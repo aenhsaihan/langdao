@@ -1,5 +1,3 @@
-import deployedContracts from "../../contracts/deployedContracts";
-
 // Contract addresses for Sepolia testnet
 export const CONTRACTS = {
   // PYUSD token contract address on Sepolia (6 decimals)

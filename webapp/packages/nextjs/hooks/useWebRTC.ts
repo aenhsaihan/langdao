@@ -40,6 +40,20 @@ export const useWebRTC = (
 
   // Initialize Media
   const initializeMedia = useCallback(async () => {
+    // Bypass media check - allow session to continue without camera/microphone
+    console.log("Media initialization bypassed - continuing without camera/microphone");
+    setState(prev => ({
+      ...prev,
+      localStream: null,
+      isRequestingMedia: false,
+      mediaError: null,
+      isAudioEnabled: false,
+      isVideoEnabled: false,
+    }));
+    return null;
+
+    // Original code commented out for bypass
+    /*
     // Check if getUserMedia is available
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       const error = {
@@ -90,10 +104,10 @@ export const useWebRTC = (
         errorMessage = "Permission denied. Please allow camera and microphone access in your browser settings and try again.";
       } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
         errorType = "no-device";
-        errorMessage = "No camera or microphone found. Please check your devices and try again.";
+        errorMessage = "No camera or microphone found. You can continue without video/audio.";
       } else if (error.name === "NotSupportedError" || error.name === "ConstraintNotSatisfiedError") {
         errorType = "not-supported";
-        errorMessage = "Camera/microphone not supported or constraints cannot be satisfied.";
+        errorMessage = "Camera/microphone not supported or constraints cannot be satisfied. You can continue without video/audio.";
       } else {
         errorMessage += error.message || "Unknown error occurred.";
       }
@@ -106,6 +120,7 @@ export const useWebRTC = (
 
       return null;
     }
+    */
   }, []);
 
   // Initialize Peer Connection
@@ -251,12 +266,15 @@ export const useWebRTC = (
 
   // Cleanup
   useEffect(() => {
+    const localStream = localStreamRef.current;
+    const peerConnection = peerConnectionRef.current;
+
     return () => {
-      if (localStreamRef.current) {
-        localStreamRef.current.getTracks().forEach(track => track.stop());
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
       }
-      if (peerConnectionRef.current) {
-        peerConnectionRef.current.close();
+      if (peerConnection) {
+        peerConnection.close();
       }
     };
   }, []);

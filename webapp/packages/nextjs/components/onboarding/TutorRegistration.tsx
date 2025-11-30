@@ -46,16 +46,16 @@ export const TutorRegistration = ({ onComplete, onBack, onRegistrationSuccess }:
       // Call the registerTutor function from LangDAO contract
       await writeContractAsync({
         functionName: "registerTutor",
-        args: [selectedLanguages.map(id => BigInt(id)), BigInt(ratePerSecond)],
+        args: [selectedLanguages, BigInt(ratePerSecond)],
       });
 
       toast.success("Registration successful!");
-      
+
       // Notify parent component to invalidate cache
       if (onRegistrationSuccess) {
         onRegistrationSuccess();
       }
-      
+
       onComplete();
     } catch (err) {
       console.error("Registration error:", err);

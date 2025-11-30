@@ -6,15 +6,9 @@ import { activeChain } from "../lib/chains";
 import { wallets } from "../wallets";
 import { AnimatePresence, motion } from "framer-motion";
 import type { NextPage } from "next";
-import { ConnectButton, useActiveAccount, useConnect } from "thirdweb/react";
-import { Globe } from "~~/components/Globe";
+import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { OnboardingFlow } from "~~/components/onboarding/OnboardingFlow";
 import { TestimonialsSection } from "~~/components/testimonials";
-import { AuroraText } from "~~/components/ui/aurora-text";
-import { InteractiveGridPattern } from "~~/components/ui/interactive-grid-pattern";
-import { ShimmerButton } from "~~/components/ui/shimmer-button";
-import { TextAnimate } from "~~/components/ui/text-animate";
-import { WordRotate } from "~~/components/ui/word-rotate";
 import { usePageView } from "~~/hooks/usePageView";
 
 // Staggered animation variants
@@ -192,7 +186,7 @@ const ConnectWalletButton = ({
 
 const MeetTheTutorsSection = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("All");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1]);
+  const [priceRange] = useState<[number, number]>([0, 1]);
 
   const filteredTutors = mockTutors.filter(tutor => {
     const languageMatch = selectedLanguage === "All" || tutor.languages.includes(selectedLanguage);
@@ -584,6 +578,7 @@ const HomeView = ({ onHowItWorksClick }: { onHowItWorksClick: () => void }) => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const HowItWorksView = ({ onBackToHome }: { onBackToHome: () => void }) => {
   return (
     <div className="relative min-h-screen overflow-hidden">

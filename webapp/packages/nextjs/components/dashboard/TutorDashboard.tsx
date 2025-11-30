@@ -1,6 +1,6 @@
 "use client";
 
-import { CONTRACTS, PYUSD_DECIMALS } from "../../lib/constants/contracts";
+import { PYUSD_DECIMALS } from "../../lib/constants/contracts";
 import { useActiveAccount } from "thirdweb/react";
 import { formatUnits } from "viem";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
@@ -19,16 +19,6 @@ export const TutorDashboard = ({ onGoLive }: TutorDashboardProps) => {
     args: [account?.address],
   });
 
-  // Get tutor's actual PYUSD balance from the token contract
-  // Tutors receive PYUSD directly to their wallet, not stored in LangDAO contract
-  const { data: balance } = useScaffoldReadContract({
-    contractName: "MockERC20",
-    functionName: "balanceOf",
-    args: [account?.address],
-  });
-
-  const balanceFormatted = balance ? parseFloat(formatUnits(balance, PYUSD_DECIMALS)) : 0;
-  
   // Parse tutor info - getTutorInfo returns (totalEarnings, sessionCount, isRegistered)
   const totalEarnings = tutorInfo ? tutorInfo[0] : 0n;
   const sessionCount = tutorInfo ? tutorInfo[1] : 0n;
@@ -43,38 +33,14 @@ export const TutorDashboard = ({ onGoLive }: TutorDashboardProps) => {
           <p className="text-base text-white/60 font-light">Your teaching command center</p>
         </div>
 
-        {/* Main Stats Grid */}
-        <div className="grid lg:grid-cols-3 gap-4 mb-6">
-          {/* Balance - Hero Card */}
-          <div className="lg:col-span-2 relative bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
-            <div className="relative">
-              <div className="text-white/80 text-xs font-medium uppercase tracking-wider mb-1">Earnings Balance</div>
-              <div
-                className="text-5xl sm:text-6xl font-black text-white mb-1"
-                style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              >
-                ${balanceFormatted.toFixed(2)}
-              </div>
-              <div className="text-white/80 text-sm font-light mb-4">PYUSD</div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                <button
-                  className="px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-sm rounded-lg font-semibold transition-all"
-                >
-                  💸 Withdraw
-                </button>
-                <div className="text-white/60 text-xs">Available to withdraw</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Earnings Card */}
+        {/* Total Earnings Card */}
+        <div className="mb-6">
           <div className="relative bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-6 overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl" />
             <div className="relative">
               <div className="text-white/80 text-xs font-medium uppercase tracking-wider mb-1">Total Earnings</div>
               <div
-                className="text-4xl sm:text-5xl font-black text-white mb-1"
+                className="text-5xl sm:text-6xl font-black text-white mb-1"
                 style={{ fontFamily: "'JetBrains Mono', monospace" }}
               >
                 ${totalEarnings ? parseFloat(formatUnits(totalEarnings, PYUSD_DECIMALS)).toFixed(2) : "0.00"}
@@ -97,12 +63,14 @@ export const TutorDashboard = ({ onGoLive }: TutorDashboardProps) => {
           <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
             <div className="text-white/60 text-xs font-medium uppercase tracking-wider mb-2">Status</div>
             <div className="flex items-center gap-2 mb-1">
-              <div className={`w-2 h-2 rounded-full ${isRegistered ? 'bg-emerald-400 animate-pulse' : 'bg-gray-400'}`} />
-              <div className={`text-lg font-bold ${isRegistered ? 'text-emerald-400' : 'text-gray-400'}`}>
-                {isRegistered ? 'Registered' : 'Not Registered'}
+              <div
+                className={`w-2 h-2 rounded-full ${isRegistered ? "bg-emerald-400 animate-pulse" : "bg-gray-400"}`}
+              />
+              <div className={`text-lg font-bold ${isRegistered ? "text-emerald-400" : "text-gray-400"}`}>
+                {isRegistered ? "Registered" : "Not Registered"}
               </div>
             </div>
-            <div className="text-white/60 text-xs">{isRegistered ? 'Ready to go live' : 'Complete registration'}</div>
+            <div className="text-white/60 text-xs">{isRegistered ? "Ready to go live" : "Complete registration"}</div>
           </div>
         </div>
 

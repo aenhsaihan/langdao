@@ -10,6 +10,7 @@ interface StudentDashboardProps {
   onAddFunds?: () => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const StudentDashboard = ({ onStartLearning, onAddFunds }: StudentDashboardProps) => {
   const account = useActiveAccount();
 

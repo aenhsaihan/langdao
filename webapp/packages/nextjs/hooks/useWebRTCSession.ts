@@ -125,8 +125,8 @@ export const useWebRTCSession = () => {
     };
   }, [socket]);
 
-  const endSession = useCallback(async () => {
-    if (!state.currentSession || state.isEndingSession) return;
+  const endSession = useCallback(async (): Promise<string | undefined> => {
+    if (!state.currentSession || state.isEndingSession) return undefined;
 
     setState(prev => ({ ...prev, isEndingSession: true }));
 
@@ -137,6 +137,9 @@ export const useWebRTCSession = () => {
         args: [state.currentSession.tutorAddress],
       });
 
+      // Extract transaction hash - tx might be a string or an object
+      const transactionHash = typeof tx === "string" ? tx : (tx as any)?.hash || undefined;
+
       // Notify backend of completion
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/webrtc-session-ended`, {
         method: "POST",
@@ -146,7 +149,7 @@ export const useWebRTCSession = () => {
         body: JSON.stringify({
           sessionId: state.currentSession.requestId,
           userAddress: state.currentSession.studentAddress,
-          transactionHash: tx,
+          transactionHash: transactionHash || tx,
         }),
       });
 
@@ -167,7 +170,10 @@ export const useWebRTCSession = () => {
       sessionStorage.removeItem("pendingSession");
       localStorage.removeItem("activeSessionTutorAddress");
 
-      console.log("Session ended successfully");
+      console.log("Session ended successfully, transaction hash:", transactionHash);
+      
+      // Return transaction hash so caller can use it for receipt
+      return transactionHash;
     } catch (error) {
       console.error("Failed to end session:", error);
       setState(prev => ({ ...prev, isEndingSession: false }));

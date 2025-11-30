@@ -30,7 +30,6 @@ redisClient.on("connect", () => console.log("Connected to Redis"));
 const tutorRoutes = require("./routes/tutors");
 const studentRoutes = require("./routes/students");
 const matchingRoutes = require("./routes/matching");
-const webrtcRoutes = require("./routes/webrtc");
 const sessionRoutes = require("./routes/sessions");
 const matchingService = require("./services/matchingService");
 
@@ -113,8 +112,9 @@ app.get("/health", async (req, res) => {
 app.use("/api/tutors", tutorRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/matching", matchingRoutes);
-app.use("/api", webrtcRoutes); // WebRTC events endpoint
 app.use("/api", sessionRoutes);
+
+// WebRTC routes will be initialized after socket setup (see below)
 
 // 404 handler
 app.use("*", (req, res) => {
@@ -884,18 +884,38 @@ io.on("connection", (socket) => {
       console.log(`🚀 Session started on blockchain for request ${data.requestId}`);
       console.log(`Looking for tutor: ${data.tutorAddress.toLowerCase()}`);
 
+      // CRITICAL: Get languageId from blockchain, not from frontend data
+      // This ensures consistency - blockchain is the source of truth
+      let languageId = null;
+      const contractService = require('./services/contractService');
+      try {
+        const activeSessionOnChain = await contractService.getActiveSession(data.tutorAddress);
+        if (activeSessionOnChain && activeSessionOnChain.language !== undefined && activeSessionOnChain.language !== null) {
+          languageId = activeSessionOnChain.language;
+          console.log(`✅ Got languageId ${languageId} from blockchain for session ${data.requestId}`);
+        } else {
+          console.warn(`⚠️ Could not get languageId from blockchain, using fallback: ${data.languageId || 1}`);
+          languageId = data.languageId || 1;
+        }
+      } catch (error) {
+        console.warn(`⚠️ Error getting languageId from blockchain:`, error.message);
+        console.warn(`⚠️ Using fallback: ${data.languageId || 1}`);
+        languageId = data.languageId || 1;
+      }
+
       // Generate WebRTC URLs for both student and tutor
       const sessionId = data.requestId; // Use requestId as sessionId
       const studentUrl = `/session/${sessionId}?role=student&tutor=${data.tutorAddress}&student=${data.studentAddress}`;
       const tutorUrl = `/session/${sessionId}?role=tutor&tutor=${data.tutorAddress}&student=${data.studentAddress}`;
 
       // Store session mapping for webRTC end session handling (with URLs)
+      // Use languageId from blockchain (source of truth)
       const sessionService = require('./services/sessionService');
       await sessionService.storeSessionMapping(
         data.requestId,
         data.studentAddress,
         data.tutorAddress,
-        data.languageId || 1,
+        languageId, // Use blockchain languageId, not frontend data
         studentUrl,
         tutorUrl
       );
@@ -942,7 +962,7 @@ io.on("connection", (socket) => {
         tutorAddress: data.tutorAddress,
         studentUrl: studentUrl,
         tutorUrl: tutorUrl,
-        languageId: data.languageId || 1,
+        languageId: languageId, // Use blockchain languageId (already fetched above)
       };
 
       // Send session:ready to tutor
@@ -1241,6 +1261,53 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Handle chat messages
+  socket.on("chat:message", async (data) => {
+    try {
+      if (!(await checkSocketRateLimit(socket.id))) {
+        socket.emit("error", { message: "Rate limit exceeded" });
+        return;
+      }
+
+      // Validate required fields
+      if (!data.sessionId || !data.senderAddress || !data.message) {
+        socket.emit("error", { message: "Invalid chat message data" });
+        return;
+      }
+
+      // Find target socket by address
+      let targetSocketId = null;
+      if (data.targetAddress) {
+        const allSockets = Array.from(io.sockets.sockets.values());
+        for (const s of allSockets) {
+          const addr = await redisClient.hGet("socket_to_address", s.id);
+          if (addr && addr.toLowerCase() === data.targetAddress.toLowerCase()) {
+            targetSocketId = s.id;
+            break;
+          }
+        }
+      }
+
+      // Broadcast to target if found, otherwise broadcast to all sockets in session
+      const messageData = {
+        sessionId: data.sessionId,
+        senderAddress: data.senderAddress,
+        message: data.message,
+        timestamp: data.timestamp || Date.now(),
+      };
+
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("chat:message", messageData);
+      } else {
+        // Fallback: broadcast to all connected sockets (they can filter by sessionId)
+        io.emit("chat:message", messageData);
+      }
+    } catch (error) {
+      console.error("Error handling chat message:", error);
+      socket.emit("error", { message: "Failed to send chat message" });
+    }
+  });
+
   // Relay ICE Candidate
   socket.on("webrtc:ice-candidate", async (data) => {
     try {
@@ -1295,6 +1362,13 @@ io.on("connection", (socket) => {
     }
   });
 });
+
+// Initialize WebRTC routes with io instance (after socket setup)
+// Note: Express will still match these routes even though 404 is registered first
+// because route matching is done in order and specific paths are checked before catch-all
+const webrtcRoutes = require("./routes/webrtc")(io, redisClient);
+app.use("/api", webrtcRoutes);
+console.log("✅ WebRTC routes initialized with socket.io support");
 
 // Graceful shutdown
 const gracefulShutdown = async (signal) => {

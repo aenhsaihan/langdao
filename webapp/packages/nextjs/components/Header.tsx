@@ -42,16 +42,7 @@ const connectedMenuLinks: HeaderMenuLink[] = [
   },
 ];
 
-const disconnectedMenuLinks: HeaderMenuLink[] = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "How it Works",
-    href: "/",
-  },
-];
+// Note: disconnectedMenuLinks was removed as it was unused - navigation is now handled by button handlers
 
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();

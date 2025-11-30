@@ -37,87 +37,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const account = useActiveAccount();
   const isConnectingRef = React.useRef(false);
 
-  const connect = useCallback(() => {
-    if (socket?.connected) {
-      console.log("Socket already connected, skipping...");
-      return;
-    }
-
-    console.log("Creating new socket connection...");
-    setConnectionStatus("connecting");
-
-    const newSocket = io(process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000", {
-      transports: ["websocket", "polling"],
-      autoConnect: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
-
-    // Connection events
-    newSocket.on("connect", () => {
-      setIsConnected(true);
-      setConnectionStatus("connected");
-      console.log("Socket connected:", newSocket.id);
-      toast.success("Connected to LangDAO server");
-
-      // Emit user info when connected
-      if (account?.address) {
-        console.log("Emitting user:connect for address:", account.address);
-        newSocket.emit("user:connect", {
-          address: account.address,
-          timestamp: Date.now(),
-        });
-      }
-    });
-
-    newSocket.on("disconnect", reason => {
-      setIsConnected(false);
-      setConnectionStatus("disconnected");
-      console.log("Socket disconnected:", reason);
-      toast.error(`Disconnected from server: ${reason}`);
-    });
-
-    newSocket.on("connect_error", error => {
-      setConnectionStatus("error");
-      console.error("Socket connection error:", error);
-      toast.error(`Connection failed: ${error.message}`);
-    });
-
-    newSocket.on("reconnect", attemptNumber => {
-      toast.success(`Reconnected to server (attempt ${attemptNumber})`);
-    });
-
-    newSocket.on("reconnect_error", () => {
-      toast.error("Reconnection failed");
-    });
-
-    // Note: Removed global debug toasts for tutor availability events
-    // These were showing irrelevant "Global Tutor removed" messages to students
-    // Individual components (TutorAvailabilityFlow, StudentTutorFinder) handle
-    // these events contextually where appropriate
-    newSocket.on("tutor:available-updated", data => {
-      console.log("🌍 GLOBAL SOCKET RECEIVED tutor:available-updated:", data);
-      // Toast removed - components handle this contextually
-    });
-
-    newSocket.on("tutor:became-unavailable", data => {
-      console.log("🌍 GLOBAL SOCKET RECEIVED tutor:became-unavailable:", data);
-      // Toast removed - components handle this contextually
-    });
-
-    setSocket(newSocket);
-  }, [account?.address]);
-
-  const disconnect = useCallback(() => {
-    if (socket) {
-      console.log("Disconnecting socket...");
-      socket.disconnect();
-      setSocket(null);
-      setIsConnected(false);
-      setConnectionStatus("disconnected");
-    }
-  }, [socket]);
+  // Note: connect and disconnect functions are intentionally kept as internal implementation
+  // The socket connection is managed automatically based on wallet connection state
 
   const emit = useCallback(
     (event: string, data?: any) => {
