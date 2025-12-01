@@ -26,13 +26,21 @@ export default function PrepareMaterialsPage() {
   const [tutorLanguages, setTutorLanguages] = useState<string[]>([]);
 
   // Check if user is a registered tutor
-  const { data: tutorInfo } = useScaffoldReadContract({
+  // Query is automatically disabled when account?.address is undefined
+  const {
+    data: tutorInfo,
+    isLoading: isLoadingTutorInfo,
+    isError: isTutorInfoError,
+  } = useScaffoldReadContract({
     contractName: "LangDAO",
     functionName: "getTutorInfo",
     args: [account?.address],
   });
 
   const isRegistered = tutorInfo ? tutorInfo[2] : false;
+
+  // Check if query can actually run (account address must be available)
+  const canQueryTutorInfo = !!account?.address;
 
   // Read which languages the tutor offers (check all languages from LANGUAGES constant)
   // Note: LANGUAGES is a constant array, so the hook count is always the same
@@ -76,15 +84,64 @@ export default function PrepareMaterialsPage() {
   }, [isRegistered, tutorLanguageNames]);
 
   useEffect(() => {
-    if (tutorInfo !== undefined) {
-      setIsCheckingTutor(false);
+    console.log("🔍 Tutor check:", {
+      hasAccount: !!account,
+      accountAddress: account?.address,
+      canQueryTutorInfo,
+      tutorInfo,
+      isLoadingTutorInfo,
+      isTutorInfoError,
+      isRegistered,
+    });
 
-      // Redirect non-tutors to home page
-      if (!isRegistered) {
-        router.push("/");
+    // Wait for account to be loaded
+    if (!account) {
+      setIsCheckingTutor(true);
+      return;
+    }
+
+    // Wait for account address to be available (query can run)
+    if (!account?.address) {
+      setIsCheckingTutor(true);
+      return;
+    }
+
+    // Wait for query to complete (either with data, error, or failed)
+    // Only proceed when query is not loading AND query was enabled (canQueryTutorInfo)
+    if (!isLoadingTutorInfo && canQueryTutorInfo) {
+      // If query completed with an error, don't redirect (allow access for now)
+      if (isTutorInfoError) {
+        console.warn("⚠️ Error querying tutor info, allowing access");
+        setIsCheckingTutor(false);
+        return;
+      }
+
+      // Redirect non-tutors to tutor mode page
+      // Only redirect if we have a definitive answer (tutorInfo is not undefined)
+      if (tutorInfo !== undefined && !isRegistered) {
+        console.log("❌ User is not a registered tutor, redirecting to /tutor");
+        router.push("/tutor");
+        return;
+      } else if (tutorInfo !== undefined && isRegistered) {
+        console.log("✅ User is a registered tutor, allowing access");
+        setIsCheckingTutor(false);
+      } else {
+        // tutorInfo is undefined but query completed - this shouldn't happen normally
+        // but if it does, wait a bit more or allow access
+        console.warn("⚠️ Query completed but tutorInfo is undefined, allowing access");
+        setIsCheckingTutor(false);
       }
     }
-  }, [tutorInfo, isRegistered, router]);
+  }, [
+    account,
+    account?.address,
+    canQueryTutorInfo,
+    isLoadingTutorInfo,
+    isTutorInfoError,
+    tutorInfo,
+    isRegistered,
+    router,
+  ]);
 
   const handleGenerate = async (params: MaterialParams) => {
     setIsGenerating(true);
