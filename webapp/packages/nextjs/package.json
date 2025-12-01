@@ -27,6 +27,7 @@
     "clsx": "^2.1.1",
     "daisyui": "5.0.9",
     "framer-motion": "^11.11.17",
+    "jspdf": "^2.5.2",
     "kubo-rpc-client": "~5.0.2",
     "next": "~15.2.3",
     "next-nprogress-bar": "~2.3.13",

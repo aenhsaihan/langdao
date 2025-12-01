@@ -31,6 +31,7 @@ const tutorRoutes = require("./routes/tutors");
 const studentRoutes = require("./routes/students");
 const matchingRoutes = require("./routes/matching");
 const sessionRoutes = require("./routes/sessions");
+const materialsRoutes = require("./routes/materials");
 const matchingService = require("./services/matchingService");
 
 const app = express();
@@ -113,6 +114,7 @@ app.use("/api/tutors", tutorRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/matching", matchingRoutes);
 app.use("/api", sessionRoutes);
+app.use("/api/materials", materialsRoutes);
 
 // WebRTC routes will be initialized after socket setup (see below)
 

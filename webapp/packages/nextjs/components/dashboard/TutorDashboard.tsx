@@ -75,7 +75,7 @@ export const TutorDashboard = ({ onGoLive }: TutorDashboardProps) => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 gap-4 mb-4">
           <button
             onClick={onGoLive}
             className="group relative bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-6 overflow-hidden hover:scale-105 transition-all"
@@ -97,6 +97,21 @@ export const TutorDashboard = ({ onGoLive }: TutorDashboardProps) => {
               <div className="text-4xl mb-3">🎓</div>
               <div className="text-2xl font-black text-white mb-1">Learn</div>
               <div className="text-white/80 text-xs">Switch to student mode</div>
+            </div>
+          </a>
+        </div>
+
+        {/* AI Materials Button */}
+        <div className="grid sm:grid-cols-1 gap-4">
+          <a
+            href="/prepare-materials"
+            className="group relative bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-6 overflow-hidden hover:scale-105 transition-all"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
+            <div className="relative">
+              <div className="text-4xl mb-3">🤖</div>
+              <div className="text-2xl font-black text-white mb-1">Prepare Material with AI</div>
+              <div className="text-white/80 text-xs">Generate customized lesson plans for your students</div>
             </div>
           </a>
         </div>
