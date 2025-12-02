@@ -1,0 +1,1882 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Helping people use their language skills to learn, teach, and earn in Web3.">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Bug Report - UX Polish & Navigation Issues - LangDAO</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bug-report-ux-polish-navigation-issues" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LangDAO" class="md-header__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LangDAO
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Bug Report - UX Polish &amp; Navigation Issues
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LangDAO" class="md-nav__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LangDAO
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy (Outdated)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/scope-mvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MVP Scope
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/testbed-latam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testbed (LatAm)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/student-tutor-pairing-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Student-Tutor Pairing Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/language-matching-fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Language Matching Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/webrtc-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebRTC Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tech
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/socket-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socket Events Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/dao-vetting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAO Vetting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/environment-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/todo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TODO List
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/cleanup-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cleanup Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/documentation-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/documentation-reorganization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Reorganization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/reorganization-complete/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reorganization Complete
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/review-pass-2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Pass 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/huddle01-to-webrtc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huddle01 to WebRTC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../research/assumptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assumptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/0001-huddle01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 - WebRTC Implementation (superseded Huddle01)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📋 Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#video-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎥 Video Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bugs-identified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🐛 Bugs Identified
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🐛 Bugs Identified">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bug-1-ghost-toast-notification-global-tutor-removed-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug 1: Ghost Toast Notification ("Global Tutor Removed") ✅ FIXED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-2-broken-get-started-button-tutor-onboarding-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug 2: Broken "Get Started" Button (Tutor Onboarding) ✅ FIXED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-3-root-route-flicker-fouc-flash-of-unstyled-content-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug 3: Root Route "Flicker" (FOUC - Flash of Unstyled Content) ✅ FIXED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bug-4-language-code-display-iso-code-instead-of-name-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bug 4: Language Code Display (ISO Code Instead of Name) ✅ FIXED
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent-friendly-task-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🤖 Agent-Friendly Task Breakdown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🤖 Agent-Friendly Task Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-1-fix-ghost-toast-notification-global-tutor-removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 1: Fix Ghost Toast Notification ("Global Tutor Removed")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-2-fix-broken-get-started-button-tutor-onboarding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 2: Fix Broken "Get Started" Button (Tutor Onboarding)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-3-fix-root-route-flicker-fouc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 3: Fix Root Route "Flicker" (FOUC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-4-map-language-codes-to-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task 4: Map Language Codes to Names
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#completion-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Completion Status
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔗 Related Issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="bug-report-ux-polish-navigation-issues">Bug Report - UX Polish &amp; Navigation Issues</h1>
+<p><strong>Date:</strong> 2025-01-22<br />
+<strong>Session:</strong> User Acceptance Testing (Wave 3)<br />
+<strong>Source:</strong> Video analysis via Google AI Studio<br />
+<strong>Status:</strong> 🔴 TODO</p>
+<hr />
+<h2 id="summary">📋 Summary</h2>
+<p><strong>Project:</strong> LangDAO<br />
+<strong>Scope:</strong> Student/Tutor connection flow, Routing, and Notifications<br />
+<strong>Context:</strong> User Acceptance Testing identified 4 distinct issues ranging from critical navigation failures to UI polish problems affecting the overall user experience.</p>
+<hr />
+<h2 id="video-analysis">🎥 Video Analysis</h2>
+<p><strong>Video Timestamps:</strong>
+- <strong>0:15 - 0:35:</strong> Ghost Toast Notification - Student sees irrelevant "Global Tutor removed" message
+- <strong>1:05 - 1:30:</strong> Broken "Get Started" Button - Tutor onboarding button doesn't navigate
+- <strong>1:58 - 2:40:</strong> Root Route Flicker - Landing page flashes before redirect
+- <strong>4:10 - 4:20:</strong> Language Code Display - Shows "es" instead of "Spanish"</p>
+<hr />
+<h2 id="bugs-identified">🐛 Bugs Identified</h2>
+<h3 id="bug-1-ghost-toast-notification-global-tutor-removed-fixed">Bug 1: Ghost Toast Notification ("Global Tutor Removed") ✅ FIXED</h3>
+<p><strong>Priority:</strong> 🟡 MEDIUM<br />
+<strong>Status:</strong> ✅ FIXED (2025-01-22)</p>
+<p><strong>Location:</strong> StudentDashboard and global SocketProvider (WebSocket event handlers)</p>
+<p><strong>Current Behavior:</strong>
+- When a Student navigates away from their dashboard or refreshes, a toast notification appears saying "Global Tutor removed."
+- This message is irrelevant to the student and confusing
+- The notification appears on the student's own screen erroneously</p>
+<p><strong>Expected Behavior:</strong>
+- Connection/disconnection toasts should be context-aware
+- "Tutor removed" notification should only show if a partner disconnects during an active session
+- If the current user is navigating, suppress the notification</p>
+<p><strong>Steps to Reproduce:</strong>
+1. Navigate to Student Dashboard
+2. Navigate away or refresh the page
+3. Observe: "Global Tutor removed" toast appears incorrectly</p>
+<p><strong>Video Timestamp:</strong> 0:15 - 0:35</p>
+<p><strong>Technical Details:</strong>
+- Check WebSocket disconnection or component unmount logic
+- Investigate where the "Global Tutor removed" toast is triggered
+- Ensure toasts are context-aware based on user role and session state</p>
+<p><strong>Fix Applied:</strong>
+- Removed global debug toasts for <code>tutor:available-updated</code> and <code>tutor:became-unavailable</code> events in SocketProvider
+- These toasts were showing irrelevant "Global Tutor removed" messages to all users (including students)
+- Components (TutorAvailabilityFlow, StudentTutorFinder) already handle these events contextually where appropriate
+- Students no longer see confusing tutor-related notifications when navigating away or refreshing</p>
+<p><strong>Files Modified:</strong>
+- <code>webapp/packages/nextjs/lib/socket/socketContext.tsx</code></p>
+<hr />
+<h3 id="bug-2-broken-get-started-button-tutor-onboarding-fixed">Bug 2: Broken "Get Started" Button (Tutor Onboarding) ✅ FIXED</h3>
+<p><strong>Priority:</strong> 🔴 CRITICAL<br />
+<strong>Status:</strong> ✅ FIXED (2025-01-22)</p>
+<p><strong>Location:</strong> Welcome or Onboarding component (page with green "Get Started" button)</p>
+<p><strong>Current Behavior:</strong>
+- Clicking "Get Started" logs "Onboarding completed" in the console
+- UI does nothing - user is stuck on the same page
+- No navigation occurs after button click</p>
+<p><strong>Expected Behavior:</strong>
+- After clicking "Get Started", user should be redirected to tutor dashboard
+- Navigation should occur (e.g., <code>router.push('/tutor/dashboard')</code> or update local state)</p>
+<p><strong>Steps to Reproduce:</strong>
+1. Navigate to Tutor onboarding/welcome page
+2. Click the green "Get Started" button
+3. Observe: Console logs success but page doesn't change</p>
+<p><strong>Video Timestamp:</strong> 1:05 - 1:30</p>
+<p><strong>Technical Details:</strong>
+- Check the <code>handleGetStarted</code> function
+- Missing navigation logic after console log
+- Should redirect to <code>/tutor/dashboard</code> or show dashboard state</p>
+<p><strong>Fix Applied:</strong>
+- Added Next.js router navigation to "Get Started" button in OnboardingFlow
+- Tutors are now redirected to <code>/tutor</code> route (TutorAvailabilityFlow)
+- Students are redirected to <code>/find-tutor</code> route
+- Added fallback logic to determine role from registration status if selectedRole is not set
+- Button now properly navigates users after onboarding completion</p>
+<p><strong>Files Modified:</strong>
+- <code>webapp/packages/nextjs/components/onboarding/OnboardingFlow.tsx</code></p>
+<hr />
+<h3 id="bug-3-root-route-flicker-fouc-flash-of-unstyled-content-fixed">Bug 3: Root Route "Flicker" (FOUC - Flash of Unstyled Content) ✅ FIXED</h3>
+<p><strong>Priority:</strong> 🟡 MEDIUM<br />
+<strong>Status:</strong> ✅ FIXED (2025-01-22)</p>
+<p><strong>Location:</strong> Root page <code>index.tsx/jsx</code> or main App router/Authentication Guard</p>
+<p><strong>Current Behavior:</strong>
+- When navigating to root (<code>/</code>), the app rapidly flashes through multiple views:
+  - Landing Page → Status Check → Dashboard
+- Creates jarring user experience
+- App is checking auth status/roles sequentially and rendering intermediate states</p>
+<p><strong>Expected Behavior:</strong>
+- Implement a "Loading" or "SplashScreen" state
+- Do not render any content (Landing page or Dashboard) until authentication and role checks are fully resolved
+- Show loading indicator during auth/role resolution</p>
+<p><strong>Steps to Reproduce:</strong>
+1. Navigate to <code>localhost:3000</code> (root route)
+2. Observe: Rapid flickering through Landing Page → Status Check → Dashboard</p>
+<p><strong>Video Timestamp:</strong> 1:58 - 2:40</p>
+<p><strong>Technical Details:</strong>
+- Check authentication guard logic
+- Check role checking sequence
+- Implement loading state that prevents rendering until all checks complete</p>
+<p><strong>Fix Applied:</strong>
+- Added loading state (<code>isInitializing</code>) to <code>HomeContent</code> component
+- Shows a loading screen with "Checking your connection..." message during initialization
+- Waits up to 150ms for account state to settle before rendering content
+- If account state is determined earlier, shows content immediately (responsive)
+- Prevents flicker by not showing landing page before account check completes
+- Smooth transition to either landing page (no account) or dashboard (account connected)</p>
+<p><strong>Files Modified:</strong>
+- <code>webapp/packages/nextjs/app/page.tsx</code></p>
+<hr />
+<h3 id="bug-4-language-code-display-iso-code-instead-of-name-fixed">Bug 4: Language Code Display (ISO Code Instead of Name) ✅ FIXED</h3>
+<p><strong>Priority:</strong> 🟢 LOW<br />
+<strong>Status:</strong> ✅ FIXED (2025-01-22)</p>
+<p><strong>Location:</strong> "Request Accepted" or "Session Details" component (where it lists "Language vs Budget")</p>
+<p><strong>Current Behavior:</strong>
+- UI displays the raw ISO code (e.g., "Language: es") instead of human-readable name
+- Creates confusion for users who don't know language codes</p>
+<p><strong>Expected Behavior:</strong>
+- Display human-readable language name (e.g., "Spanish" instead of "es")
+- Use proper language name mapping</p>
+<p><strong>Fix Applied:</strong>
+- Updated all language code displays to use human-readable names from LANGUAGES constant
+- Fixed "Request Accepted" screen in TutorAvailabilityFlow to show language name instead of code
+- Fixed toast notifications in TutorSocketEvents to show language names
+- Fixed notification messages in SocketNotifications to show language names
+- All displays now use <code>LANGUAGES.find(l =&gt; l.code === languageCode)?.name || languageCode</code> pattern
+- Falls back to code if language not found in mapping</p>
+<p><strong>Files Modified:</strong>
+- <code>webapp/packages/nextjs/components/tutor/TutorAvailabilityFlow.tsx</code>
+- <code>webapp/packages/nextjs/components/socket/TutorSocketEvents.tsx</code>
+- <code>webapp/packages/nextjs/components/socket/SocketNotifications.tsx</code></p>
+<p><strong>Steps to Reproduce:</strong>
+1. Accept a tutor request or view session details
+2. Observe: Language field shows "es" instead of "Spanish"</p>
+<p><strong>Video Timestamp:</strong> 4:10 - 4:20</p>
+<p><strong>Technical Details:</strong>
+- Create or use a utility function to map language codes to names
+- Implementation: Use <code>new Intl.DisplayNames(['en'], { type: 'language' }).of('es')</code> or a lookup object
+- Render "Spanish" instead of "es"</p>
+<hr />
+<h2 id="agent-friendly-task-breakdown">🤖 Agent-Friendly Task Breakdown</h2>
+<h3 id="task-1-fix-ghost-toast-notification-global-tutor-removed">Task 1: Fix Ghost Toast Notification ("Global Tutor Removed")</h3>
+<p><strong>Priority:</strong> 🟡 MEDIUM</p>
+<p><strong>Problem:</strong>
+Students see irrelevant "Global Tutor removed" toast notifications when navigating away or refreshing their dashboard. This is confusing and creates a poor user experience.</p>
+<p><strong>Current Behavior:</strong>
+- Toast appears when student navigates away or refreshes
+- Message is irrelevant to student context
+- Notification appears on student's own screen erroneously</p>
+<p><strong>Expected Behavior:</strong>
+- Toast should only appear if a tutor disconnects during an active session
+- Suppress notification when current user is navigating
+- Make toasts context-aware based on user role and session state</p>
+<p><strong>Implementation:</strong>
+- Locate where "Global Tutor removed" toast is triggered (likely in SocketProvider or WebSocket event handlers)
+- Add context check: only show if user is in active session and partner disconnects
+- Suppress notification on component unmount or navigation
+- Check if notification is meant for tutors only</p>
+<p><strong>Files to Modify:</strong>
+- <code>webapp/packages/nextjs/lib/socket/socketContext.tsx</code> (likely)
+- <code>webapp/packages/nextjs/components/dashboard/StudentDashboard.tsx</code> (check for toast handlers)
+- Any WebSocket event handlers that emit tutor-related notifications</p>
+<p><strong>Estimated Effort:</strong> Small (30 minutes - 1 hour)</p>
+<hr />
+<h3 id="task-2-fix-broken-get-started-button-tutor-onboarding">Task 2: Fix Broken "Get Started" Button (Tutor Onboarding)</h3>
+<p><strong>Priority:</strong> 🔴 CRITICAL</p>
+<p><strong>Problem:</strong>
+The "Get Started" button on the tutor onboarding/welcome page logs success but doesn't navigate, leaving users stuck.</p>
+<p><strong>Current Behavior:</strong>
+- Button click logs "Onboarding completed" to console
+- No UI change occurs
+- User remains on same page</p>
+<p><strong>Expected Behavior:</strong>
+- After clicking "Get Started", redirect to tutor dashboard
+- Navigation should occur via router or state update</p>
+<p><strong>Implementation:</strong>
+- Locate the Welcome/Onboarding component with green "Get Started" button
+- Find <code>handleGetStarted</code> function
+- Add navigation logic after console log:
+  - Use <code>router.push('/tutor/dashboard')</code> or similar
+  - Or update local state to show dashboard view
+- Test that navigation works correctly</p>
+<p><strong>Files to Modify:</strong>
+- Welcome/Onboarding component (need to locate - check <code>webapp/packages/nextjs/components/onboarding/</code> or similar)
+- Check for <code>handleGetStarted</code> function</p>
+<p><strong>Estimated Effort:</strong> Small (15-30 minutes)</p>
+<hr />
+<h3 id="task-3-fix-root-route-flicker-fouc">Task 3: Fix Root Route "Flicker" (FOUC)</h3>
+<p><strong>Priority:</strong> 🟡 MEDIUM</p>
+<p><strong>Problem:</strong>
+Navigating to root route (<code>/</code>) causes rapid flickering through multiple views (Landing Page → Status Check → Dashboard) as auth/role checks resolve sequentially.</p>
+<p><strong>Current Behavior:</strong>
+- App renders intermediate states during auth/role checks
+- Creates jarring flicker effect
+- Multiple views flash in sequence</p>
+<p><strong>Expected Behavior:</strong>
+- Show loading/splash screen during auth/role resolution
+- Don't render any content until all checks complete
+- Smooth transition to final view</p>
+<p><strong>Implementation:</strong>
+- Locate root page (<code>index.tsx</code> or main router)
+- Find authentication guard and role checking logic
+- Add loading state that prevents rendering until:
+  - Authentication status is resolved
+  - User role is determined
+  - All checks are complete
+- Show loading indicator/splash screen during this time
+- Only render Landing Page or Dashboard after all checks complete</p>
+<p><strong>Files to Modify:</strong>
+- <code>webapp/packages/nextjs/app/page.tsx</code> (root page)
+- Authentication guard component (if separate)
+- Main app router/layout</p>
+<p><strong>Estimated Effort:</strong> Medium (1-2 hours)</p>
+<hr />
+<h3 id="task-4-map-language-codes-to-names">Task 4: Map Language Codes to Names</h3>
+<p><strong>Priority:</strong> 🟢 LOW</p>
+<p><strong>Problem:</strong>
+UI displays raw ISO language codes (e.g., "es") instead of human-readable names (e.g., "Spanish") in session details.</p>
+<p><strong>Current Behavior:</strong>
+- Language field shows "Language: es"
+- Users see ISO codes instead of readable names</p>
+<p><strong>Expected Behavior:</strong>
+- Display "Language: Spanish" instead of "Language: es"
+- Use proper language name mapping</p>
+<p><strong>Implementation:</strong>
+- Locate "Request Accepted" or "Session Details" component
+- Find where language code is displayed
+- Create utility function to map codes to names:
+  - Option 1: Use <code>new Intl.DisplayNames(['en'], { type: 'language' }).of('es')</code>
+  - Option 2: Create lookup object mapping codes to names
+- Replace code display with mapped name
+- Consider using existing LANGUAGES constant if available</p>
+<p><strong>Files to Modify:</strong>
+- "Request Accepted" component (need to locate)
+- "Session Details" component (need to locate)
+- Create or update language utility function
+- Check <code>webapp/packages/nextjs/lib/constants/contracts.ts</code> for existing LANGUAGES constant</p>
+<p><strong>Estimated Effort:</strong> Small (30 minutes - 1 hour)</p>
+<hr />
+<h2 id="completion-status">✅ Completion Status</h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Bug 1 / Task 1 - Fix Ghost Toast Notification - ✅ FIXED</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Bug 2 / Task 2 - Fix Broken "Get Started" Button - ✅ FIXED</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Bug 3 / Task 3 - Fix Root Route "Flicker" - ✅ FIXED</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Bug 4 / Task 4 - Map Language Codes to Names - ✅ FIXED</li>
+</ul>
+<hr />
+<h2 id="notes">📝 Notes</h2>
+<ul>
+<li>All issues identified during User Acceptance Testing (Wave 3)</li>
+<li>Task 2 (Broken Button) is critical as it blocks tutor onboarding flow</li>
+<li>Task 3 (Flicker) affects first impression and perceived app quality</li>
+<li>Task 4 is low priority but improves UX polish</li>
+</ul>
+<hr />
+<h2 id="related-issues">🔗 Related Issues</h2>
+<ul>
+<li>Previous bug report: <code>bug-report-2025-01-21-student-session-warning-and-language-flicker.md</code> (also dealt with language display issues)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

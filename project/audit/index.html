@@ -1,0 +1,2676 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Helping people use their language skills to learn, teach, and earn in Web3.">
+      
+      
+      
+      
+        <link rel="prev" href="../todo/">
+      
+      
+        <link rel="next" href="../cleanup-summary/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Audit - LangDAO</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#langdao-project-audit-november-2025" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LangDAO" class="md-header__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LangDAO
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Audit
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LangDAO" class="md-nav__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LangDAO
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy (Outdated)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/scope-mvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MVP Scope
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/testbed-latam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testbed (LatAm)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/student-tutor-pairing-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Student-Tutor Pairing Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/language-matching-fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Language Matching Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/webrtc-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebRTC Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tech
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/socket-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socket Events Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/dao-vetting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAO Vetting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/environment-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../todo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TODO List
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-working-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟢 What's Working (Implemented)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟢 What&#39;s Working (Implemented)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-nodejs-socketio-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend (Node.js + Socket.io + Redis)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-nextjs-scaffold-eth-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend (Next.js + Scaffold-ETH 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-contracts-hardhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Contracts (Hardhat)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-partially-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟡 What's Partially Implemented
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟡 What&#39;s Partially Implemented">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#payment-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payment System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credentials-poapsbt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials (POAP/SBT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#language-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language Matching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heartbeat-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Heartbeat Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-outdated-or-missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔴 What's Outdated or Missing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔴 What&#39;s Outdated or Missing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#documentation-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-architecture-docs-dont-match-reality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Architecture Docs Don't Match Reality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-empty-spec-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Empty Spec Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-mvp-scope-is-vague" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. MVP Scope is Vague
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-integration-docs-are-incomplete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Integration Docs Are Incomplete
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missing-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing Documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missing-features-documented-but-not-built" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing Features (Documented but Not Built)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-vs-documented-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Current vs Documented Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Current vs Documented Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-documented-complex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Documented (Complex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-actually-exists-simple" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Actually Exists (Simple)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#immediate-actions-this-week" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Immediate Actions (This Week)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#short-term-next-2-weeks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Short-term (Next 2 Weeks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-term-next-month" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium-term (Next Month)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-cleanup-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📁 File Cleanup Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 File Cleanup Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#delete-empty-or-outdated-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ~~Delete (Empty or Outdated)~~ ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#move-to-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Move to Archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-outdated-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update (Outdated Content)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-missing-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create (Missing Documentation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#questions-to-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Questions to Answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cleanup-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cleanup Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation-reorganization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Reorganization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reorganization-complete/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reorganization Complete
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../review-pass-2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Pass 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../huddle01-to-webrtc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huddle01 to WebRTC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../research/assumptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assumptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/0001-huddle01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 - WebRTC Implementation (superseded Huddle01)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Executive Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-working-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟢 What's Working (Implemented)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟢 What&#39;s Working (Implemented)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend-nodejs-socketio-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend (Node.js + Socket.io + Redis)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend-nextjs-scaffold-eth-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend (Next.js + Scaffold-ETH 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-contracts-hardhat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Contracts (Hardhat)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infrastructure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-partially-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟡 What's Partially Implemented
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟡 What&#39;s Partially Implemented">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#payment-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payment System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credentials-poapsbt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credentials (POAP/SBT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#language-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language Matching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heartbeat-monitoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Heartbeat Monitoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-outdated-or-missing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔴 What's Outdated or Missing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔴 What&#39;s Outdated or Missing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#documentation-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-architecture-docs-dont-match-reality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Architecture Docs Don't Match Reality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-empty-spec-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Empty Spec Files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-mvp-scope-is-vague" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. MVP Scope is Vague
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-integration-docs-are-incomplete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Integration Docs Are Incomplete
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missing-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing Documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#missing-features-documented-but-not-built" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Missing Features (Documented but Not Built)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-vs-documented-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Current vs Documented Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Current vs Documented Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-documented-complex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Documented (Complex)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-actually-exists-simple" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Actually Exists (Simple)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🎯 Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎯 Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#immediate-actions-this-week" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Immediate Actions (This Week)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#short-term-next-2-weeks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Short-term (Next 2 Weeks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-term-next-month" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium-term (Next Month)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-cleanup-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📁 File Cleanup Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 File Cleanup Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#delete-empty-or-outdated-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ~~Delete (Empty or Outdated)~~ ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#move-to-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Move to Archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-outdated-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update (Outdated Content)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-missing-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create (Missing Documentation)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#questions-to-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 Questions to Answer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📝 Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="langdao-project-audit-november-2025">LangDAO Project Audit - November 2025</h1>
+<h2 id="executive-summary">Executive Summary</h2>
+<p>This audit reviews the current state of the LangDAO project to identify what's been built, what's outdated, and what needs updating.</p>
+<p><strong>Status:</strong> MVP is partially implemented with core matching and session flow working. Documentation is outdated and doesn't reflect actual implementation.</p>
+<hr />
+<h2 id="whats-working-implemented">🟢 What's Working (Implemented)</h2>
+<h3 id="backend-nodejs-socketio-redis">Backend (Node.js + Socket.io + Redis)</h3>
+<ul>
+<li>✅ <strong>Real-time matching system</strong> - Students and tutors can find each other via Socket.io</li>
+<li>✅ <strong>Redis-based state management</strong> - Session data, tutor availability, pending requests</li>
+<li>✅ <strong>Rate limiting</strong> - Socket and HTTP endpoint protection</li>
+<li>✅ <strong>WebRTC integration</strong> - Session end events from video calls trigger blockchain transactions</li>
+<li>✅ <strong>Session lifecycle</strong> - Full flow from request → match → session start → session end</li>
+</ul>
+<h3 id="frontend-nextjs-scaffold-eth-2">Frontend (Next.js + Scaffold-ETH 2)</h3>
+<ul>
+<li>✅ <strong>Wallet connection</strong> - WalletConnect integration</li>
+<li>✅ <strong>Student flow</strong> - <code>/find-tutor</code> page for requesting tutors</li>
+<li>✅ <strong>Tutor flow</strong> - <code>/tutor</code> page for setting availability</li>
+<li>✅ <strong>Dashboard</strong> - Basic user dashboard</li>
+<li>✅ <strong>Socket.io client</strong> - Real-time communication with backend</li>
+</ul>
+<h3 id="smart-contracts-hardhat">Smart Contracts (Hardhat)</h3>
+<ul>
+<li>✅ <strong>LangDAO contract</strong> - Session management, payments, language registration</li>
+<li>✅ <strong>Local blockchain</strong> - Hardhat network for development</li>
+<li>✅ <strong>Deployment scripts</strong> - Automated contract deployment</li>
+</ul>
+<h3 id="infrastructure">Infrastructure</h3>
+<ul>
+<li>✅ <strong>Redis</strong> - Session state and caching</li>
+<li>✅ <strong>WebRTC server</strong> - Separate video call server (in <code>backend/webRTC-implementation-LangDAO/</code>)</li>
+<li>✅ <strong>Documentation site</strong> - MkDocs setup (though content is outdated)</li>
+</ul>
+<hr />
+<h2 id="whats-partially-implemented">🟡 What's Partially Implemented</h2>
+<h3 id="payment-system">Payment System</h3>
+<ul>
+<li><strong>Documented:</strong> Superfluid/Sablier integration with per-second streaming</li>
+<li><strong>Reality:</strong> Custom timestamp-based payment system in smart contract</li>
+<li>Students deposit PYUSD into contract</li>
+<li><code>startSession()</code> records start timestamp</li>
+<li><code>endSession()</code> calculates duration and pays tutor based on <code>duration * ratePerSecond</code></li>
+<li>No external streaming protocol needed</li>
+<li><strong>Status:</strong> ✅ Implemented and working (simpler than documented)</li>
+</ul>
+<h3 id="credentials-poapsbt">Credentials (POAP/SBT)</h3>
+<ul>
+<li><strong>Documented:</strong> Automatic POAP minting after sessions</li>
+<li><strong>Reality:</strong> Not found in codebase</li>
+<li><strong>Status:</strong> Not implemented yet</li>
+</ul>
+<h3 id="language-matching">Language Matching</h3>
+<ul>
+<li><strong>Issue:</strong> Mismatch between frontend (lowercase codes like "spanish"), backend (string matching), and smart contract (numeric IDs like 1, 2, 3)</li>
+<li><strong>Workaround:</strong> <code>LANGUAGE_MATCHING_FIX.md</code> documents current approach</li>
+<li><strong>Status:</strong> Works but needs proper fix (see recommendations)</li>
+</ul>
+<h3 id="heartbeat-monitoring">Heartbeat Monitoring</h3>
+<ul>
+<li><strong>Documented:</strong> 5-second heartbeat pings to detect disconnects</li>
+<li><strong>Reality:</strong> WebRTC server sends events, but heartbeat implementation unclear</li>
+<li><strong>Status:</strong> Needs verification</li>
+</ul>
+<hr />
+<h2 id="whats-outdated-or-missing">🔴 What's Outdated or Missing</h2>
+<h3 id="documentation-issues">Documentation Issues</h3>
+<h4 id="1-architecture-docs-dont-match-reality">1. <strong>Architecture Docs Don't Match Reality</strong></h4>
+<p><strong>File:</strong> <code>docs/tech/architecture.md</code></p>
+<p><strong>Documented:</strong></p>
+<ul>
+<li>Complex flow with Matchmaker API, Heartbeat Service, Relayer Bot, Payment Controller</li>
+<li>Superfluid streaming with FlowOperator permissions</li>
+<li>DAO vetting for SBT credentials</li>
+<li>Booking system with calendar integration</li>
+</ul>
+<p><strong>Reality:</strong></p>
+<ul>
+<li>Simple Socket.io matching (no separate Matchmaker API)</li>
+<li>No Relayer Bot (backend calls contracts directly)</li>
+<li>No booking system implemented</li>
+<li>No DAO vetting system</li>
+<li>No calendar integration</li>
+</ul>
+<p><strong>Action Needed:</strong> Rewrite architecture doc to reflect actual implementation</p>
+<h4 id="2-empty-spec-files">2. <strong>Empty Spec Files</strong></h4>
+<p><strong>Files:</strong> <code>specs/prd.md</code>, <code>specs/metrics-kpi.smd</code>, <code>design/user-flows.md</code></p>
+<p><strong>Status:</strong> All empty
+<strong>Action Needed:</strong> Either populate or delete these files</p>
+<h4 id="3-mvp-scope-is-vague">3. <strong>MVP Scope is Vague</strong></h4>
+<p><strong>File:</strong> <code>docs/product/scope-mvp.md</code></p>
+<p><strong>Issue:</strong> Says "clickable + minimally on-chain" but doesn't specify what's actually built
+<strong>Action Needed:</strong> Update with actual implemented features</p>
+<h4 id="4-integration-docs-are-incomplete">4. <strong>Integration Docs Are Incomplete</strong></h4>
+<p><strong>File:</strong> <code>docs/tech/integrations.md</code></p>
+<p><strong>Listed but not implemented:</strong>
+- Chainlink (not used)
+- IPFS/Arweave (not used)
+- POAP (not implemented)</p>
+<p><strong>Action Needed:</strong> Update to show only what's actually integrated</p>
+<h3 id="missing-documentation">Missing Documentation</h3>
+<ol>
+<li><strong>No API documentation</strong> - Backend endpoints not documented</li>
+<li><strong>No socket event reference</strong> - List of all socket events and their payloads</li>
+<li><strong>No deployment guide</strong> - How to deploy to production</li>
+<li><strong>No testing guide</strong> - How to run tests (no tests exist)</li>
+<li><strong>No troubleshooting guide</strong> - Common issues and solutions</li>
+</ol>
+<h3 id="missing-features-documented-but-not-built">Missing Features (Documented but Not Built)</h3>
+<ol>
+<li><strong>POAP/Credential Minting</strong> - Documented extensively, not implemented</li>
+<li><strong>Streaming Payments</strong> - NOT using Superfluid/Sablier (using custom timestamp-based system instead)</li>
+<li><strong>Booking System</strong> - Documented in architecture, not built</li>
+<li><strong>DAO Vetting</strong> - Documented, not built</li>
+<li><strong>Rating System</strong> - Documented, not built</li>
+<li><strong>Multi-language Support</strong> - Partially implemented (language IDs exist but matching is buggy)</li>
+</ol>
+<hr />
+<h2 id="current-vs-documented-architecture">📊 Current vs Documented Architecture</h2>
+<h3 id="what-was-documented-complex">What Was Documented (Complex)</h3>
+<div class="highlight"><pre><span></span><code>Student → Matchmaker API → Heartbeat Service → Relayer Bot → Payment Controller → Superfluid
+                ↓
+            Huddle01 WebRTC
+                ↓
+         POAP/SBT Credentials
+                ↓
+         DAO Vetting System
+</code></pre></div>
+<h3 id="what-actually-exists-simple">What Actually Exists (Simple)</h3>
+<div class="highlight"><pre><span></span><code>Student → Socket.io Backend → Redis → Smart Contract → Payment
+              ↓
+          Custom WebRTC
+              ↓
+          Backend calls endSession()
+</code></pre></div>
+<hr />
+<h2 id="recommendations">🎯 Recommendations</h2>
+<h3 id="immediate-actions-this-week">Immediate Actions (This Week)</h3>
+<ol>
+<li>
+<p>✅ <strong>Update README.md</strong> - DONE</p>
+<ul>
+<li>Removed Superfluid references</li>
+<li>Updated architecture section</li>
+<li>Now reflects actual implementation</li>
+</ul>
+</li>
+<li>
+<p>✅ <strong>Create Architecture Documentation</strong> - DONE</p>
+<ul>
+<li>Created <code>docs/architecture/overview.md</code> with complete details</li>
+<li>Marked old <code>docs/tech/architecture.md</code> as outdated</li>
+<li>Added warning banner with link to new doc</li>
+</ul>
+</li>
+<li>
+<p>✅ <strong>Fix or Delete Empty Files</strong> - DONE</p>
+<ul>
+<li>Deleted all empty spec and design files</li>
+<li>Cleaned up root-level test files</li>
+<li>Kept empty directories for future use</li>
+</ul>
+</li>
+<li>
+<p>⏳ <strong>Create Socket Event Reference</strong></p>
+<ul>
+<li>Document all socket events with examples</li>
+<li>Show request/response payloads</li>
+<li>Add to <code>docs/tech/socket-events.md</code></li>
+</ul>
+</li>
+<li>
+<p>⏳ <strong>Document Language Matching Fix</strong></p>
+<ul>
+<li>Move <code>LANGUAGE_MATCHING_FIX.md</code> into proper docs</li>
+<li>Implement one of the recommended fixes</li>
+<li>Update frontend/backend to use consistent language IDs</li>
+</ul>
+</li>
+</ol>
+<h3 id="short-term-next-2-weeks">Short-term (Next 2 Weeks)</h3>
+<ol>
+<li>
+<p>~~<strong>Verify Payment Implementation</strong>~~ ✅ <strong>COMPLETED</strong></p>
+<ul>
+<li>Confirmed: NOT using Superfluid/Sablier</li>
+<li>Using custom timestamp-based payment system</li>
+<li>Documentation updated accordingly</li>
+</ul>
+</li>
+<li>
+<p>~~<strong>Add API Documentation</strong>~~ ✅ <strong>COMPLETED</strong></p>
+<ul>
+<li>All HTTP endpoints documented</li>
+<li>Request/response examples added</li>
+<li>Created <code>docs/tech/api-reference.md</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Create Deployment Guide</strong></p>
+<ul>
+<li>Document production deployment steps</li>
+<li>Add environment variable reference</li>
+<li>Create <code>docs/ops/deployment.md</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Add Testing</strong></p>
+<ul>
+<li>Write basic integration tests for socket events</li>
+<li>Add contract tests</li>
+<li>Document how to run tests</li>
+</ul>
+</li>
+</ol>
+<h3 id="medium-term-next-month">Medium-term (Next Month)</h3>
+<ol>
+<li>
+<p><strong>Implement or Remove POAP</strong></p>
+<ul>
+<li>Either build the POAP minting feature</li>
+<li>Or remove all references from docs</li>
+</ul>
+</li>
+<li>
+<p><strong>Standardize Language System</strong></p>
+<ul>
+<li>Implement Option 3 from <code>LANGUAGE_MATCHING_FIX.md</code></li>
+<li>Use language IDs everywhere (frontend, backend, contract)</li>
+<li>Remove string-based matching</li>
+</ul>
+</li>
+<li>
+<p><strong>Add Monitoring</strong></p>
+<ul>
+<li>Add logging for all socket events</li>
+<li>Track session metrics (duration, completion rate)</li>
+<li>Add error tracking (Sentry?)</li>
+</ul>
+</li>
+<li>
+<p><strong>Security Audit</strong></p>
+<ul>
+<li>Review smart contract security</li>
+<li>Check backend authentication</li>
+<li>Verify rate limiting is sufficient</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="file-cleanup-recommendations">📁 File Cleanup Recommendations</h2>
+<h3 id="delete-empty-or-outdated-completed">~~Delete (Empty or Outdated)~~ ✅ COMPLETED</h3>
+<ul>
+<li>~~<code>specs/prd.md</code>~~ (deleted)</li>
+<li>~~<code>specs/metrics-kpi.smd</code>~~ (deleted)</li>
+<li>~~<code>design/user-flows.md</code>~~ (deleted)</li>
+<li>~~<code>socket-test.html</code>~~ (deleted)</li>
+<li>~~<code>test-socket.js</code>~~ (deleted)</li>
+<li><code>design/wireframes/</code> (empty directory - kept for future)</li>
+<li><code>specs/</code> (empty directory - kept for future)</li>
+</ul>
+<h3 id="move-to-archive">Move to Archive</h3>
+<ul>
+<li>~~<code>docs/adr/0001-huddle01.md</code>~~ - Updated with superseded status (Huddle01 didn't work, using custom WebRTC)</li>
+<li><code>docs/product/testbed-latam.md</code> (if still relevant, keep; if not, archive)</li>
+<li><code>docs/research/assumptions.md</code> (move to archive if outdated)</li>
+</ul>
+<h3 id="update-outdated-content">Update (Outdated Content)</h3>
+<ul>
+<li><code>docs/tech/architecture.md</code> (major rewrite needed)</li>
+<li><code>docs/tech/integrations.md</code> (remove unimplemented integrations)</li>
+<li><code>docs/product/scope-mvp.md</code> (update with actual scope)</li>
+<li><code>docs/product/roadmap.md</code> (update milestones)</li>
+<li><code>README.md</code> (simplify, remove unimplemented features)</li>
+</ul>
+<h3 id="create-missing-documentation">Create (Missing Documentation)</h3>
+<ul>
+<li><code>docs/tech/socket-events.md</code> (socket event reference)</li>
+<li><code>docs/tech/api-reference.md</code> (HTTP API docs)</li>
+<li><code>docs/ops/deployment.md</code> (deployment guide)</li>
+<li><code>docs/dev/testing.md</code> (testing guide)</li>
+<li><code>docs/dev/troubleshooting.md</code> (common issues)</li>
+</ul>
+<hr />
+<h2 id="questions-to-answer">🔍 Questions to Answer</h2>
+<p>Before updating docs, clarify these implementation details:</p>
+<ol>
+<li>
+<p>~~<strong>Is Superfluid/Sablier actually integrated?</strong>~~ ✅ <strong>ANSWERED</strong></p>
+<ul>
+<li>No external streaming protocol used</li>
+<li>Custom timestamp-based payment in LangDAO.sol</li>
+<li>Payment = <code>(endTime - startTime) * ratePerSecond</code></li>
+<li>Simpler and more reliable than Superfluid</li>
+</ul>
+</li>
+<li>
+<p><strong>What's the actual session lifecycle?</strong></p>
+<ul>
+<li>Student requests → Tutor accepts → ??? → Session starts → ??? → Session ends</li>
+<li>Fill in the gaps with actual implementation</li>
+</ul>
+</li>
+<li>
+<p><strong>How does WebRTC integration work?</strong></p>
+<ul>
+<li>What events does the WebRTC server send?</li>
+<li>How does backend know when to call <code>endSession()</code>?</li>
+<li>Is heartbeat monitoring actually implemented?</li>
+</ul>
+</li>
+<li>
+<p><strong>What's the language matching logic?</strong></p>
+<ul>
+<li>Frontend sends what format?</li>
+<li>Backend stores what format?</li>
+<li>Contract expects what format?</li>
+<li>How are they mapped?</li>
+</ul>
+</li>
+<li>
+<p><strong>What's deployed vs local-only?</strong></p>
+<ul>
+<li>Is there a production deployment?</li>
+<li>What services are running where?</li>
+<li>What's the deployment architecture?</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="next-steps">📝 Next Steps</h2>
+<ol>
+<li><strong>Review this audit</strong> - Confirm accuracy of findings</li>
+<li><strong>Answer the questions</strong> - Clarify implementation details</li>
+<li><strong>Prioritize updates</strong> - Decide what to fix first</li>
+<li><strong>Create issues</strong> - Track each documentation update</li>
+<li><strong>Update incrementally</strong> - Don't try to fix everything at once</li>
+</ol>
+<hr />
+<h2 id="summary">Summary</h2>
+<p><strong>Good news:</strong> The core MVP is working - students can find tutors, sessions can start/end, payments happen.</p>
+<p><strong>Bad news:</strong> Documentation is significantly out of sync with reality. Many documented features don't exist, and actual implementation isn't documented.</p>
+<p><strong>Priority:</strong> Update docs to reflect reality before adding new features. This will prevent confusion and make onboarding new contributors easier.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

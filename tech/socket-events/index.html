@@ -1,0 +1,3203 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Helping people use their language skills to learn, teach, and earn in Web3.">
+      
+      
+      
+      
+        <link rel="prev" href="../../guides/webrtc-integration/">
+      
+      
+        <link rel="next" href="../api-reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Socket Events Reference - LangDAO</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#socketio-events-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LangDAO" class="md-header__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LangDAO
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Socket Events Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LangDAO" class="md-nav__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LangDAO
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy (Outdated)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/scope-mvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MVP Scope
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/testbed-latam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testbed (LatAm)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/student-tutor-pairing-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Student-Tutor Pairing Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/language-matching-fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Language Matching Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/webrtc-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebRTC Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tech
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socket Events Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socket Events Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#connection-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#userconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        user:connect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tutor-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tutor Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tutorsetavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:setAvailable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorset-unavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:set-unavailable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutoraccept-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:accept-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutordecline-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:decline-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorwithdraw-acceptance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:withdraw-acceptance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Student Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#studentrequest-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:request-tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentcancel-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:cancel-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentaccept-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:accept-tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentreject-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:reject-tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentrejected-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:rejected-transaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studententered-room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:entered-room
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Session Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sessionstarted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        session:started
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#server-emitted-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Server-Emitted Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Server-Emitted Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tutorincoming-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:incoming-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studenttutor-accepted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:tutor-accepted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorstudent-selected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:student-selected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorstudent-rejected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:student-rejected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorwithdrew-acceptance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:withdrew-acceptance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentin-room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:in-room
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        error
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#disconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        disconnect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#redis-data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redis Data Structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Redis Data Structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tutor-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Availability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket-to-address-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket-to-Address Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#complete-student-tutor-matching-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete Student-Tutor Matching Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#socket-not-connecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket Not Connecting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#events-not-received" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Events Not Received
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-not-receiving-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Not Receiving Requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-not-receiving-acceptances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Not Receiving Acceptances
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-testing-with-socketio-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Testing with Socket.io Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-with-browser-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing with Browser Console
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dao-vetting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAO Vetting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/environment-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/todo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TODO List
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/cleanup-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cleanup Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/documentation-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/documentation-reorganization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Reorganization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/reorganization-complete/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reorganization Complete
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/review-pass-2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Pass 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/huddle01-to-webrtc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huddle01 to WebRTC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../research/assumptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assumptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/0001-huddle01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 - WebRTC Implementation (superseded Huddle01)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#connection-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#userconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        user:connect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tutor-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tutor Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tutorsetavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:setAvailable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorset-unavailable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:set-unavailable
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutoraccept-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:accept-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutordecline-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:decline-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorwithdraw-acceptance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:withdraw-acceptance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Student Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#studentrequest-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:request-tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentcancel-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:cancel-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentaccept-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:accept-tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentreject-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:reject-tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentrejected-transaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:rejected-transaction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studententered-room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:entered-room
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Session Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sessionstarted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        session:started
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#server-emitted-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Server-Emitted Events
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Server-Emitted Events">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tutorincoming-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:incoming-request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studenttutor-accepted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:tutor-accepted
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorstudent-selected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:student-selected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorstudent-rejected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:student-rejected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutorwithdrew-acceptance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        tutor:withdrew-acceptance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#studentin-room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        student:in-room
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        error
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Management
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#disconnect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        disconnect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#redis-data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redis Data Structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Redis Data Structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tutor-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Availability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Session Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket-to-address-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket-to-Address Mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#complete-student-tutor-matching-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete Student-Tutor Matching Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#socket-not-connecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket Not Connecting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#events-not-received" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Events Not Received
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-not-receiving-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Not Receiving Requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-not-receiving-acceptances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Not Receiving Acceptances
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manual-testing-with-socketio-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Testing with Socket.io Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-with-browser-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing with Browser Console
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="socketio-events-reference">Socket.io Events Reference</h1>
+<p>Complete reference for all Socket.io events used in the LangDAO real-time matching system.</p>
+<p><strong>Backend:</strong> <code>backend/src/server.js</code><br />
+<strong>Rate Limit:</strong> 10 requests per minute per socket</p>
+<hr />
+<h2 id="connection-events">Connection Events</h2>
+<h3 id="userconnect"><code>user:connect</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Bind socket ID to wallet address for routing messages</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;student&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="s2">&quot;tutor&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="w"> </span><span class="c1">// Wallet address</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Response:</strong> None (silent success)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;user:connect&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;student&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x1234567890abcdef1234567890abcdef12345678&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<hr />
+<h2 id="tutor-events">Tutor Events</h2>
+<h3 id="tutorsetavailable"><code>tutor:setAvailable</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Tutor goes online and becomes available for matching</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// lowercase language code</span>
+<span class="w">  </span><span class="nx">ratePerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">100000</span><span class="w"> </span><span class="c1">// in PYUSD wei (6 decimals)</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Callback Response:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">result</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">success</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nx">pendingRequests</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="c1">// Number of pending student requests</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>tutor:incoming-request</code> - If there are pending student requests
+- <code>tutor:available-updated</code> (broadcast) - Notify all clients</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:setAvailable&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">ratePerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">100000</span>
+<span class="p">},</span><span class="w"> </span><span class="p">(</span><span class="nx">response</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">response</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Available! </span><span class="si">${</span><span class="nx">response</span><span class="p">.</span><span class="nx">pendingRequests</span><span class="si">}</span><span class="sb"> pending requests`</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Automatically checks for pending student requests
+- Notifies tutor of any matching requests immediately
+- Old event name <code>tutor:set-available</code> still works (deprecated)</p>
+<hr />
+<h3 id="tutorset-unavailable"><code>tutor:set-unavailable</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Tutor goes offline and stops receiving requests</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>tutor:availability-removed</code> - Confirmation to tutor
+- <code>tutor:withdrew-acceptance</code> (broadcast) - If tutor was in a session state
+- <code>tutor:available-updated</code> (broadcast) - Notify all clients</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:set-unavailable&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<hr />
+<h3 id="tutoraccept-request"><code>tutor:accept-request</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Tutor accepts a student's request</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>student:tutor-accepted</code> - To the student who made the request
+- <code>tutor:request-accepted</code> - Confirmation to tutor</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:accept-request&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Request is removed from pending after acceptance
+- Student receives tutor details (address, language, rate)</p>
+<hr />
+<h3 id="tutordecline-request"><code>tutor:decline-request</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Tutor declines a student's request</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>tutor:request-declined</code> - Confirmation to tutor</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:decline-request&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<hr />
+<h3 id="tutorwithdraw-acceptance"><code>tutor:withdraw-acceptance</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Tutor withdraws their acceptance and returns to waiting</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>tutor:withdrew-acceptance</code> (broadcast) - Notify student</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:withdraw-acceptance&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<hr />
+<h2 id="student-events">Student Events</h2>
+<h3 id="studentrequest-tutor"><code>student:request-tutor</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Student requests a tutor for a language</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Unique request ID</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">budgetPerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">150000</span><span class="w"> </span><span class="c1">// Maximum rate willing to pay</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>student:request-sent</code> - Confirmation to student
+- <code>tutor:incoming-request</code> - To all matching tutors
+- <code>student:no-tutors-available</code> - If no tutors online (request still stored)</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:request-tutor&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">budgetPerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">150000</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Request is stored in Redis even if no tutors available
+- Tutors who come online later will see this request
+- Multiple tutors can accept the same request</p>
+<hr />
+<h3 id="studentcancel-request"><code>student:cancel-request</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Student cancels their pending request</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>student:request-cancelled</code> - Confirmation to student
+- <code>student:request-cancelled-broadcast</code> (broadcast) - Notify all tutors</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:cancel-request&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<hr />
+<h3 id="studentaccept-tutor"><code>student:accept-tutor</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Student accepts a specific tutor (rejects all others)</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>tutor:student-selected</code> - To the accepted tutor
+- <code>tutor:student-rejected</code> - To all other tutors who accepted
+- <code>student:tutor-accepted</code> - Confirmation to student</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:accept-tutor&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Request is removed from storage
+- All other tutors are notified they were rejected</p>
+<hr />
+<h3 id="studentreject-tutor"><code>student:reject-tutor</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Student rejects a specific tutor (continues waiting for others)</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>tutor:student-rejected</code> - To the rejected tutor
+- <code>student:tutor-rejected</code> - Confirmation to student</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:reject-tutor&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Request remains active for other tutors
+- Student can continue receiving offers</p>
+<hr />
+<h3 id="studentrejected-transaction"><code>student:rejected-transaction</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Student rejected the wallet transaction to start session</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>tutor:student-rejected-transaction</code> - To tutor
+- <code>student:transaction-rejection-confirmed</code> - Confirmation to student</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:rejected-transaction&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Tutor returns to waiting state
+- Student can try again or cancel</p>
+<hr />
+<h3 id="studententered-room"><code>student:entered-room</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Student has entered the WebRTC room</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">videoCallUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">languageId</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>student:in-room</code> - To tutor (tutor can now join)
+- <code>student:room-entry-confirmed</code> - Confirmation to student</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:entered-room&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">videoCallUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://webrtc.example.com/room/abc123&quot;</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Session mapping is stored in Redis for later cleanup
+- Tutor is notified to join the room</p>
+<hr />
+<h2 id="session-events">Session Events</h2>
+<h3 id="sessionstarted"><code>session:started</code></h3>
+<p><strong>Direction:</strong> Client → Server<br />
+<strong>Purpose:</strong> Blockchain transaction confirmed, session officially started</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">videoCallUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">languageId</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="c1">// Optional</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Server Emits:</strong>
+- <code>session:started</code> - To tutor (with video call URL)
+- <code>session:started-confirmed</code> - Confirmation to student</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;session:started&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">videoCallUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://webrtc.example.com/room/abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">languageId</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<p><strong>Notes:</strong>
+- Session mapping stored in Redis
+- Tutor receives video call URL to join</p>
+<hr />
+<h2 id="server-emitted-events">Server-Emitted Events</h2>
+<p>These events are emitted by the server to clients:</p>
+<h3 id="tutorincoming-request"><code>tutor:incoming-request</code></h3>
+<p><strong>Direction:</strong> Server → Tutor<br />
+<strong>Purpose:</strong> Notify tutor of a student request</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">student</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">budgetPerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">150000</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="studenttutor-accepted"><code>student:tutor-accepted</code></h3>
+<p><strong>Direction:</strong> Server → Student<br />
+<strong>Purpose:</strong> Notify student that a tutor accepted their request</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">ratePerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">100000</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">socketId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;socket_id_here&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="tutorstudent-selected"><code>tutor:student-selected</code></h3>
+<p><strong>Direction:</strong> Server → Tutor<br />
+<strong>Purpose:</strong> Notify tutor they were selected by student</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Student selected you! Session starting...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="tutorstudent-rejected"><code>tutor:student-rejected</code></h3>
+<p><strong>Direction:</strong> Server → Tutor<br />
+<strong>Purpose:</strong> Notify tutor they were rejected</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">selectedTutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Student selected another tutor&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="tutorwithdrew-acceptance"><code>tutor:withdrew-acceptance</code></h3>
+<p><strong>Direction:</strong> Server → Student (broadcast)<br />
+<strong>Purpose:</strong> Notify that tutor withdrew their acceptance</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Tutor withdrew their acceptance...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="studentin-room"><code>student:in-room</code></h3>
+<p><strong>Direction:</strong> Server → Tutor<br />
+<strong>Purpose:</strong> Notify tutor that student is in the WebRTC room</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_abc123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">videoCallUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Student is in the room! You can join now.&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<hr />
+<h3 id="error"><code>error</code></h3>
+<p><strong>Direction:</strong> Server → Client<br />
+<strong>Purpose:</strong> Notify client of an error</p>
+<p><strong>Payload:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Error description&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Common Errors:</strong>
+- "Rate limit exceeded"
+- "Missing required fields"
+- "Request not found or expired"
+- "Failed to process request"</p>
+<hr />
+<h2 id="connection-management">Connection Management</h2>
+<h3 id="disconnect"><code>disconnect</code></h3>
+<p><strong>Direction:</strong> Automatic (Socket.io)<br />
+<strong>Purpose:</strong> Handle client disconnection</p>
+<p><strong>Server Actions:</strong>
+- Remove tutor from available list
+- Clean up socket-to-address mapping
+- Broadcast availability update
+- Clean up rate limiting data</p>
+<p><strong>Disconnect Reasons:</strong>
+- <code>transport close</code> - Connection closed
+- <code>client namespace disconnect</code> - Client disconnected
+- <code>ping timeout</code> - No ping received
+- <code>transport error</code> - Network error</p>
+<hr />
+<h2 id="rate-limiting">Rate Limiting</h2>
+<p>All socket events are rate-limited to <strong>10 requests per minute per socket</strong>.</p>
+<p><strong>Exceeded Response:</strong>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Rate limit exceeded&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Or emitted as:
+<div class="highlight"><pre><span></span><code><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Rate limit exceeded&quot;</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div></p>
+<hr />
+<h2 id="redis-data-structures">Redis Data Structures</h2>
+<h3 id="tutor-availability">Tutor Availability</h3>
+<div class="highlight"><pre><span></span><code>Key: tutor:{address}
+Type: Hash
+Fields:
+  - socketId: &quot;socket_id&quot;
+  - language: &quot;spanish&quot;
+  - ratePerSecond: &quot;100000&quot;
+</code></pre></div>
+<h3 id="student-requests">Student Requests</h3>
+<div class="highlight"><pre><span></span><code>Key: student_request:{requestId}
+Type: Hash
+Fields:
+  - studentAddress: &quot;0x...&quot;
+  - studentSocketId: &quot;socket_id&quot;
+  - language: &quot;spanish&quot;
+  - budgetPerSecond: &quot;150000&quot;
+  - timestamp: &quot;1699999000&quot;
+</code></pre></div>
+<h3 id="session-mapping">Session Mapping</h3>
+<div class="highlight"><pre><span></span><code>Key: session:{requestId}
+Type: Hash
+Fields:
+  - studentAddress: &quot;0x...&quot;
+  - tutorAddress: &quot;0x...&quot;
+  - languageId: &quot;1&quot;
+</code></pre></div>
+<h3 id="socket-to-address-mapping">Socket-to-Address Mapping</h3>
+<div class="highlight"><pre><span></span><code>Key: socket_to_address
+Type: Hash
+Fields:
+  - {socketId}: &quot;0x...&quot;
+</code></pre></div>
+<hr />
+<h2 id="example-flow">Example Flow</h2>
+<h3 id="complete-student-tutor-matching-flow">Complete Student-Tutor Matching Flow</h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// 1. Tutor goes online</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:setAvailable&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xTUTOR&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">ratePerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">100000</span>
+<span class="p">});</span>
+
+<span class="c1">// 2. Student requests tutor</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:request-tutor&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xSTUDENT&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">budgetPerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">150000</span>
+<span class="p">});</span>
+
+<span class="c1">// 3. Tutor receives request</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;tutor:incoming-request&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Show request to tutor</span>
+<span class="p">});</span>
+
+<span class="c1">// 4. Tutor accepts</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:accept-request&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xTUTOR&quot;</span>
+<span class="p">});</span>
+
+<span class="c1">// 5. Student receives acceptance</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;student:tutor-accepted&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Show tutor details to student</span>
+<span class="p">});</span>
+
+<span class="c1">// 6. Student accepts tutor</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:accept-tutor&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xTUTOR&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xSTUDENT&quot;</span>
+<span class="p">});</span>
+
+<span class="c1">// 7. Tutor receives selection</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;tutor:student-selected&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Wait for blockchain transaction</span>
+<span class="p">});</span>
+
+<span class="c1">// 8. Student starts session on blockchain</span>
+<span class="c1">// (calls startSession() smart contract function)</span>
+
+<span class="c1">// 9. Student confirms session started</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;session:started&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xTUTOR&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xSTUDENT&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">videoCallUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span>
+<span class="p">});</span>
+
+<span class="c1">// 10. Student enters WebRTC room</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:entered-room&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;req_123&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">tutorAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xTUTOR&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xSTUDENT&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">videoCallUrl</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span>
+<span class="p">});</span>
+
+<span class="c1">// 11. Tutor receives notification</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;student:in-room&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Join WebRTC room</span>
+<span class="p">});</span>
+
+<span class="c1">// 12. Session happens...</span>
+
+<span class="c1">// 13. Either party ends session</span>
+<span class="c1">// (WebRTC server calls backend, backend calls endSession() on blockchain)</span>
+
+<span class="c1">// 14. Both parties return to search</span>
+</code></pre></div>
+<hr />
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="socket-not-connecting">Socket Not Connecting</h3>
+<ul>
+<li>Check CORS settings in backend</li>
+<li>Verify Socket.io client version matches server</li>
+<li>Check network/firewall settings</li>
+</ul>
+<h3 id="events-not-received">Events Not Received</h3>
+<ul>
+<li>Verify socket is connected: <code>socket.connected</code></li>
+<li>Check if socket ID is bound: emit <code>user:connect</code> first</li>
+<li>Check rate limiting (10 req/min)</li>
+</ul>
+<h3 id="tutor-not-receiving-requests">Tutor Not Receiving Requests</h3>
+<ul>
+<li>Verify tutor called <code>tutor:setAvailable</code></li>
+<li>Check language matching (must be exact match)</li>
+<li>Check rate matching (tutor rate &lt;= student budget)</li>
+<li>Verify socket is still connected</li>
+</ul>
+<h3 id="student-not-receiving-acceptances">Student Not Receiving Acceptances</h3>
+<ul>
+<li>Verify request was stored (check Redis)</li>
+<li>Check if student socket is still connected</li>
+<li>Verify student socket ID is correct</li>
+</ul>
+<hr />
+<h2 id="testing">Testing</h2>
+<h3 id="manual-testing-with-socketio-client">Manual Testing with Socket.io Client</h3>
+<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;socket.io-client&quot;</span><span class="p">);</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">io</span><span class="p">(</span><span class="s2">&quot;http://localhost:4000&quot;</span><span class="p">);</span>
+
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;connect&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Connected:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">socket</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Test tutor availability</span>
+<span class="w">  </span><span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;tutor:setAvailable&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0x1234...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">ratePerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">100000</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">(</span><span class="nx">response</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Response:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">response</span><span class="p">);</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&quot;Error:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="testing-with-browser-console">Testing with Browser Console</h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// In browser console (if Socket.io client is loaded)</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">socket</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">io</span><span class="p">(</span><span class="s2">&quot;http://localhost:4000&quot;</span><span class="p">);</span>
+
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;connect&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Connected!&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;student:request-tutor&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">requestId</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;test_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span>
+<span class="w">  </span><span class="nx">studentAddress</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0xtest&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">budgetPerSecond</span><span class="o">:</span><span class="w"> </span><span class="mf">150000</span>
+<span class="p">});</span>
+</code></pre></div>
+<hr />
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="../../architecture/overview/">Architecture Overview</a> - System architecture</li>
+<li><a href="../../guides/webrtc-integration/">WebRTC Integration</a> - Video call integration</li>
+<li><a href="../../guides/language-matching-fix/">Language Matching Fix</a> - Known language matching issue</li>
+</ul>
+<hr />
+<p><strong>Last Updated:</strong> November 10, 2025</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

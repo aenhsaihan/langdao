@@ -1,0 +1,3379 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Helping people use their language skills to learn, teach, and earn in Web3.">
+      
+      
+      
+      
+        <link rel="prev" href="../../ops/environment-variables/">
+      
+      
+        <link rel="next" href="../audit/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>TODO List - LangDAO</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#langdao-todo-list" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LangDAO" class="md-header__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LangDAO
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TODO List
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LangDAO" class="md-nav__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LangDAO
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy (Outdated)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/scope-mvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MVP Scope
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/testbed-latam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testbed (LatAm)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/student-tutor-pairing-flow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Student-Tutor Pairing Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/language-matching-fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Language Matching Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/webrtc-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebRTC Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tech
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/socket-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socket Events Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/dao-vetting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAO Vetting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/environment-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TODO List
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TODO List
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#high-priority-critical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔴 High Priority (Critical)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔴 High Priority (Critical)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-webrtc-disconnect-detection-auto-end-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. WebRTC Disconnect Detection &amp; Auto-End Session
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-end-session-button-in-webrtc-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. End Session Button in WebRTC Interface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. End Session Button in WebRTC Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-frontend-cannot-monitor-webrtc-session-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Frontend Cannot Monitor WebRTC Session Status
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Frontend Cannot Monitor WebRTC Session Status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-websocket-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: WebSocket Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-server-sent-events-sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Server-Sent Events (SSE)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-3-polling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 3: Polling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-4-embed-webrtc-in-frontend-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 4: Embed WebRTC in Frontend (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-multi-language-support-for-students" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Multi-Language Support for Students
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Multi-Language Support for Students">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#smart-contract-langdaosol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Contract (LangDAO.sol)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#medium-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟡 Medium Priority
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟡 Medium Priority">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#5-session-history-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Session History &amp; Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-webrtc-disconnect-detection-auto-end-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. WebRTC Disconnect Detection &amp; Auto-End Session
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. WebRTC Disconnect Detection &amp; Auto-End Session">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-client_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-server_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-standardize-language-codes-across-web2-and-web3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Standardize Language Codes Across Web2 and Web3
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Standardize Language Codes Across Web2 and Web3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frontend_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket Events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#low-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟢 Low Priority
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟢 Low Priority">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7-poapcredential-minting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. POAP/Credential Minting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-rating-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Rating System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-bookingscheduling-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Booking/Scheduling System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-user-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. User Profiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔧 Technical Improvements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Technical Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-better-balancefund-management-ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Better Balance/Fund Management UX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-error-messages-user-feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Error Messages &amp; User Feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-code-documentation-comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Code Documentation &amp; Comments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-add-automated-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Add Automated Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-improve-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Improve Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-add-deployment-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Add Deployment Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#priority-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Priority Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Next Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#immediate-critical-payment-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Immediate (Critical Payment Issues)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#short-term-this-week" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Short-term (This Week)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-term-next-2-weeks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium-term (Next 2 Weeks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#long-term-this-month" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-term (This Month)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cleanup-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cleanup Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation-reorganization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Reorganization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reorganization-complete/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reorganization Complete
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../review-pass-2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Pass 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../huddle01-to-webrtc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huddle01 to WebRTC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../research/assumptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assumptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/0001-huddle01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 - WebRTC Implementation (superseded Huddle01)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#high-priority-critical" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔴 High Priority (Critical)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔴 High Priority (Critical)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-webrtc-disconnect-detection-auto-end-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. WebRTC Disconnect Detection &amp; Auto-End Session
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-end-session-button-in-webrtc-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. End Session Button in WebRTC Interface
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. End Session Button in WebRTC Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-frontend-cannot-monitor-webrtc-session-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Frontend Cannot Monitor WebRTC Session Status
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Frontend Cannot Monitor WebRTC Session Status">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-websocket-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: WebSocket Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-server-sent-events-sse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Server-Sent Events (SSE)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-3-polling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 3: Polling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-4-embed-webrtc-in-frontend-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 4: Embed WebRTC in Frontend (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-multi-language-support-for-students" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Multi-Language Support for Students
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Multi-Language Support for Students">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#smart-contract-langdaosol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Contract (LangDAO.sol)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#medium-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟡 Medium Priority
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟡 Medium Priority">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#5-session-history-analytics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Session History &amp; Analytics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-webrtc-disconnect-detection-auto-end-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. WebRTC Disconnect Detection &amp; Auto-End Session
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. WebRTC Disconnect Detection &amp; Auto-End Session">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-client_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webrtc-server_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebRTC Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-standardize-language-codes-across-web2-and-web3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Standardize Language Codes Across Web2 and Web3
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Standardize Language Codes Across Web2 and Web3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frontend_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket Events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smart-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#low-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🟢 Low Priority
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🟢 Low Priority">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#7-poapcredential-minting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. POAP/Credential Minting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-rating-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Rating System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-bookingscheduling-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Booking/Scheduling System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-user-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. User Profiles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔧 Technical Improvements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Technical Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-better-balancefund-management-ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Better Balance/Fund Management UX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-error-messages-user-feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Error Messages &amp; User Feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-code-documentation-comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Code Documentation &amp; Comments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-add-automated-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Add Automated Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-improve-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Improve Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-add-deployment-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        16. Add Deployment Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#priority-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 Priority Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Next Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#immediate-critical-payment-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Immediate (Critical Payment Issues)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#short-term-this-week" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Short-term (This Week)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-term-next-2-weeks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium-term (Next 2 Weeks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#long-term-this-month" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Long-term (This Month)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="langdao-todo-list">LangDAO - TODO List</h1>
+<p><strong>Last Updated:</strong> November 10, 2025</p>
+<p>This document tracks features and improvements that need to be implemented.</p>
+<hr />
+<h2 id="high-priority-critical">🔴 High Priority (Critical)</h2>
+<h3 id="1-webrtc-disconnect-detection-auto-end-session">1. WebRTC Disconnect Detection &amp; Auto-End Session</h3>
+<p><strong>⚠️ CRITICAL:</strong> Without this, sessions continue billing even after users disconnect!</p>
+<p>(See details below in Medium Priority section - moved up to High Priority)</p>
+<h3 id="2-end-session-button-in-webrtc-interface">2. End Session Button in WebRTC Interface</h3>
+<p><strong>Current State:</strong>
+- WebRTC interface has "End Call" button
+- Clicking "End Call" only ends the WebRTC connection
+- Blockchain session continues running (payment keeps accruing!)
+- Users must manually go back to main app to end blockchain session
+- No indication that blockchain session is still active</p>
+<p><strong>Problem:</strong>
+This is a critical UX and payment issue:
+- Users think they ended the session by clicking "End Call"
+- Payment continues in the background
+- Users get overcharged
+- No way to end blockchain session from within video call</p>
+<p><strong>Desired State:</strong>
+- "End Session" button in WebRTC interface
+- Clicking button ends BOTH WebRTC and blockchain session
+- Clear confirmation that session ended
+- Show final cost/duration
+- Redirect back to main app</p>
+<p><strong>Changes Needed:</strong></p>
+<h4 id="webrtc-client">WebRTC Client</h4>
+<ul>
+<li>Add "End Session" button (or make existing "End Call" button do both)</li>
+<li>Call backend API endpoint to end blockchain session</li>
+<li>Show loading state while blockchain tx processes</li>
+<li>Show confirmation modal with session summary</li>
+<li>Redirect to main app after confirmation</li>
+</ul>
+<h4 id="backend">Backend</h4>
+<ul>
+<li>Add endpoint: <code>POST /api/sessions/:sessionId/end</code></li>
+<li>Verify session exists and is active</li>
+<li>Call <code>endSession(tutorAddress)</code> on blockchain</li>
+<li>Wait for transaction confirmation</li>
+<li>Return session summary (duration, cost)</li>
+<li>Clean up Redis state</li>
+</ul>
+<h4 id="webrtc-server">WebRTC Server</h4>
+<ul>
+<li>Send session-ended event to backend when user clicks "End Session"</li>
+<li>Include session details for blockchain call</li>
+</ul>
+<p><strong>User Flow:</strong>
+1. User clicks "End Session" in WebRTC interface
+2. Modal: "Ending session... Please wait"
+3. Backend calls <code>endSession()</code> on blockchain
+4. Transaction confirms
+5. Modal: "Session ended! Duration: 10 min, Cost: 60 PYUSD"
+6. Redirect to dashboard</p>
+<p><strong>Alternative Approach:</strong>
+Make the existing "End Call" button end both:
+- User clicks "End Call"
+- Confirmation: "This will end the call and the session. Continue?"
+- If yes, end both WebRTC and blockchain
+- Show summary and redirect</p>
+<p><strong>Estimated Effort:</strong> Small (1-2 days)</p>
+<p><strong>Priority:</strong> 🚨 CRITICAL - Users are being overcharged!</p>
+<hr />
+<h3 id="3-frontend-cannot-monitor-webrtc-session-status">3. Frontend Cannot Monitor WebRTC Session Status</h3>
+<p><strong>Current State:</strong>
+- Frontend redirects users to external WebRTC URL (live link)
+- WebRTC session runs on separate server/domain
+- <strong>Frontend has NO visibility</strong> into WebRTC session state
+- <strong>Backend ALSO has NO visibility</strong> (WebRTC server runs locally, not accessible)
+- Neither frontend nor backend knows:
+  - If user is still in the call
+  - If call ended
+  - If user disconnected
+  - Session duration
+  - Connection quality
+- WebRTC server is isolated - can't communicate with backend or frontend</p>
+<p><strong>Problem:</strong>
+This creates multiple critical issues:</p>
+<p><strong>Frontend Issues:</strong>
+- Can't show "Session in Progress" status
+- Can't warn user if they navigate away during active session
+- Can't automatically end blockchain session when WebRTC ends
+- Can't show real-time session duration/cost
+- No way to detect if user closed WebRTC tab
+- Dashboard shows stale session state</p>
+<p><strong>Backend Issues:</strong>
+- Can't receive disconnect events from live WebRTC server (backend is local, not accessible from live server)
+- Can't call <code>endSession()</code> when users disconnect
+- Can't implement heartbeat monitoring
+- Can't track active sessions
+- Live WebRTC server can't notify local backend of session events
+- Payment continues even after call ends</p>
+<p><strong>Root Cause:</strong>
+Backend and frontend run locally (<code>localhost:4000</code> and <code>localhost:3000</code>) while WebRTC session runs on a live/deployed URL. Local backend/frontend cannot communicate with the live WebRTC server. There's no communication channel between the local development environment and the live WebRTC system.</p>
+<p><strong>Desired State:</strong>
+- Frontend receives real-time updates from WebRTC session
+- Shows live session status in dashboard
+- Can detect when session ends
+- Can automatically trigger blockchain session end
+- Shows live duration and cost estimate</p>
+<p><strong>Possible Solutions:</strong></p>
+<h4 id="option-1-websocket-connection">Option 1: WebSocket Connection</h4>
+<ul>
+<li>WebRTC server opens WebSocket connection to frontend</li>
+<li>Sends real-time status updates</li>
+<li>Frontend subscribes to session events</li>
+<li><strong>Challenge:</strong> CORS, authentication, connection management</li>
+</ul>
+<h4 id="option-2-server-sent-events-sse">Option 2: Server-Sent Events (SSE)</h4>
+<ul>
+<li>Frontend opens SSE connection to backend</li>
+<li>Backend relays WebRTC events to frontend</li>
+<li>Simpler than WebSocket</li>
+<li><strong>Challenge:</strong> One-way communication only</li>
+</ul>
+<h4 id="option-3-polling">Option 3: Polling</h4>
+<ul>
+<li>Frontend polls backend for session status every 5-10 seconds</li>
+<li>Backend queries WebRTC server or Redis</li>
+<li><strong>Pros:</strong> Simple, no persistent connections</li>
+<li><strong>Cons:</strong> Not real-time, more server load</li>
+</ul>
+<h4 id="option-4-embed-webrtc-in-frontend-recommended">Option 4: Embed WebRTC in Frontend (Recommended)</h4>
+<ul>
+<li>Instead of redirecting to external URL, embed WebRTC in iframe or component</li>
+<li>Frontend has full control over WebRTC session</li>
+<li>Can listen to all WebRTC events directly</li>
+<li>Can coordinate WebRTC and blockchain session lifecycle</li>
+<li><strong>Pros:</strong> Best UX, full control, real-time updates</li>
+<li><strong>Cons:</strong> More complex integration</li>
+</ul>
+<p><strong>Changes Needed (Option 4 - Recommended):</strong></p>
+<h4 id="frontend">Frontend</h4>
+<ul>
+<li>Create WebRTC component/page within Next.js app</li>
+<li>Integrate WebRTC client library directly</li>
+<li>Listen to WebRTC connection events</li>
+<li>Show session status in real-time</li>
+<li>Coordinate "End Call" with blockchain <code>endSession()</code></li>
+<li>Keep user in app (no external redirect)</li>
+</ul>
+<h4 id="webrtc-integration">WebRTC Integration</h4>
+<ul>
+<li>Use WebRTC library (simple-peer, PeerJS, or native WebRTC API)</li>
+<li>Connect to WebRTC signaling server</li>
+<li>Handle peer connection lifecycle</li>
+<li>Show video/audio streams in React components</li>
+</ul>
+<h4 id="backend_1">Backend</h4>
+<ul>
+<li>WebRTC signaling server (Socket.io for signaling)</li>
+<li>Coordinate peer connections</li>
+<li>Track active sessions</li>
+<li>Send session events to frontend</li>
+<li><strong>Deploy backend to production</strong> so it can communicate with live WebRTC server</li>
+<li>Configure proper URLs (not localhost)</li>
+<li>Ensure backend is accessible from WebRTC server</li>
+</ul>
+<p><strong>Benefits of Embedding:</strong>
+- ✅ Frontend knows session status in real-time
+- ✅ Can end both WebRTC and blockchain together
+- ✅ Better UX (no external redirect)
+- ✅ Can show live duration/cost
+- ✅ Can prevent navigation during active session
+- ✅ Can auto-end blockchain when WebRTC ends</p>
+<p><strong>Estimated Effort:</strong> Large (4-5 days for full integration)</p>
+<p><strong>Priority:</strong> 🔴 HIGH - Required for proper session management</p>
+<p><strong>Alternative Quick Fix:</strong>
+If embedding is too complex right now, implement Option 3 (polling):
+- Frontend polls backend every 10 seconds
+- Backend checks Redis for session status
+- Shows basic status (active/ended)
+- <strong>Effort:</strong> Small (1 day)
+- <strong>Note:</strong> Still requires backend/frontend to be deployed and accessible!</p>
+<p><strong>Deployment Requirement:</strong>
+Regardless of which option is chosen, the backend and frontend MUST be deployed to publicly accessible URLs (not localhost) so they can communicate with the live WebRTC server. Currently, backend/frontend run locally while WebRTC is live, preventing any communication.</p>
+<hr />
+<h3 id="4-multi-language-support-for-students">4. Multi-Language Support for Students</h3>
+<p><strong>Current State:</strong>
+- Students can only select ONE target language when registering
+- <code>Student</code> struct has single <code>uint8 targetLanguage</code> field
+- Tutors already support multiple languages via mapping</p>
+<p><strong>Desired State:</strong>
+- Students should be able to select multiple languages they want to learn
+- Match with tutors who teach any of their target languages</p>
+<p><strong>Changes Needed:</strong></p>
+<h4 id="smart-contract-langdaosol">Smart Contract (<code>LangDAO.sol</code>)</h4>
+<ul>
+<li>Change <code>Student</code> struct:</li>
+<li>Replace <code>uint8 targetLanguage</code> with <code>mapping(uint8 =&gt; bool) targetLanguages</code></li>
+<li>Update <code>registerStudent()</code> function:</li>
+<li>Accept <code>uint8[] memory _targetLanguages</code> instead of single language</li>
+<li>Loop through array and set each language to true in mapping</li>
+<li>Update <code>getStudentInfo()</code> function:</li>
+<li>Return array of languages or add new getter function</li>
+<li>Update <code>canAffordRate()</code> function:</li>
+<li>Check if tutor teaches any of student's target languages</li>
+<li>Update <code>hasSufficientBalance()</code> function:</li>
+<li>Similar language matching logic</li>
+</ul>
+<h4 id="frontend_1">Frontend</h4>
+<ul>
+<li>Update student registration UI to allow multiple language selection</li>
+<li>Update student profile to show all target languages</li>
+<li>Update matching UI to show which language the match is for</li>
+</ul>
+<h4 id="backend_2">Backend</h4>
+<ul>
+<li>Update matching logic to find tutors who teach any of student's languages</li>
+<li>Update session creation to specify which language the session is for</li>
+</ul>
+<p><strong>Estimated Effort:</strong> Medium (2-3 days)</p>
+<hr />
+<h2 id="medium-priority">🟡 Medium Priority</h2>
+<h3 id="5-session-history-analytics">5. Session History &amp; Analytics</h3>
+<p><strong>Current State:</strong>
+- Sessions are stored on-chain but no UI to view them
+- No analytics or statistics</p>
+<p><strong>Desired State:</strong>
+- Students can see their past sessions
+- Tutors can see their earnings history
+- Dashboard with statistics</p>
+<p><strong>Changes Needed:</strong>
+- Create session history page
+- Add analytics dashboard
+- Query blockchain for past sessions
+- Display session details (date, duration, cost, language)</p>
+<p><strong>Estimated Effort:</strong> Medium (3-4 days)</p>
+<hr />
+<h3 id="3-webrtc-disconnect-detection-auto-end-session">3. WebRTC Disconnect Detection &amp; Auto-End Session</h3>
+<p><strong>Current State:</strong>
+- WebRTC server sends some events but disconnect detection is incomplete
+- Sessions do NOT auto-end when student or tutor drops from call
+- No heartbeat monitoring implemented
+- Manual "End Call" button works, but connection loss doesn't trigger <code>endSession()</code></p>
+<p><strong>Desired State:</strong>
+- Detect when either party disconnects from WebRTC session
+- Automatically call <code>endSession()</code> on blockchain
+- Heartbeat every 30 seconds to detect stale connections
+- Grace period (30-60 seconds) for reconnection before ending
+- Handle all disconnect scenarios:
+  - Browser closed
+  - Network loss
+  - Tab closed
+  - Computer sleep/crash</p>
+<p><strong>Changes Needed:</strong></p>
+<h4 id="webrtc-client_1">WebRTC Client</h4>
+<ul>
+<li>Implement heartbeat ping every 30 seconds</li>
+<li>Send heartbeat to WebRTC server</li>
+<li>Detect connection state changes (<code>disconnected</code>, <code>failed</code>, <code>closed</code>)</li>
+<li>Send disconnect event to WebRTC server</li>
+</ul>
+<h4 id="webrtc-server_1">WebRTC Server</h4>
+<ul>
+<li>Track last heartbeat timestamp for each user</li>
+<li>Monitor for missing heartbeats (&gt;2 minutes = stale)</li>
+<li>Detect WebRTC peer disconnection events</li>
+<li>Send disconnect notification to backend immediately</li>
+<li>Implement grace period before notifying backend</li>
+</ul>
+<h4 id="backend_3">Backend</h4>
+<ul>
+<li>Receive disconnect events from WebRTC server</li>
+<li>Wait for grace period (30-60 seconds) for reconnection</li>
+<li>If no reconnection, call <code>endSession(tutorAddress)</code> on blockchain</li>
+<li>Handle both student and tutor disconnects</li>
+<li>Clean up session state in Redis</li>
+</ul>
+<p><strong>Edge Cases to Handle:</strong>
+- Both parties disconnect simultaneously
+- Reconnection within grace period
+- Multiple disconnect events for same session
+- Session already ended manually</p>
+<p><strong>Related Critical Issue:</strong>
+Currently, there's NO way to end the blockchain session from within the WebRTC interface. If a user clicks "End Call" in the WebRTC UI:
+- ✅ WebRTC session ends
+- ❌ Blockchain session continues (payment keeps running!)</p>
+<p>This means users MUST go back to the main app and manually end the session, which is terrible UX and can lead to overcharging.</p>
+<p><strong>Solution Needed:</strong>
+- Add "End Session" button in WebRTC interface
+- Button calls backend API to trigger <code>endSession()</code> on blockchain
+- OR: WebRTC "End Call" automatically triggers blockchain session end
+- Show confirmation that blockchain session ended
+- Redirect users back to main app after session ends</p>
+<p><strong>Estimated Effort:</strong> Medium (2-3 days)</p>
+<p><strong>Priority:</strong> 🚨 CRITICAL - Users are being overcharged!</p>
+<hr />
+<h3 id="6-standardize-language-codes-across-web2-and-web3">6. Standardize Language Codes Across Web2 and Web3</h3>
+<p><strong>Current State:</strong>
+- <strong>Frontend (Web2):</strong> Uses lowercase string codes (<code>"spanish"</code>, <code>"french"</code>)
+- <strong>Backend (Web2):</strong> Uses string matching for languages
+- <strong>Smart Contract (Web3):</strong> Uses numeric IDs (<code>1</code> = Spanish, <code>2</code> = French, etc.)
+- <strong>Socket Events:</strong> Mix of strings and IDs
+- <strong>Mismatch causes bugs</strong> and requires constant mapping</p>
+<p><strong>Problem:</strong>
+- Inconsistent language representation across the stack
+- Frontend sends <code>"spanish"</code> → Backend matches by string → Must map to ID <code>1</code> for contract
+- Error-prone conversions at every layer
+- Hard to maintain (3 different systems)
+- Bugs when mapping fails
+- String comparisons are inefficient</p>
+<p><strong>Desired State:</strong>
+- <strong>Single source of truth:</strong> Use keccak256 hash of ISO 639-1 codes everywhere
+- Frontend, backend, and contract all use the same hash values
+- No conversions needed at any layer
+- Efficient hash comparison (bytes32) instead of string matching
+- Direct pass-through of hash values from frontend → backend → contract</p>
+<p><strong>Language Hash Standard (keccak256 of ISO 639-1):</strong>
+<div class="highlight"><pre><span></span><code><span class="c1">// Generate hash from ISO code</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">languageHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Spanish</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">languageHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// English</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">languageHash</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;fr&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// French</span>
+
+<span class="c1">// Example hash values (bytes32):</span>
+<span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x559aead08264d5795d3909718cdd05abd49572e84fe55590eef31a88a08fdffd</span>
+<span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x3e0b1d3e5c4c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c</span>
+<span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;fr&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0</span><span class="nx">x</span><span class="p">...</span>
+<span class="p">...</span><span class="w"> </span><span class="p">(</span><span class="mf">38</span><span class="w"> </span><span class="nx">languages</span><span class="w"> </span><span class="nx">total</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Implementation Approach:</strong>
+- Use keccak256 hash of ISO 639-1 codes as the universal identifier
+- Frontend generates hash: <code>keccak256("es")</code> and uses that everywhere
+- Backend stores and matches by hash value
+- Contract compares hash values directly (already does this internally)
+- Human-readable ISO code only used for display purposes
+- Hash is the actual data passed between systems</p>
+<p><strong>Changes Needed:</strong></p>
+<h4 id="frontend_2">Frontend</h4>
+<ul>
+<li>Add keccak256 hashing utility (use ethers.js or viem)</li>
+<li>Update <code>LANGUAGES</code> constant to include hash values:
+  <div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Spanish&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">iso</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;es&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">hash</span><span class="o">:</span><span class="w"> </span><span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">),</span><span class="w"> </span><span class="c1">// This is what gets used</span>
+<span class="w">  </span><span class="nx">flag</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;🇪🇸&quot;</span>
+<span class="p">}</span>
+</code></pre></div></li>
+<li>Store language hash in state (not string or numeric ID)</li>
+<li>Send language hash in all API calls and socket events</li>
+<li>Display language name in UI but use hash internally</li>
+<li>Update registration forms to send hash values</li>
+<li>Update matching UI to use hash values</li>
+</ul>
+<h4 id="backend_4">Backend</h4>
+<ul>
+<li>Update matching logic to use language hashes (bytes32)</li>
+<li>Update Redis storage to use hash values as keys</li>
+<li>Update socket event handlers to expect hash values</li>
+<li>Use hash comparison for language matching (exact match, very efficient)</li>
+<li>Update session storage to use hash values</li>
+<li>When calling smart contract, pass hash directly (no conversion needed)</li>
+</ul>
+<h4 id="socket-events">Socket Events</h4>
+<ul>
+<li>Change all language fields to hash values (bytes32/string)</li>
+<li><code>tutor:setAvailable</code> → <code>languageHash: "0x559aead..."</code> (keccak256 of ISO code)</li>
+<li><code>student:request-tutor</code> → <code>languageHash: "0x559aead..."</code></li>
+<li>Update socket events documentation with hash format</li>
+</ul>
+<h4 id="smart-contract">Smart Contract</h4>
+<ul>
+<li>Contract already uses keccak256 hashing internally</li>
+<li>Can accept hash values directly for comparison</li>
+<li>May need to add functions that accept bytes32 hash instead of string</li>
+<li>Or continue using <code>isoToLanguage()</code> but frontend pre-computes the hash</li>
+<li>Internal numeric IDs can remain for storage efficiency</li>
+</ul>
+<p><strong>Migration Strategy:</strong>
+1. Add hash field alongside existing fields (backward compatible)
+2. Update frontend to send both old format and hash (transition period)
+3. Update backend to accept both but prefer hash values
+4. Remove old string/ID formats once all clients updated
+5. Update documentation and socket events reference</p>
+<p><strong>Example Migration:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1">// Old format</span>
+<span class="p">{</span><span class="w"> </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">languageId</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="p">}</span>
+
+<span class="c1">// Transition (send both)</span>
+<span class="p">{</span><span class="w"> </span>
+<span class="w">  </span><span class="nx">language</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;spanish&quot;</span><span class="p">,</span><span class="w">  </span><span class="c1">// deprecated</span>
+<span class="w">  </span><span class="nx">languageId</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w">        </span><span class="c1">// deprecated</span>
+<span class="w">  </span><span class="nx">languageHash</span><span class="o">:</span><span class="w"> </span><span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">)</span><span class="w">  </span><span class="c1">// new standard</span>
+<span class="p">}</span>
+
+<span class="c1">// Final format</span>
+<span class="p">{</span><span class="w"> </span><span class="nx">languageHash</span><span class="o">:</span><span class="w"> </span><span class="nx">keccak256</span><span class="p">(</span><span class="s2">&quot;es&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Benefits:</strong>
+- ✅ No more string/ID mapping bugs
+- ✅ Single identifier (hash) used across entire stack
+- ✅ Efficient comparison (bytes32 hash vs string matching)
+- ✅ No conversions needed at any layer
+- ✅ Based on ISO 639-1 standard (hash of "es", "en", etc.)
+- ✅ Type-safe (TypeScript can enforce bytes32/hex string format)
+- ✅ Gas efficient in smart contract
+- ✅ Deterministic (same ISO code always produces same hash)
+- ✅ Frontend, backend, and contract speak the same language</p>
+<p><strong>Estimated Effort:</strong> Small-Medium (2-3 days)</p>
+<p><strong>Priority:</strong> 🟡 Medium (fixes bugs, improves maintainability)</p>
+<p><strong>Reference:</strong> See <code>docs/guides/language-matching-fix.md</code> for detailed analysis</p>
+<hr />
+<h2 id="low-priority">🟢 Low Priority</h2>
+<h3 id="7-poapcredential-minting">7. POAP/Credential Minting</h3>
+<p><strong>Current State:</strong>
+- Not implemented</p>
+<p><strong>Desired State:</strong>
+- Mint POAP or credential NFT after session completion
+- Display in user profile</p>
+<p><strong>Changes Needed:</strong>
+- Integrate POAP API or create custom NFT
+- Add minting logic after session ends
+- Display credentials in dashboard</p>
+<p><strong>Estimated Effort:</strong> Medium (3-4 days)</p>
+<hr />
+<h3 id="8-rating-system">8. Rating System</h3>
+<p><strong>Current State:</strong>
+- Not implemented</p>
+<p><strong>Desired State:</strong>
+- Students can rate tutors after sessions
+- Tutors can rate students
+- Ratings displayed on profiles</p>
+<p><strong>Changes Needed:</strong>
+- Add rating storage (on-chain or IPFS)
+- Create rating UI
+- Display ratings on profiles
+- Use ratings in matching algorithm</p>
+<p><strong>Estimated Effort:</strong> Medium (3-4 days)</p>
+<hr />
+<h3 id="9-bookingscheduling-system">9. Booking/Scheduling System</h3>
+<p><strong>Current State:</strong>
+- Only roulette-style matching (first come, first served)</p>
+<p><strong>Desired State:</strong>
+- Students can book tutors for specific times
+- Calendar integration
+- Reminders</p>
+<p><strong>Changes Needed:</strong>
+- Add booking logic to backend
+- Create calendar UI
+- Add notification system
+- Store scheduled sessions</p>
+<p><strong>Estimated Effort:</strong> Large (5-7 days)</p>
+<hr />
+<h3 id="10-user-profiles">10. User Profiles</h3>
+<p><strong>Current State:</strong>
+- Minimal profile (just wallet address)</p>
+<p><strong>Desired State:</strong>
+- Rich profiles with bio, languages, experience
+- Profile pictures
+- Session history
+- Ratings and reviews</p>
+<p><strong>Changes Needed:</strong>
+- Add profile storage (IPFS or database)
+- Create profile UI
+- Add profile editing</p>
+<p><strong>Estimated Effort:</strong> Medium (3-4 days)</p>
+<hr />
+<h2 id="technical-improvements">🔧 Technical Improvements</h2>
+<h3 id="11-better-balancefund-management-ux">11. Better Balance/Fund Management UX</h3>
+<p><strong>Current State:</strong>
+- Students must manually deposit PYUSD before sessions
+- No clear indication of current balance in UI
+- No warnings when balance is low
+- No way to estimate session cost before starting
+- Unclear how much to deposit
+- No real-time balance updates during session</p>
+<p><strong>Desired State:</strong>
+- Show current PYUSD balance prominently in dashboard
+- Estimate session cost based on tutor rate and expected duration
+- Warn if balance too low for minimum session time
+- Show "time remaining" during session based on current balance
+- Easy top-up flow during or before session
+- Transaction history showing deposits and session costs</p>
+<p><strong>Changes Needed:</strong>
+- Add balance display component in header/dashboard
+- Add cost estimator: <code>rate × duration = estimated cost</code>
+- Add low balance warnings before starting session
+- Add real-time balance tracking during active session
+- Add quick deposit/top-up modal
+- Add transaction history page</p>
+<p><strong>Estimated Effort:</strong> Medium (2-3 days)</p>
+<p><strong>Priority:</strong> 🟡 Medium (improves UX, prevents confusion)</p>
+<hr />
+<h3 id="12-error-messages-user-feedback">12. Error Messages &amp; User Feedback</h3>
+<p><strong>Current State:</strong>
+- Generic error messages ("Transaction failed")
+- No loading states in many places
+- Users don't know what's happening during blockchain transactions
+- Socket connection failures are silent
+- No feedback when operations succeed</p>
+<p><strong>Desired State:</strong>
+- Clear, actionable error messages ("Insufficient PYUSD balance. Please deposit at least 100 PYUSD")
+- Loading states for all async operations
+- Transaction progress indicators ("Confirming transaction... 1/3 confirmations")
+- Connection status indicators
+- Success confirmations with next steps</p>
+<p><strong>Changes Needed:</strong>
+- Add toast/notification system (react-hot-toast or similar)
+- Improve error handling with user-friendly messages
+- Add loading spinners/skeletons everywhere
+- Add transaction status tracking component
+- Add connection status indicator in header
+- Add success messages with clear next actions</p>
+<p><strong>Estimated Effort:</strong> Small-Medium (2-3 days)</p>
+<p><strong>Priority:</strong> 🟡 Medium (significantly improves UX)</p>
+<hr />
+<h3 id="13-code-documentation-comments">13. Code Documentation &amp; Comments</h3>
+<p><strong>Current State:</strong>
+- Minimal code comments
+- No JSDoc/TSDoc for functions
+- Complex logic not explained (especially language matching, session lifecycle)
+- Hard for new developers (or AI assistants!) to understand codebase
+- No architecture diagrams in code</p>
+<p><strong>Desired State:</strong>
+- All exported functions have JSDoc comments
+- Complex logic explained with inline comments
+- README in each major directory explaining purpose
+- Architecture diagrams embedded in code comments
+- Clear explanation of state management patterns</p>
+<p><strong>Changes Needed:</strong>
+- Add JSDoc to all exported functions (params, returns, examples)
+- Add inline comments for complex logic (socket events, matching algorithm)
+- Create README files for:
+  - <code>webapp/packages/nextjs/app/</code> - Page structure
+  - <code>webapp/packages/nextjs/components/</code> - Component library
+  - <code>backend/src/services/</code> - Service layer
+  - <code>backend/src/routes/</code> - API routes
+- Document state management patterns (React hooks, context)
+- Add mermaid diagrams in comments for complex flows</p>
+<p><strong>Estimated Effort:</strong> Medium (3-4 days)</p>
+<p><strong>Priority:</strong> 🟢 Low (helps maintainability but not user-facing)</p>
+<p><strong>Note:</strong> This would significantly help AI assistants understand the codebase and make better suggestions!</p>
+<hr />
+<h3 id="14-add-automated-tests">14. Add Automated Tests</h3>
+<p><strong>Current State:</strong>
+- No automated tests</p>
+<p><strong>Desired State:</strong>
+- Smart contract tests (Hardhat)
+- Backend integration tests (Jest)
+- Frontend E2E tests (Playwright)</p>
+<p><strong>Changes Needed:</strong>
+- Write contract tests for all functions
+- Write backend tests for socket events
+- Write E2E tests for user flows</p>
+<p><strong>Estimated Effort:</strong> Large (5-7 days)</p>
+<hr />
+<h3 id="15-improve-error-handling">15. Improve Error Handling</h3>
+<p><strong>Current State:</strong>
+- Basic error handling
+- Not all edge cases covered</p>
+<p><strong>Desired State:</strong>
+- Comprehensive error handling
+- User-friendly error messages
+- Proper error logging</p>
+<p><strong>Changes Needed:</strong>
+- Add try-catch blocks
+- Improve error messages
+- Add error logging service</p>
+<p><strong>Estimated Effort:</strong> Medium (2-3 days)</p>
+<hr />
+<h3 id="16-add-deployment-guide">16. Add Deployment Guide</h3>
+<p><strong>Current State:</strong>
+- No production deployment documentation</p>
+<p><strong>Desired State:</strong>
+- Complete deployment guide
+- CI/CD pipeline
+- Environment setup</p>
+<p><strong>Changes Needed:</strong>
+- Document deployment steps
+- Create deployment scripts
+- Set up CI/CD (GitHub Actions)</p>
+<p><strong>Estimated Effort:</strong> Small (1-2 days)</p>
+<hr />
+<h2 id="priority-matrix">📊 Priority Matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Feature</th>
+<th>Effort</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔴 <strong>CRITICAL</strong></td>
+<td><strong>Disconnect Detection</strong></td>
+<td><strong>Medium</strong></td>
+<td><strong>CRITICAL</strong></td>
+</tr>
+<tr>
+<td>🔴 <strong>CRITICAL</strong></td>
+<td><strong>End Session in WebRTC</strong></td>
+<td><strong>Small</strong></td>
+<td><strong>CRITICAL</strong></td>
+</tr>
+<tr>
+<td>🔴 High</td>
+<td><strong>Frontend Monitor WebRTC</strong></td>
+<td><strong>Large</strong></td>
+<td><strong>High</strong></td>
+</tr>
+<tr>
+<td>🔴 High</td>
+<td>Multi-Language Support</td>
+<td>Medium</td>
+<td>High</td>
+</tr>
+<tr>
+<td>🟡 Medium</td>
+<td>Session History</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>🟡 Medium</td>
+<td>Language Matching Fix</td>
+<td>Small</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>🟢 Low</td>
+<td>POAP Minting</td>
+<td>Medium</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>🟢 Low</td>
+<td>Rating System</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>🟢 Low</td>
+<td>Booking System</td>
+<td>Large</td>
+<td>High</td>
+</tr>
+<tr>
+<td>🟢 Low</td>
+<td>User Profiles</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>🔧 Tech</td>
+<td>Automated Tests</td>
+<td>Large</td>
+<td>High</td>
+</tr>
+<tr>
+<td>🔧 Tech</td>
+<td>Error Handling</td>
+<td>Medium</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>🔧 Tech</td>
+<td>Deployment Guide</td>
+<td>Small</td>
+<td>Low</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="next-steps">Next Steps</h2>
+<h3 id="immediate-critical-payment-issues">Immediate (Critical Payment Issues)</h3>
+<ol>
+<li><strong>🚨 URGENT:</strong> End Session Button in WebRTC (users being overcharged!)</li>
+<li><strong>🚨 URGENT:</strong> WebRTC Disconnect Detection (prevents payment issues!)</li>
+</ol>
+<h3 id="short-term-this-week">Short-term (This Week)</h3>
+<ol>
+<li><strong>Quick Fix:</strong> Frontend polling for session status (1 day)</li>
+<li>Multi-Language Support for Students</li>
+<li>Language Matching Fix</li>
+</ol>
+<h3 id="medium-term-next-2-weeks">Medium-term (Next 2 Weeks)</h3>
+<ol>
+<li><strong>Proper Fix:</strong> Embed WebRTC in Frontend (4-5 days)</li>
+<li>Session History &amp; Analytics</li>
+</ol>
+<h3 id="long-term-this-month">Long-term (This Month)</h3>
+<ol>
+<li>POAP Minting + Rating System</li>
+<li>Booking/Scheduling System</li>
+</ol>
+<hr />
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Focus on high-impact, low-effort items first</li>
+<li>Get multi-language support working before adding more features</li>
+<li>Automated tests should be added incrementally as features are built</li>
+<li>User feedback will help prioritize low-priority items</li>
+</ul>
+<hr />
+<p><strong>Questions or suggestions?</strong> Add them to this document or create GitHub issues.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

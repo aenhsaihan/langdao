@@ -1,0 +1,2914 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Helping people use their language skills to learn, teach, and earn in Web3.">
+      
+      
+      
+      
+        <link rel="prev" href="../../product/testbed-latam/">
+      
+      
+        <link rel="next" href="../language-matching-fix/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Student-Tutor Pairing Flow - LangDAO</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#student-tutor-pairing-flow-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LangDAO" class="md-header__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LangDAO
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Student-Tutor Pairing Flow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LangDAO" class="md-nav__button md-logo" aria-label="LangDAO" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LangDAO
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/aenhsaihan/langdao-ethonline2025" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Legacy (Outdated)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/scope-mvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MVP Scope
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../product/testbed-latam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testbed (LatAm)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Student-Tutor Pairing Flow
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Student-Tutor Pairing Flow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Student Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-studenttutorfindertsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component: StudentTutorFinder.tsx
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-1-setup-finderstate-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 1: Setup (finderState === "setup")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-2-searching-finderstate-searching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 2: Searching (finderState === "searching")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-3-tutor-found-finderstate-tutor-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 3: Tutor Found (finderState === "tutor-found")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-4-session-starting-finderstate-session-starting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 4: Session Starting (finderState === "session-starting")
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tutor-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tutor Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-tutoravailabilityflowtsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component: TutorAvailabilityFlow.tsx
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-1-setup-availabilitystate-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 1: Setup (availabilityState === "setup")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-2-waiting-availabilitystate-waiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 2: Waiting (availabilityState === "waiting")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-3-waiting-for-student-availabilitystate-waiting-for-student" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 3: Waiting for Student (availabilityState === "waiting-for-student")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-4-session-starting-availabilitystate-session-starting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 4: Session Starting (availabilityState === "session-starting")
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backend-matching-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Matching Logic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backend Matching Logic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matching-service-matchingservicejs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matching Service (matchingService.js)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket-event-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket Event Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Socket Event Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#student-requests-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Requests Tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-accepts-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Accepts Request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-accepts-tutor-starts-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Accepts Tutor (Starts Session)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-enters-video-room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Enters Video Room
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#active-session-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Active Session Prompt
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Active Session Prompt">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-activesessionprompttsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component: ActiveSessionPrompt.tsx
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-transition-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State Transition Diagrams
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="State Transition Diagrams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#student-state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student State Machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor State Machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues &amp; Debugging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues &amp; Debugging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#student-sees-searching-but-no-tutors-appear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student sees "Searching" but no tutors appear
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-doesnt-receive-student-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor doesn't receive student requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-accepts-tutor-but-nothing-happens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student accepts tutor but nothing happens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-stuck-in-waiting-for-student" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor stuck in "waiting-for-student"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../language-matching-fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Language Matching Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webrtc-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WebRTC Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tech
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tech
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/socket-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socket Events Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/api-reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/integrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tech/dao-vetting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DAO Vetting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ops/environment-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Environment Variables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/todo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TODO List
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/cleanup-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cleanup Summary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/documentation-status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/documentation-reorganization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Reorganization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/reorganization-complete/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reorganization Complete
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/review-pass-2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Review Pass 2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/huddle01-to-webrtc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Huddle01 to WebRTC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../research/assumptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assumptions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions (ADRs)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decisions (ADRs)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../adr/0001-huddle01/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0001 - WebRTC Implementation (superseded Huddle01)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#student-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Student Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-studenttutorfindertsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component: StudentTutorFinder.tsx
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-1-setup-finderstate-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 1: Setup (finderState === "setup")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-2-searching-finderstate-searching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 2: Searching (finderState === "searching")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-3-tutor-found-finderstate-tutor-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 3: Tutor Found (finderState === "tutor-found")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-4-session-starting-finderstate-session-starting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 4: Session Starting (finderState === "session-starting")
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tutor-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tutor Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-tutoravailabilityflowtsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component: TutorAvailabilityFlow.tsx
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-1-setup-availabilitystate-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 1: Setup (availabilityState === "setup")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-2-waiting-availabilitystate-waiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 2: Waiting (availabilityState === "waiting")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-3-waiting-for-student-availabilitystate-waiting-for-student" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 3: Waiting for Student (availabilityState === "waiting-for-student")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#state-4-session-starting-availabilitystate-session-starting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State 4: Session Starting (availabilityState === "session-starting")
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#backend-matching-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend Matching Logic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Backend Matching Logic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matching-service-matchingservicejs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matching Service (matchingService.js)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#socket-event-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Socket Event Flow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Socket Event Flow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#student-requests-tutor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Requests Tutor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-accepts-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor Accepts Request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-accepts-tutor-starts-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Accepts Tutor (Starts Session)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-enters-video-room" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student Enters Video Room
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#active-session-prompt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Active Session Prompt
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Active Session Prompt">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-activesessionprompttsx" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component: ActiveSessionPrompt.tsx
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-transition-diagrams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State Transition Diagrams
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="State Transition Diagrams">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#student-state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student State Machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor State Machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues &amp; Debugging
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues &amp; Debugging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#student-sees-searching-but-no-tutors-appear" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student sees "Searching" but no tutors appear
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-doesnt-receive-student-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor doesn't receive student requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#student-accepts-tutor-but-nothing-happens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Student accepts tutor but nothing happens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tutor-stuck-in-waiting-for-student" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutor stuck in "waiting-for-student"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Files
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="student-tutor-pairing-flow-documentation">Student-Tutor Pairing Flow Documentation</h1>
+<h2 id="overview">Overview</h2>
+<p>This document explains the complete flow of pairing students with tutors, including all UI states, transitions, socket events, and when each screen appears. This flow is critical to understand for debugging and feature development.</p>
+<h2 id="architecture">Architecture</h2>
+<div class="highlight"><pre><span></span><code>┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│   Student  │ ◄─────► │   Backend    │ ◄─────► │    Tutor    │
+│  Frontend  │ Socket  │   Server     │ Socket  │  Frontend   │
+└─────────────┘         └──────────────┘         └─────────────┘
+                              │
+                              ▼
+                        ┌──────────────┐
+                        │     Redis    │
+                        │  (Matching)  │
+                        └──────────────┘
+</code></pre></div>
+<h2 id="student-flow">Student Flow</h2>
+<h3 id="component-studenttutorfindertsx">Component: <code>StudentTutorFinder.tsx</code></h3>
+<p>The student flow has <strong>5 main states</strong>:</p>
+<ol>
+<li><strong><code>setup</code></strong> - Initial configuration screen</li>
+<li><strong><code>searching</code></strong> - Actively searching for tutors</li>
+<li><strong><code>tutor-found</code></strong> - A tutor has accepted the request</li>
+<li><strong><code>session-starting</code></strong> - Transaction submitted, waiting for blockchain</li>
+<li><strong><code>no-tutors</code></strong> - No tutors available (currently merged into <code>searching</code>)</li>
+</ol>
+<h3 id="state-1-setup-finderstate-setup">State 1: Setup (<code>finderState === "setup"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>Initial state when component mounts</li>
+<li>After cancelling a search</li>
+<li>After returning from a session</li>
+</ul>
+<p><strong>What the student sees:</strong></p>
+<ul>
+<li>Language selection (pre-filled from registration, read-only)</li>
+<li>Budget input (pre-filled from registration, editable)</li>
+<li>Connection status indicator</li>
+<li>"Find Tutors Now" button</li>
+</ul>
+<p><strong>User actions:</strong></p>
+<ul>
+<li>Can adjust budget (must be sufficient for at least 10 minutes)</li>
+<li>Can click "Find Tutors Now" to start search</li>
+<li>Can click "Back" (if <code>onBack</code> prop provided)</li>
+</ul>
+<p><strong>What happens when "Find Tutors Now" is clicked:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Validates</span><span class="w"> </span><span class="nx">connection</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="nx">inputs</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Converts</span><span class="w"> </span><span class="nx">hourly</span><span class="w"> </span><span class="nx">budget</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">per</span><span class="o">-</span><span class="nx">second</span><span class="w"> </span><span class="nx">PYUSD</span><span class="w"> </span><span class="nx">units</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Generates</span><span class="w"> </span><span class="nx">unique</span><span class="w"> </span><span class="nx">requestId</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">request</span><span class="o">-</span><span class="nx">tutor</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="nx">requestId</span><span class="p">,</span>
+<span class="w">     </span><span class="nx">studentAddress</span><span class="p">,</span>
+<span class="w">     </span><span class="nx">language</span><span class="p">,</span>
+<span class="w">     </span><span class="nx">budgetPerSecond</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="mf">5.</span><span class="w"> </span><span class="nx">Waits</span><span class="w"> </span><span class="k">for</span><span class="o">:</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">request</span><span class="o">-</span><span class="nx">sent</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">6.</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;searching&quot;</span><span class="w"> </span><span class="nx">state</span>
+</code></pre></div>
+<h3 id="state-2-searching-finderstate-searching">State 2: Searching (<code>finderState === "searching"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>After student clicks "Find Tutors Now"</li>
+<li>After tutor withdraws acceptance</li>
+<li>After skipping a tutor</li>
+<li>After tutor becomes unavailable</li>
+</ul>
+<p><strong>What the student sees:</strong></p>
+<ul>
+<li>Animated search indicator with language flag</li>
+<li>Elapsed search time counter</li>
+<li>Status messages that change based on elapsed time:</li>
+<li>&lt; 10 seconds: "Searching available tutors..."</li>
+<li>&lt; 30 seconds: "Notifying tutors who come online..."</li>
+<li>
+<blockquote>
+<p>= 30 seconds: "Broadcasting to new tutors..."</p>
+</blockquote>
+</li>
+<li>"Cancel Search" button</li>
+</ul>
+<p><strong>Socket events listened for:</strong></p>
+<ul>
+<li><code>student:request-sent</code> - Confirms request was received</li>
+<li><code>student:no-tutors-available</code> - No tutors online initially</li>
+<li><code>student:tutor-accepted</code> - A tutor accepted the request</li>
+<li><code>tutor:available-updated</code> - Tutor availability changed</li>
+<li><code>tutor:withdrew-acceptance</code> - Tutor withdrew their acceptance</li>
+</ul>
+<p><strong>What happens when tutor accepts:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Receives</span><span class="o">:</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">tutor</span><span class="o">-</span><span class="nx">accepted</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Stores</span><span class="w"> </span><span class="nx">tutor</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">currentTutor</span><span class="w"> </span><span class="nx">state</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;tutor-found&quot;</span><span class="w"> </span><span class="nx">state</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">success</span><span class="w"> </span><span class="nx">toast</span><span class="w"> </span><span class="nx">notification</span>
+</code></pre></div>
+<p><strong>What happens when tutor withdraws:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Receives</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">withdrew</span><span class="o">-</span><span class="nx">acceptance</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Checks</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nx">it</span><span class="err">&#39;</span><span class="nx">s</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">current</span><span class="w"> </span><span class="nx">tutor</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Clears</span><span class="w"> </span><span class="nx">currentTutor</span><span class="w"> </span><span class="nx">state</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Stays</span><span class="w"> </span><span class="ow">in</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;searching&quot;</span><span class="w"> </span><span class="nx">state</span>
+<span class="mf">5.</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">toast</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Tutor withdrew acceptance, continuing search...&quot;</span>
+</code></pre></div>
+<h3 id="state-3-tutor-found-finderstate-tutor-found">State 3: Tutor Found (<code>finderState === "tutor-found"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>After receiving <code>student:tutor-accepted</code> event</li>
+<li>After transaction rejection (if user wants to retry)</li>
+</ul>
+<p><strong>What the student sees:</strong></p>
+<ul>
+<li>Success animation (🎉)</li>
+<li>Tutor information:</li>
+<li>Tutor address (truncated)</li>
+<li>Language being taught</li>
+<li>Rate per hour (from blockchain)</li>
+<li>Balance warnings (if applicable):</li>
+<li>Insufficient balance warning (if <code>hasSufficientBalance === false</code>)</li>
+<li>Budget too low warning (if <code>canAfford === false</code>)</li>
+<li>Two action buttons:</li>
+<li>"Skip &amp; Find Another" - Rejects this tutor, continues searching</li>
+<li>"Start Session Now" - Accepts tutor and starts session</li>
+</ul>
+<p><strong>Blockchain checks performed:</strong></p>
+<ul>
+<li><code>canAffordRate()</code> - Can student afford this tutor's rate?</li>
+<li><code>hasSufficientBalance()</code> - Does student have 10 minutes worth of balance?</li>
+<li><code>getTutorInfo()</code> - Get tutor's on-chain information</li>
+<li><code>tutorRates()</code> - Get tutor's actual rate from blockchain</li>
+</ul>
+<p><strong>User actions:</strong></p>
+<ol>
+<li><strong>Skip Tutor:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">reject</span><span class="o">-</span><span class="nx">tutor</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">requestId</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">tutorAddress</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">studentAddress</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Clears</span><span class="w"> </span><span class="nx">currentTutor</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Returns</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;searching&quot;</span><span class="w"> </span><span class="nx">state</span>
+</code></pre></div>
+<ol>
+<li><strong>Accept Tutor (Start Session):</strong>
+   <div class="highlight"><pre><span></span><code><span class="o">-</span><span class="w"> </span><span class="nx">Prepares</span><span class="w"> </span><span class="nx">transaction</span><span class="o">:</span><span class="w"> </span><span class="nx">simulateContract</span><span class="p">(</span><span class="nx">startSession</span><span class="p">)</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">MetaMask</span><span class="w"> </span><span class="nx">popup</span><span class="o">:</span><span class="w"> </span><span class="nx">writeContract</span><span class="p">()</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Gets</span><span class="w"> </span><span class="nx">transaction</span><span class="w"> </span><span class="nx">hash</span><span class="w"> </span><span class="nx">immediately</span><span class="w"> </span><span class="nx">after</span><span class="w"> </span><span class="nx">MetaMask</span><span class="w"> </span><span class="nx">confirmation</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Sets</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;session-starting&quot;</span><span class="w"> </span><span class="nx">IMMEDIATELY</span><span class="w"> </span><span class="p">(</span><span class="nx">student</span><span class="w"> </span><span class="nx">sees</span><span class="w"> </span><span class="nx">rotating</span><span class="w"> </span><span class="nx">camera</span><span class="w"> </span><span class="nx">screen</span><span class="p">)</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">accept</span><span class="o">-</span><span class="nx">tutor</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">requestId</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">tutorAddress</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">studentAddress</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">language</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Stores</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="nx">info</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">sessionStorage</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Starts</span><span class="w"> </span><span class="nx">blockchain</span><span class="w"> </span><span class="nx">polling</span><span class="w"> </span><span class="p">(</span><span class="nx">every</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="nx">second</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">active</span><span class="w"> </span><span class="nx">session</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">On</span><span class="w"> </span><span class="nx">blockchain</span><span class="w"> </span><span class="nx">confirmation</span><span class="w"> </span><span class="p">(</span><span class="nx">active</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="nx">detected</span><span class="p">)</span><span class="o">:</span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="nx">Redirects</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">video</span><span class="w"> </span><span class="nx">call</span><span class="w"> </span><span class="nx">URL</span><span class="w"> </span><span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="p">)</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">On</span><span class="w"> </span><span class="nx">transaction</span><span class="w"> </span><span class="nx">rejection</span><span class="o">:</span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">rejected</span><span class="o">-</span><span class="nx">transaction</span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="nx">Returns</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;tutor-found&quot;</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="p">(</span><span class="nx">user</span><span class="w"> </span><span class="nx">can</span><span class="w"> </span><span class="k">try</span><span class="w"> </span><span class="nx">again</span><span class="p">)</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">On</span><span class="w"> </span><span class="nx">other</span><span class="w"> </span><span class="nx">errors</span><span class="o">:</span>
+<span class="w">  </span><span class="o">*</span><span class="w"> </span><span class="nx">Returns</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;tutor-found&quot;</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="p">(</span><span class="nx">user</span><span class="w"> </span><span class="nx">can</span><span class="w"> </span><span class="k">try</span><span class="w"> </span><span class="nx">again</span><span class="p">)</span>
+</code></pre></div></li>
+</ol>
+<h3 id="state-4-session-starting-finderstate-session-starting">State 4: Session Starting (<code>finderState === "session-starting"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>Immediately after student clicks "Start Session Now" on the "tutor-found" screen</li>
+<li>While waiting for MetaMask transaction confirmation</li>
+<li>While waiting for blockchain transaction to confirm</li>
+</ul>
+<p><strong>What the student sees:</strong></p>
+<ul>
+<li>Rotating video camera icon (📹)</li>
+<li>"Starting Your Session! 🎓" message</li>
+<li>"Preparing video call..." status</li>
+<li>This screen is shown while the transaction is being processed</li>
+</ul>
+<p><strong>What happens:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Student</span><span class="w"> </span><span class="nx">clicks</span><span class="w"> </span><span class="s2">&quot;Start Session Now&quot;</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">MetaMask</span><span class="w"> </span><span class="nx">popup</span><span class="w"> </span><span class="nx">appears</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">transaction</span><span class="w"> </span><span class="nx">confirmation</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">After</span><span class="w"> </span><span class="nx">student</span><span class="w"> </span><span class="nx">confirms</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">MetaMask</span><span class="p">,</span><span class="w"> </span><span class="nx">transaction</span><span class="w"> </span><span class="nx">hash</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">received</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">setFinderState</span><span class="p">(</span><span class="s2">&quot;session-starting&quot;</span><span class="p">)</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">called</span><span class="w"> </span><span class="nx">IMMEDIATELY</span>
+<span class="mf">5.</span><span class="w"> </span><span class="nx">Student</span><span class="w"> </span><span class="nx">sees</span><span class="w"> </span><span class="s2">&quot;session-starting&quot;</span><span class="w"> </span><span class="nx">screen</span><span class="w"> </span><span class="p">(</span><span class="nx">rotating</span><span class="w"> </span><span class="nx">camera</span><span class="p">)</span>
+<span class="mf">6.</span><span class="w"> </span><span class="nx">Emits</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">accept</span><span class="o">-</span><span class="nx">tutor</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">(</span><span class="nx">notifies</span><span class="w"> </span><span class="nx">tutor</span><span class="p">)</span>
+<span class="mf">7.</span><span class="w"> </span><span class="nx">Stores</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="nx">info</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">sessionStorage</span>
+<span class="mf">8.</span><span class="w"> </span><span class="nx">Starts</span><span class="w"> </span><span class="nx">blockchain</span><span class="w"> </span><span class="nx">polling</span><span class="w"> </span><span class="nx">every</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="nx">second</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">active</span><span class="w"> </span><span class="nx">session</span>
+<span class="mf">9.</span><span class="w"> </span><span class="nx">Polls</span><span class="w"> </span><span class="nx">activeSessions</span><span class="p">(</span><span class="nx">tutorAddress</span><span class="p">)</span><span class="w"> </span><span class="nx">until</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="nx">becomes</span><span class="w"> </span><span class="nx">active</span>
+<span class="mf">10.</span><span class="w"> </span><span class="nx">Once</span><span class="w"> </span><span class="nx">blockchain</span><span class="w"> </span><span class="nx">confirms</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="p">(</span><span class="nx">isActive</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">startTime</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="o">:</span>
+<span class="w">    </span><span class="o">*</span><span class="w"> </span><span class="nx">Redirects</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">video</span><span class="w"> </span><span class="nx">call</span><span class="w"> </span><span class="nx">URL</span>
+<span class="w">    </span><span class="o">*</span><span class="w"> </span><span class="nx">Student</span><span class="w"> </span><span class="nx">enters</span><span class="w"> </span><span class="nx">WebRTC</span><span class="w"> </span><span class="nx">room</span><span class="w"> </span><span class="nx">simultaneously</span><span class="w"> </span><span class="kd">with</span><span class="w"> </span><span class="nx">tutor</span>
+</code></pre></div>
+<p><strong>Blockchain Polling:</strong></p>
+<ul>
+<li>Polls <code>activeSessions(tutorAddress)</code> every 1 second</li>
+<li>Checks if <code>isActive === true</code> and <code>startTime &gt; 0</code></li>
+<li>When active, redirects to video call URL</li>
+<li>This ensures both student and tutor enter at the same time</li>
+</ul>
+<p><strong>Note:</strong> The student will see this screen from MetaMask confirmation until blockchain confirms the session (typically a few seconds). Both student and tutor use blockchain polling to enter simultaneously.</p>
+<h2 id="tutor-flow">Tutor Flow</h2>
+<h3 id="component-tutoravailabilityflowtsx">Component: <code>TutorAvailabilityFlow.tsx</code></h3>
+<p>The tutor flow has <strong>5 main states</strong>:</p>
+<ol>
+<li><strong><code>setup</code></strong> - Initial configuration screen</li>
+<li><strong><code>waiting</code></strong> - Available and waiting for student requests</li>
+<li><strong><code>waiting-for-student</code></strong> - Accepted a request, waiting for student to confirm</li>
+<li><strong><code>session-starting</code></strong> - Student confirmed transaction, waiting for blockchain</li>
+<li><strong><code>in-session</code></strong> - Currently in an active session (rarely used, mostly handled by video call)</li>
+</ol>
+<h3 id="state-1-setup-availabilitystate-setup">State 1: Setup (<code>availabilityState === "setup"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>Initial state when component mounts</li>
+<li>After stopping tutoring</li>
+<li>After session ends</li>
+</ul>
+<p><strong>What the tutor sees:</strong></p>
+<ul>
+<li>Registration check (if not registered, shows warning)</li>
+<li>Language selection grid (only registered languages)</li>
+<li>Rate display for selected language (from blockchain)</li>
+<li>Connection status indicator</li>
+<li>"Go Live &amp; Start Earning" button</li>
+</ul>
+<p><strong>User actions:</strong></p>
+<ul>
+<li>Select a language from registered languages</li>
+<li>Click "Go Live &amp; Start Earning" to become available</li>
+<li>Click "Back" (if <code>onBack</code> prop provided)</li>
+</ul>
+<p><strong>What happens when "Go Live" is clicked:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Validates</span><span class="o">:</span><span class="w"> </span><span class="nx">registered</span><span class="p">,</span><span class="w"> </span><span class="nx">language</span><span class="w"> </span><span class="nx">selected</span><span class="p">,</span><span class="w"> </span><span class="nx">rate</span><span class="w"> </span><span class="nx">exists</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Gets</span><span class="w"> </span><span class="nx">rate</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="nx">blockchain</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">selected</span><span class="w"> </span><span class="nx">language</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">set</span><span class="o">-</span><span class="nx">available</span><span class="w"> </span><span class="p">{</span>
+<span class="w">     </span><span class="nx">address</span><span class="p">,</span>
+<span class="w">     </span><span class="nx">language</span><span class="p">,</span><span class="w"> </span><span class="c1">// language code</span>
+<span class="w">     </span><span class="nx">ratePerSecond</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Waits</span><span class="w"> </span><span class="k">for</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">availability</span><span class="o">-</span><span class="nx">set</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">5.</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;waiting&quot;</span><span class="w"> </span><span class="nx">state</span>
+</code></pre></div>
+<h3 id="state-2-waiting-availabilitystate-waiting">State 2: Waiting (<code>availabilityState === "waiting"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>After tutor goes live</li>
+<li>After student rejects tutor</li>
+<li>After student rejects transaction</li>
+<li>After tutor withdraws acceptance</li>
+</ul>
+<p><strong>What the tutor sees:</strong></p>
+<ul>
+<li>Animated waiting indicator with language flag</li>
+<li>Connection status debug info</li>
+<li>Earnings preview (per minute, hour, day)</li>
+<li>Sound wave animation</li>
+<li>"Waiting for students..." status</li>
+<li>Incoming requests list (if any)</li>
+<li>"Stop Tutoring" button</li>
+</ul>
+<p><strong>Socket events listened for:</strong></p>
+<ul>
+<li><code>tutor:incoming-request</code> - New student request received</li>
+<li><code>tutor:request-accepted</code> - Confirmation after accepting request</li>
+<li><code>tutor:student-rejected</code> - Student rejected this tutor</li>
+<li><code>tutor:availability-removed</code> - Availability removed (from stop button)</li>
+</ul>
+<p><strong>What happens when student request arrives:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Receives</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">incoming</span><span class="o">-</span><span class="nx">request</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Adds</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">incomingRequests</span><span class="w"> </span><span class="nx">array</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">toast</span><span class="w"> </span><span class="nx">notification</span><span class="w"> </span><span class="kd">with</span><span class="w"> </span><span class="nx">Accept</span><span class="o">/</span><span class="nx">Decline</span><span class="w"> </span><span class="nx">buttons</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Request</span><span class="w"> </span><span class="nx">appears</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="s2">&quot;Incoming Requests&quot;</span><span class="w"> </span><span class="nx">section</span>
+</code></pre></div>
+<p><strong>User actions:</strong></p>
+<ol>
+<li><strong>Accept Request:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">accept</span><span class="o">-</span><span class="nx">request</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">requestId</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">tutorAddress</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Removes</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="nx">incomingRequests</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Waits</span><span class="w"> </span><span class="k">for</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">request</span><span class="o">-</span><span class="nx">accepted</span><span class="w"> </span><span class="nx">event</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;waiting-for-student&quot;</span><span class="w"> </span><span class="nx">state</span>
+</code></pre></div>
+<ol>
+<li><strong>Decline Request:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">decline</span><span class="o">-</span><span class="nx">request</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">requestId</span><span class="w"> </span><span class="p">}</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Removes</span><span class="w"> </span><span class="nx">request</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="nx">incomingRequests</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Stays</span><span class="w"> </span><span class="ow">in</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;waiting&quot;</span><span class="w"> </span><span class="nx">state</span>
+</code></pre></div>
+<ol>
+<li><strong>Stop Tutoring:</strong>
+   <div class="highlight"><pre><span></span><code><span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">set</span><span class="o">-</span><span class="nx">unavailable</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">address</span><span class="w"> </span><span class="p">}</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Waits</span><span class="w"> </span><span class="k">for</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">availability</span><span class="o">-</span><span class="nx">removed</span><span class="w"> </span><span class="nx">event</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;setup&quot;</span><span class="w"> </span><span class="nx">state</span>
+</code></pre></div></li>
+</ol>
+<h3 id="state-3-waiting-for-student-availabilitystate-waiting-for-student">State 3: Waiting for Student (<code>availabilityState === "waiting-for-student"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>After tutor accepts a student request</li>
+<li>Waiting for student to confirm transaction</li>
+</ul>
+<p><strong>What the tutor sees:</strong></p>
+<ul>
+<li>Animated waiting indicator (⏳)</li>
+<li>"Waiting for Student to Start 🎓" message</li>
+<li>Request details:</li>
+<li>Student address (truncated)</li>
+<li>Language</li>
+<li>Student's budget</li>
+<li>"Back to Waiting" button (withdraws acceptance)</li>
+</ul>
+<p><strong>Socket events listened for:</strong></p>
+<ul>
+<li><code>student:accept-tutor</code> - Student confirmed transaction</li>
+<li><code>tutor:student-rejected</code> - Student rejected or selected another tutor</li>
+<li><code>tutor:student-rejected-transaction</code> - Student rejected MetaMask transaction</li>
+</ul>
+<p><strong>What happens when student accepts:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Receives</span><span class="o">:</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">accept</span><span class="o">-</span><span class="nx">tutor</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Stores</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="nx">data</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">currentSession</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;session-starting&quot;</span><span class="w"> </span><span class="nx">state</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">rotating</span><span class="w"> </span><span class="nx">camera</span><span class="w"> </span><span class="nx">screen</span><span class="w"> </span><span class="p">(</span><span class="nx">same</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">student</span><span class="w"> </span><span class="nx">sees</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>What happens when student rejects:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Receives</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">student</span><span class="o">-</span><span class="nx">rejected</span><span class="w"> </span><span class="nx">event</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Clears</span><span class="w"> </span><span class="nx">currentSession</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;waiting&quot;</span><span class="w"> </span><span class="nx">state</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">toast</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Student rejected you or selected another tutor&quot;</span>
+</code></pre></div>
+<p><strong>User actions:</strong></p>
+<ul>
+<li><strong>Withdraw Acceptance:</strong>
+  <div class="highlight"><pre><span></span><code><span class="o">-</span><span class="w"> </span><span class="nx">Emits</span><span class="o">:</span><span class="w"> </span><span class="nx">tutor</span><span class="o">:</span><span class="nx">withdraw</span><span class="o">-</span><span class="nx">acceptance</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">requestId</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">tutorAddress</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">studentAddress</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="o">-</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;waiting&quot;</span><span class="w"> </span><span class="nx">state</span>
+</code></pre></div></li>
+</ul>
+<h3 id="state-4-session-starting-availabilitystate-session-starting">State 4: Session Starting (<code>availabilityState === "session-starting"</code>)</h3>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>After student confirms transaction (<code>student:accept-tutor</code> event)</li>
+<li>Waiting for blockchain confirmation and student to enter video room</li>
+</ul>
+<p><strong>What the tutor sees:</strong></p>
+<ul>
+<li>Rotating video camera icon</li>
+<li>"Starting Your Session! 🎓" message</li>
+<li>"Preparing video call..." status</li>
+</ul>
+<p><strong>What happens:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="mf">1.</span><span class="w"> </span><span class="nx">Receives</span><span class="w"> </span><span class="nx">student</span><span class="o">:</span><span class="nx">accept</span><span class="o">-</span><span class="nx">tutor</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">(</span><span class="nx">student</span><span class="w"> </span><span class="nx">confirmed</span><span class="w"> </span><span class="nx">MetaMask</span><span class="w"> </span><span class="nx">transaction</span><span class="p">)</span>
+<span class="mf">2.</span><span class="w"> </span><span class="nx">Transitions</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="s2">&quot;session-starting&quot;</span><span class="w"> </span><span class="nx">state</span>
+<span class="mf">3.</span><span class="w"> </span><span class="nx">Shows</span><span class="w"> </span><span class="nx">rotating</span><span class="w"> </span><span class="nx">camera</span><span class="w"> </span><span class="nx">screen</span><span class="w"> </span><span class="p">(</span><span class="nx">same</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">student</span><span class="w"> </span><span class="nx">sees</span><span class="p">)</span>
+<span class="mf">4.</span><span class="w"> </span><span class="nx">Starts</span><span class="w"> </span><span class="nx">blockchain</span><span class="w"> </span><span class="nx">polling</span><span class="w"> </span><span class="nx">every</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="nx">second</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nx">active</span><span class="w"> </span><span class="nx">session</span>
+<span class="mf">5.</span><span class="w"> </span><span class="nx">Polls</span><span class="w"> </span><span class="nx">activeSessions</span><span class="p">(</span><span class="nx">tutorAddress</span><span class="p">)</span><span class="w"> </span><span class="nx">until</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="nx">becomes</span><span class="w"> </span><span class="nx">active</span>
+<span class="mf">6.</span><span class="w"> </span><span class="nx">Once</span><span class="w"> </span><span class="nx">blockchain</span><span class="w"> </span><span class="nx">confirms</span><span class="w"> </span><span class="nx">session</span><span class="w"> </span><span class="p">(</span><span class="nx">isActive</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">startTime</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="o">:</span>
+<span class="w">   </span><span class="o">*</span><span class="w"> </span><span class="nx">Redirects</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">video</span><span class="w"> </span><span class="nx">call</span><span class="w"> </span><span class="nx">URL</span><span class="w"> </span><span class="nx">immediately</span>
+<span class="w">   </span><span class="o">*</span><span class="w"> </span><span class="nx">Tutor</span><span class="w"> </span><span class="nx">enters</span><span class="w"> </span><span class="nx">WebRTC</span><span class="w"> </span><span class="nx">room</span><span class="w"> </span><span class="nx">simultaneously</span><span class="w"> </span><span class="kd">with</span><span class="w"> </span><span class="nx">student</span>
+</code></pre></div>
+<p><strong>Socket events listened for:</strong></p>
+<ul>
+<li><code>student:accept-tutor</code> - Student confirmed MetaMask transaction</li>
+<li><code>session:started</code> - Transaction confirmed on blockchain (informational only)</li>
+<li><code>student:in-room</code> - Student entered video call room (informational only, not used for redirect)</li>
+</ul>
+<p><strong>Blockchain polling:</strong></p>
+<ul>
+<li>Polls <code>activeSessions(tutorAddress)</code> every 1 second</li>
+<li>Checks if <code>isActive === true</code> and <code>startTime &gt; 0</code></li>
+<li>When active, redirects to video call immediately (no delay)</li>
+<li>This is the primary and only method for entering the WebRTC room</li>
+<li>Ensures both student and tutor enter simultaneously</li>
+</ul>
+<h2 id="backend-matching-logic">Backend Matching Logic</h2>
+<h3 id="matching-service-matchingservicejs">Matching Service (<code>matchingService.js</code>)</h3>
+<p><strong>Key Functions:</strong></p>
+<ol>
+<li>
+<p><strong><code>setTutorAvailable(address, language, ratePerSecond)</code></strong></p>
+</li>
+<li>
+<p>Stores tutor in Redis with TTL (5 minutes default)</p>
+</li>
+<li>Adds to <code>available_tutors</code> set</li>
+<li>Adds to <code>tutors:{language}</code> set</li>
+<li>
+<p>Checks for pending student requests matching this tutor</p>
+</li>
+<li>
+<p><strong><code>findMatchingTutors({language, budgetPerSecond, studentAddress})</code></strong></p>
+</li>
+<li>
+<p>Gets all tutors for the language from Redis</p>
+</li>
+<li>Filters by: <code>tutorRate &lt;= studentBudget</code></li>
+<li>Sorts by rate (lowest first)</li>
+<li>
+<p>Returns matching tutors</p>
+</li>
+<li>
+<p><strong><code>storeStudentRequest(requestId, requestData)</code></strong></p>
+</li>
+<li>
+<p>Stores request in Redis with TTL (1 minute default)</p>
+</li>
+<li>Adds to <code>pending_requests</code> set</li>
+<li>
+<p>Request includes: studentAddress, language, budgetPerSecond, socketId</p>
+</li>
+<li>
+<p><strong><code>getPendingStudentRequests(language, tutorRatePerSecond)</code></strong></p>
+</li>
+<li>Gets all pending requests</li>
+<li>Filters by matching language and budget</li>
+<li>Returns sorted by creation time (oldest first)</li>
+</ol>
+<h3 id="socket-event-flow">Socket Event Flow</h3>
+<h4 id="student-requests-tutor">Student Requests Tutor</h4>
+<div class="highlight"><pre><span></span><code>Student                    Backend                    Tutor
+  │                          │                          │
+  │──student:request-tutor─►│                          │
+  │                          │──store in Redis─────────┤
+  │                          │──findMatchingTutors()───┤
+  │                          │──tutor:incoming-request►│
+  │◄─student:request-sent────│                          │
+  │                          │                          │
+</code></pre></div>
+<h4 id="tutor-accepts-request">Tutor Accepts Request</h4>
+<div class="highlight"><pre><span></span><code>Student                    Backend                    Tutor
+  │                          │                          │
+  │                          │◄──tutor:accept-request───│
+  │                          │──getStudentRequest()────┤
+  │                          │──getTutorByAddress()────┤
+  │◄──student:tutor-accepted─│──student:tutor-accepted►│
+  │                          │──removeStudentRequest()─┤
+  │                          │──tutor:request-accepted►│
+  │                          │                          │
+</code></pre></div>
+<h4 id="student-accepts-tutor-starts-session">Student Accepts Tutor (Starts Session)</h4>
+<div class="highlight"><pre><span></span><code>Student                    Backend                    Tutor
+  │                          │                          │
+  │──startSession() tx───────┤                          │
+  │   (MetaMask confirm)     │                          │
+  │──setState(&quot;session-      │                          │
+  │   starting&quot;)              │                          │
+  │──student:accept-tutor────►│                          │
+  │                          │──removeStudentRequest()─┤
+  │                          │──student:accept-tutor───►│
+  │                          │                          │
+  │──poll blockchain─────────┤                          │──poll blockchain
+  │   (every 1s)             │                          │   (every 1s)
+  │                          │                          │
+  │──detect active session───┤                          │──detect active session
+  │──redirect to video───────┤                          │──redirect to video
+  │   (simultaneously)        │                          │   (simultaneously)
+</code></pre></div>
+<h4 id="student-enters-video-room">Student Enters Video Room</h4>
+<div class="highlight"><pre><span></span><code>Student                    Backend                    Tutor
+  │                          │                          │
+  │──redirect to WebRTC──────┤                          │──redirect to WebRTC
+  │   (after blockchain      │                          │   (after blockchain
+  │    confirms)              │                          │    confirms)
+  │                          │                          │
+  │──student:entered-room───►│                          │
+  │   (from WebRTC page)     │                          │
+  │                          │──storeSessionMapping()──┤
+  │                          │──student:in-room────────►│
+  │                          │   (broadcast to all)     │
+  │◄──student:room-entry─────│                          │
+  │   -confirmed             │                          │
+  │                          │                          │
+</code></pre></div>
+<p><strong>Note:</strong> Both student and tutor redirect to WebRTC simultaneously via blockchain polling. The <code>student:entered-room</code> event is emitted after both have already entered the room, and is used for session tracking, not for triggering redirects.</p>
+<h2 id="active-session-prompt">Active Session Prompt</h2>
+<h3 id="component-activesessionprompttsx">Component: <code>ActiveSessionPrompt.tsx</code></h3>
+<p><strong>Purpose:</strong> Warns users if they have an active session when navigating away from session pages.</p>
+<p><strong>When shown:</strong></p>
+<ul>
+<li>User has an active session on blockchain (<code>activeSessions(address)</code> returns active session)</li>
+<li>User is NOT on <code>/tutor</code> or <code>/find-tutor</code> pages (or paths starting with these)</li>
+<li>Session has started (<code>startTime &gt; 0</code>)</li>
+<li>Session is NOT very new (more than 60 seconds old) - grace period for session-starting flow</li>
+</ul>
+<p><strong>What user sees:</strong></p>
+<ul>
+<li>Orange/red banner at top of page</li>
+<li>Session duration (live counter)</li>
+<li>"End Session Now" button</li>
+<li>"Dismiss" button</li>
+</ul>
+<p><strong>What happens:</strong></p>
+<ul>
+<li>Polls blockchain every 5 seconds for active session</li>
+<li>Updates duration counter every second</li>
+<li>"End Session Now" calls <code>endSession(tutorAddress)</code> on blockchain</li>
+</ul>
+<h2 id="state-transition-diagrams">State Transition Diagrams</h2>
+<h3 id="student-state-machine">Student State Machine</h3>
+<div class="highlight"><pre><span></span><code>┌──────┐
+│setup │
+└──┬───┘
+   │ &quot;Find Tutors Now&quot;
+   ▼
+┌──────────┐
+│searching │◄──────────┐
+└──┬───────┘           │
+   │ tutor accepted    │ skip/reject
+   ▼                   │
+┌─────────────┐        │
+│tutor-found  │────────┘
+└──┬──────────┘
+   │ &quot;Start Session&quot;
+   ▼
+┌─────────────────┐
+│session-starting │
+│ (polling        │
+│  blockchain)    │
+└──┬──────────────┘
+   │ active session
+   │ detected
+   ▼
+[Redirect to Video Call]
+</code></pre></div>
+<h3 id="tutor-state-machine">Tutor State Machine</h3>
+<div class="highlight"><pre><span></span><code>┌──────┐
+│setup │
+└──┬───┘
+   │ &quot;Go Live&quot;
+   ▼
+┌──────────┐
+│ waiting  │◄──────────────────┐
+└──┬───────┘                   │
+   │ accept request             │ student rejects
+   ▼                            │ or withdraw
+┌──────────────────┐            │
+│waiting-for-student│───────────┘
+└──┬───────────────┘
+   │ student accepts
+   ▼
+┌─────────────────┐
+│session-starting │
+└─────────────────┘
+   │
+   ▼
+[Redirect to Video Call]
+</code></pre></div>
+<h2 id="common-issues-debugging">Common Issues &amp; Debugging</h2>
+<h3 id="student-sees-searching-but-no-tutors-appear">Student sees "Searching" but no tutors appear</h3>
+<p><strong>Check:</strong></p>
+<ol>
+<li>Are tutors actually available? Check Redis: <code>SMEMBERS available_tutors</code></li>
+<li>Do tutors match language? Check: <code>SMEMBERS tutors:{language}</code></li>
+<li>Do tutors match budget? Check tutor rates vs student budget</li>
+<li>Are socket connections working? Check backend logs for <code>tutor:incoming-request</code> emissions</li>
+</ol>
+<h3 id="tutor-doesnt-receive-student-requests">Tutor doesn't receive student requests</h3>
+<p><strong>Check:</strong></p>
+<ol>
+<li>Is tutor's socket ID stored in Redis? <code>HGET tutor:{address} socketId</code></li>
+<li>Is tutor in the correct language set? <code>SMEMBERS tutors:{language}</code></li>
+<li>Is student's request stored? <code>HGETALL request:{requestId}</code></li>
+<li>Check backend logs for request processing</li>
+</ol>
+<h3 id="student-accepts-tutor-but-nothing-happens">Student accepts tutor but nothing happens</h3>
+<p><strong>Check:</strong></p>
+<ol>
+<li>Did transaction succeed? Check MetaMask</li>
+<li>Did <code>student:accept-tutor</code> event reach backend? Check backend logs</li>
+<li>Did tutor receive <code>student:accept-tutor</code>? Check tutor frontend console</li>
+<li>Is session stored in Redis? Check <code>sessionService.storeSessionMapping()</code></li>
+<li>Is blockchain polling working? Check console for "Student polling blockchain" logs</li>
+<li>Is active session detected? Check if <code>activeSessions(tutorAddress)</code> returns active session</li>
+<li><strong>Important:</strong> Student queries <code>activeSessions(tutorAddress)</code>, not <code>activeSessions(studentAddress)</code> - the mapping is keyed by tutor address</li>
+</ol>
+<h3 id="tutor-stuck-in-waiting-for-student">Tutor stuck in "waiting-for-student"</h3>
+<p><strong>Check:</strong></p>
+<ol>
+<li>Did student actually accept? Check student's transaction history</li>
+<li>Did <code>student:accept-tutor</code> event fire? Check backend logs</li>
+<li>Is tutor listening for the event? Check tutor frontend console</li>
+<li>Try withdrawing acceptance and going back to waiting</li>
+</ol>
+<h2 id="key-files">Key Files</h2>
+<ul>
+<li><strong>Student Component:</strong> <code>webapp/packages/nextjs/components/student/StudentTutorFinder.tsx</code></li>
+<li><strong>Tutor Component:</strong> <code>webapp/packages/nextjs/components/tutor/TutorAvailabilityFlow.tsx</code></li>
+<li><strong>Active Session Prompt:</strong> <code>webapp/packages/nextjs/components/session/ActiveSessionPrompt.tsx</code></li>
+<li><strong>Backend Server:</strong> <code>backend/src/server.js</code></li>
+<li><strong>Matching Service:</strong> <code>backend/src/services/matchingService.js</code></li>
+<li><strong>Socket Events Docs:</strong> <code>docs/tech/socket-events.md</code></li>
+</ul>
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="../../tech/socket-events/">Socket Events Reference</a></li>
+<li><a href="../webrtc-integration/">WebRTC Integration Guide</a></li>
+<li><a href="../../tech/api-reference/">API Reference</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
